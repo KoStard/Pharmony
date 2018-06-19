@@ -1,0 +1,9 @@
+import { XmlAttributeComponent } from "../../../../../file/xml-components";
+export interface IHeaderReferenceAttributes {
+    value: string;
+}
+export declare class TitlePageAttributes extends XmlAttributeComponent<IHeaderReferenceAttributes> {
+    protected xmlKeys: {
+        value: string;
+    };
+}

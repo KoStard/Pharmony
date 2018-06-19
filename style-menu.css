@@ -1,0 +1,81 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+#container {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    right: 0;
+}
+
+#menu {
+    margin: auto;
+    display: block;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+#menu-buttonContainer {
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    bottom: 40px;
+}
+
+#menu button {
+    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background: #ecebf0;
+    transition: all 0.2s;
+    outline: none;
+}
+
+#menu .menu-databases-button{
+    color: #06070d;
+    display: block;
+    margin: 10px;
+    position: relative;
+    width: 200px;
+    height: 40px;
+    /* -webkit-transition: background 2s; */
+    border-radius: 20px;
+    border: 2px solid hsl(205, 57%, 60%);
+}
+
+#menu .menu-databases-button:hover {
+    background: #96c2e2;
+}
+
+#menu .menu-databases-button:active {
+    background: hsl(205, 57%, 68%);
+}
+
+#menu-newCollectionButton {
+    color: #4D5382;
+    display: block;
+    position: absolute;
+    bottom: 0;
+    height: 40px;
+    left: 0;
+    right: 0;
+    width: 70%;
+    margin: auto;
+    border: none;
+}
+
+#menu-newCollectionButton:hover {
+    width: 95%;
+    background: #3772FF;
+    color: azure;
+}
+
+#menu-newCollectionButton:active {
+    width: 100%;
+}

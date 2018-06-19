@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset = "UTF-8">
+        <title>Pharmony</title>
+        <!-- <link rel = "stylesheet" 
+        href = "./node_modules/bootstrap/dist/css/bootstrap.min.css" /> -->
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="style-menu.css">
+        <link rel="stylesheet" href="popup.css">
+    </head>
+    <body>
+        <div id="container" class='menu'>
+            <div id="menu">
+                <div id="menu-buttonContainer"></div>
+            </div>
+            <div id="panel">
+                <input type="text" id='input'>
+                <div id="details-button" class='panel-button'>
+                    <svg class="svg" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.5 1.5h17v5h-17zm2 9h13zm0 4h13zm0 4h13z" fill="none" stroke="black" stroke-width="1px"/>
+                    </svg>
+                </div>
+                <div class="dropdown" id = 'settings-button-dropdown'>
+                    <button id='settings-button' class='panel-button'>
+                        <svg class="svg" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 15H3v1h14v-1zm0-5H3v1h14v-1zm0-5H3v1h14v-1z"></path>
+                        </svg>
+                    </button>
+                    <div class="dropdown-content" id = 'settings-dropdown-content'>
+                    </div>
+                </div>
+            </div>
+            <div id="tableHolder">
+                <table class='table' id = 'table'>
+                </table>
+            </div>
+        </div>
+        <script src = "./view.js" ></script>
+    </body>
+</html>
