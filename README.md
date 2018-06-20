@@ -29,4 +29,8 @@ If you want to add some point and get view like this
 then just use semi-colons (;).
 <img width="912" alt="screen shot 2018-06-20 at 12 23 03" src="https://user-images.githubusercontent.com/30292877/41649172-f20c6fb6-748b-11e8-9ab5-636d50dafb30.png">
 
+After all this, you can even export to the docx file in two modes by settings button
+1. Standart export - when only block names appear in the document
+2. Full export - when both the block name and description appear in the document
+
 With regards KoStard.
