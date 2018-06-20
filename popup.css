@@ -20,7 +20,7 @@
     margin: 0;
 }
 
-.popupInputPanelBigCentralHolder {
+.popupBigPanelCentralHolder {
     position: fixed;
     top: 0;
     left: 0;
@@ -28,7 +28,7 @@
     height: 100%;
 }
 
-.popupInputPanelBigCentralHolder .backgroundCover {
+.popupBigPanelCentralHolder .backgroundCover {
     position: absolute;
     background: rgba(0,0,0,0.3);
     top: 0;
@@ -37,7 +37,7 @@
     height: 100%;
 }
 
-.popupInputPanelBigCentral {
+.popupBigPanelCentral {
     position: absolute;
     width: fit-content;
     top: 50%;
@@ -47,7 +47,7 @@
     padding: 20px;
 }
 
-.popupInputPanelBigCentral * {
+.popupBigPanelCentral * {
     margin: 3px 0;
     transition: all 0.2s;
     outline: none;

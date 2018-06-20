@@ -47,11 +47,9 @@ function popupAlertPanelSmall({ text, color, icon, parent, delay, onclick }) {
     return this;
 }
 
-function PopupInputPanelBigCentral({headerText, inputNames, finishFunction, buttons, owner}){
-    this.args = arguments[0];
+function PopupBigPanelCentral(owner) {
     let panelHolder = document.createElement('div');
-    this.panelHolder = panelHolder;
-    panelHolder.className = 'popupInputPanelBigCentralHolder';
+    panelHolder.className = 'popupBigPanelCentralHolder';
 
     let backgroundCover = document.createElement('div');
     backgroundCover.className = 'backgroundCover';
@@ -59,13 +57,27 @@ function PopupInputPanelBigCentral({headerText, inputNames, finishFunction, butt
         runningPopup = undefined;
         panelHolder.remove();
     };
-
+    panelHolder.appendChild(backgroundCover);
 
     let panel = document.createElement('div');
-    panel.className = 'popupInputPanelBigCentral';
+    panel.className = 'popupBigPanelCentral';
+    panelHolder.appendChild(panel);
+
+    owner.appendChild(panelHolder);
+
+    this.panelHolder = panelHolder;
+    this.panel = panel;
+}
+
+function PopupInputPanelBigCentral({headerText, inputNames, finishFunction, buttons, owner}){
+    this.args = arguments[0];
+
+    let popupBigPanelCentral = new PopupBigPanelCentral(owner);
+    let panel = popupBigPanelCentral.panel;
+    this.panelHolder = popupBigPanelCentral.panelHolder;
+    this.panelHolder.classList.add('popupInputPanelBigCentral');
     
-    let header = document.createElement('div');
-    header.className = 'popup-header popup-text';
+    let header = createPopupElement('div', ['text', 'header']);
     header.innerText = headerText;
     panel.appendChild(header);
 
@@ -94,11 +106,7 @@ function PopupInputPanelBigCentral({headerText, inputNames, finishFunction, butt
         panel.appendChild(button);
     }
 
-    panelHolder.appendChild(backgroundCover);
-    panelHolder.appendChild(panel);
-    owner.appendChild(panelHolder);
     this.panel = panel;
-    this.panelHolder = panelHolder;
 
     finishFunction && finishFunction(this);
     runningPopup = this;
@@ -108,7 +116,9 @@ let popupClassNames = {
     standart: 'popup-standart',
     textarea: 'popup-textarea',
     input: 'popup-input',
-    button: 'popup-button'
+    button: 'popup-button',
+    header: 'popup-header',
+    text: 'popup-text'
 };
 function createPopupElement(name, mode) {
     let tempElem = document.createElement(name);
