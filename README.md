@@ -17,8 +17,8 @@ Click on the appeared button with your collection name.
 <img width="912" alt="screen shot 2018-06-20 at 12 23 43" src="https://user-images.githubusercontent.com/30292877/41648463-0480a768-748a-11e8-9972-e17cc18fcc2c.png">
 You'll see top panel with input bar and 2 buttons (from left to right - details mode button and settings button).
 Write in the input bar with this template to create new block.
-Raw description - `[block name] -- [description]`
-Pointed description - `[block name] -- [description point; description point; description point]`
+Raw description - `[block name] -- [description]`.
+Pointed description - `[block name] -- [description point; description point; description point]`.
 <img width="912" alt="screen shot 2018-06-20 at 12 20 56" src="https://user-images.githubusercontent.com/30292877/41648697-ae9f1b58-748a-11e8-9a0c-d8c481697fd3.png">
 Here you can press **enter** and add new block. But here I want to show you the first button - details mode button.
 <img width="912" alt="screen shot 2018-06-20 at 12 21 07" src="https://user-images.githubusercontent.com/30292877/41648760-e2d1e22a-748a-11e8-8448-d5c1e8e998de.png">
