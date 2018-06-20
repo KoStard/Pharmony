@@ -22,11 +22,10 @@ And here edit and press **Done**.
 Done! You added new block in the Pharmony.
 <img width="912" alt="screen shot 2018-06-20 at 12 21 34" src="https://user-images.githubusercontent.com/30292877/41648876-27970a8e-748b-11e8-8971-64a1a21e5a5f.png">
 What if you want to edit the block? Just double click to it and it's raw text will appear in the input bar.
-If you want to add some point and get view like this
+If you want to add some point and get view like this in the bottom then just use semi-colons (;).
 1. First point
 2. Second point
 3. Third point
-then just use semi-colons (;).
 <img width="912" alt="screen shot 2018-06-20 at 12 23 03" src="https://user-images.githubusercontent.com/30292877/41649172-f20c6fb6-748b-11e8-9ab5-636d50dafb30.png">
 
 After all this, you can even export to the docx file in two modes by settings button
