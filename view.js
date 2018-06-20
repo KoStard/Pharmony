@@ -145,7 +145,7 @@ let createDatabase = popup.createResponsiveFunction({
         if (fs.existsSync(databasesFolder + name)) throw 'Existing name';
         fs.writeFileSync(databasesFolder + name, '');
     },
-    popupAlertPanel: popup.popupAlertPanelSmall,
+    popupAlertPanel: popup.PopupAlertPanelSmall,
     errorInfo: 'error',
     successInfo: {
         text: 'Done.'
@@ -287,7 +287,7 @@ let responsiveExport = popup.createResponsiveFunction({
     startInfo: {text: 'Starting export.'},
     successInfo: {text: 'Done exporting.', onclick: ()=>{launch.launch(lastCreatedFile+'.docx');}},
     errorInfo: 'error',
-    popupAlertPanel: popup.popupAlertPanelSmall
+    popupAlertPanel: popup.PopupAlertPanelSmall
 });
 
 function exporterFromInput(attr) {
@@ -390,13 +390,13 @@ function clearAdditionalSpaces(text){
 let commands = {
     show: popup.createResponsiveFunction({
         func: showDB,
-        popupAlertPanel: popup.popupAlertPanelSmall,
+        popupAlertPanel: popup.PopupAlertPanelSmall,
         successInfo: {text: 'Done.'},
         errorInfo: {text: 'Error.'}
     }),
     export: popup.createResponsiveFunction({
         func: exporterFromInput,
-        popupAlertPanel: popup.popupAlertPanelSmall,
+        popupAlertPanel: popup.PopupAlertPanelSmall,
         successInfo: {text: 'Done.'},
         errorInfo: {text: 'Error.'}
     })
@@ -443,7 +443,7 @@ let editBlock = popup.createResponsiveFunction({
         blocks[key].description = newValue;
         save();
     },
-    popupAlertPanel: popup.popupAlertPanelSmall,
+    popupAlertPanel: popup.PopupAlertPanelSmall,
     successInfo: {
         text: 'Undo.',
         onclick: () => {
@@ -543,7 +543,7 @@ let process = popup.createResponsiveFunction({
     refreshScrollLevel();
     },
     errorInfo: 'error',
-    popupAlertPanel: popup.popupAlertPanelSmall
+    popupAlertPanel: popup.PopupAlertPanelSmall
 });
 
 function openDetailedMode() {

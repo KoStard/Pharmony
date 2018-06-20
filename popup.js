@@ -2,7 +2,7 @@
 
 module.exports = {
     createResponsiveFunction: createResponsiveFunction,
-    popupAlertPanelSmall: popupAlertPanelSmall,
+    PopupAlertPanelSmall: PopupAlertPanelSmall,
     PopupInputPanelBigCentral: PopupInputPanelBigCentral,
     runningPopup: () => { return runningPopup; },
     removeRunningPopup: () => { runningPopup.panelHolder.remove(); runningPopup=undefined; }
@@ -26,7 +26,7 @@ function createResponsiveFunction({func, popupAlertPanel, startInfo, successInfo
     };
 }
 
-function popupAlertPanelSmall({ text, color, icon, parent, delay, onclick }) {
+function PopupAlertPanelSmall({ text, color, icon, parent, delay, onclick }) {
     if (!parent) parent = document.body;
     if (!delay) delay = 2000;
     if (!color) color = '#fff';
@@ -44,7 +44,6 @@ function popupAlertPanelSmall({ text, color, icon, parent, delay, onclick }) {
     setTimeout(()=>{
         panel.remove();
     }, delay);
-    return this;
 }
 
 function PopupBigPanelCentral(owner) {
