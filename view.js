@@ -175,7 +175,9 @@ function find(rawArg, mark=true) {
     if (!rawArg) return Object.keys(blocks);
     let args = rawArg.match(/(?:^|[&^])[^&^]+/g);
     let res = [];
+    let index = 0;
     for (let name in blocks) {
+        index++;
         let valid = true;
         for (let arg of args) {
             switch(arg[0]) {
@@ -200,7 +202,7 @@ function find(rawArg, mark=true) {
             }
         }
         if (!valid) continue;
-        res.push(name);
+        res.push([index, name]);
     }
     return res;
 }
@@ -307,7 +309,7 @@ function exporterFromInput(attr) {
     return true;
 }
 
-function show(names) {
+function show(IDnames) {
     clearTable();
     let headersRow = document.createElement('tr');
     table.appendChild(headersRow);
@@ -318,9 +320,11 @@ function show(names) {
     tempH.id = 'tableHeader-'+'ID';
     headersRow.appendChild(tempH);
 
-    // let nameID = 1;
     let keys = Object.keys(blocks);
-    for(let name of names) {
+    let tempIndex = 1;
+    for (let IDname of IDnames) {
+        if (!IDname) continue;
+        let [ID, name] = (typeof IDname == 'string'?[tempIndex++, IDname]:IDname);
         let tempRow = document.createElement('tr');
         if ((assatemp = Object.keys(specialKeyWordBlockNames).filter(curr => name.match(new RegExp(curr+' - [\s\S]+')))).length > 0){
             tempRow.innerHTML = specialKeyWordBlockNames[assatemp[0]].show(blocks[name].description);
@@ -337,7 +341,7 @@ function show(names) {
             }
         }
         let tempD = document.createElement('td');
-        tempD.innerHTML = keys.indexOf(name)+1; // Not so good methode, but working one
+        tempD.innerHTML = ID;
         tempRow.appendChild(tempD);
         headers.forEach((attr) => {
             let tempD = document.createElement('td');
@@ -349,7 +353,6 @@ function show(names) {
         });
         if (tempRow.innerHTML)
             table.appendChild(tempRow);
-        // nameID += 1;
     }
     refreshScrollLevel();
     return true;
