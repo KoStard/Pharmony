@@ -543,6 +543,34 @@ let process = popup.createResponsiveFunction({
     popupAlertPanel: popup.popupAlertPanelSmall
 });
 
+function openDetailedMode() {
+    let resp = inputSlicer(input.value);
+    new popup.PopupInputPanelBigCentral({
+        headerText: 'Editor',
+        inputNames: ['Name', '*textDescription'],
+        finishFunction: (panel) => {
+            if (!resp) resp = ['', input.value, '', ''];
+            let [glob, name, attr, val] = resp;
+            name = clearAdditionalSpaces(name);
+            attr = clearAdditionalSpaces(attr);
+            val = clearAdditionalSpaces(val);
+            let inputs = panel.inputs;
+            inputs[0].value = name + (attr ? `.${attr}` : '');
+            inputs[1].value = clearAdditionalSpaces(val.replace(/;/g, ';\n'));
+        },
+        buttons: [
+            createButton({
+                value: 'Done',
+                onclick: (panel) => {
+                    input.value = `${panel.inputs[0].value} -- ${clearAdditionalSpaces(panel.inputs[1].value).replace(/;\n/g, ';').replace(/\n/g, ';')}`;
+                    process(input.value);
+                }
+            })
+        ],
+        owner: container,
+    });
+}
+
 function init() {
     input.addEventListener('keydown', (event)=>{
         if (event.keyCode == '13') {
@@ -571,31 +599,8 @@ function init() {
         else if (table.parentElement.scrollTop == 0) tableScrollAnchor = 'top';
         else tableScrollAnchor = undefined;
     });
-    detailsButton.addEventListener('click', ()=>{
-        let resp = inputSlicer(input.value);
-        new popup.PopupInputPanelBigCentral({
-            headerText: 'Editor',
-            inputNames: ['Name','*textDescription'],
-            finishFunction: (panel) => {
-                if (!resp) resp = ['',input.value,'',''];
-                let [glob, name, attr, val] = resp;
-                name = clearAdditionalSpaces(name);
-                attr = clearAdditionalSpaces(attr);
-                val = clearAdditionalSpaces(val);
-                let inputs = panel.inputs;
-                inputs[0].value = name+(attr?`.${attr}`:'');
-                inputs[1].value = clearAdditionalSpaces(val.replace(';', ';\n'));
-            },
-            buttons: [
-                createButton({
-                    value: 'Done',
-                    onclick: (panel)=>{
-                        process(`${panel.inputs[0].value} -- ${clearAdditionalSpaces(panel.inputs[1].value).replace(';\n', ';').replace('\n', ';')}`);
-                    }
-                })
-            ],
-            owner: container,
-        });
+    detailsButton.addEventListener('click', () => {
+        openDetailedMode();
     });
     settingsCreator();
     loadMenu();
