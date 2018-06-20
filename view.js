@@ -3,6 +3,7 @@ let fs = require('fs');
 let docx = require('docx');
 let popup = require('./popup');
 let launch = require('./launchFiles');
+let {ipcRenderer} = require('electron');
 
 let blocks = {};
 const databasesFolder = 'Databases/';
@@ -574,6 +575,10 @@ function openDetailedMode() {
     });
 }
 
+function editCollectionsList(){
+    console.log('editCollectionsList');
+}
+
 function init() {
     input.addEventListener('keydown', (event)=>{
         if (event.keyCode == '13') {
@@ -595,6 +600,10 @@ function init() {
             else
                 toggleToMenu();
         }
+    });
+
+    ipcRenderer.on('edit-collections-list-clicked', ()=>{
+        editCollectionsList();
     });
 
     table.parentElement.addEventListener('scroll', (event)=>{

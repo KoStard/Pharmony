@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, Menu} = require('electron');
 const url = require ('url');
 const path = require ('path');
 
@@ -12,8 +12,27 @@ function createWindow(){
         protocol: 'file:',
         slashes: true
     }));
+    win.on('closed', ()=>{app.quit();});
+    Menu.setApplicationMenu(Menu.buildFromTemplate(mainMenuTemplate));
 }
 
 app.on('ready', createWindow);
 
 
+let mainMenuTemplate = [
+    {
+        label: 'File',
+        submenu: [
+            {
+                label: 'Edit collections list.',
+                click: ()=>{
+                    win.webContents.send('edit-collections-list-clicked');
+                }
+            }
+        ]
+    },
+    {
+        label: 'DevTools',
+        role: 'toggledevtools'
+    }
+];
