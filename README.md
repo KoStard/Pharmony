@@ -1,5 +1,10 @@
 # Pharmony
 To start this use npm (Node package manager). This projects uses Electron from Github.
+## What you can do with Pharmony?
+1. Take notes when studying
+2. Learn with much higher efficacy, because with Pharmony if you take notes of some rare/hard information, then you won't forget that.
+2. Search in your notes and get fast access to current blocks
+3. Export your notes to docx, print and review your notes before exams
 Just use `npm start` to run the program.
 Now as you see I have added some temp collections and now we'll add one together.
 <img width="912" alt="screen shot 2018-06-20 at 12 31 38" src="https://user-images.githubusercontent.com/30292877/41647145-9b8162f0-7486-11e8-96d3-9e519022d703.png">
