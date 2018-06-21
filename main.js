@@ -13,7 +13,7 @@ function createWindow(){
         slashes: true
     }));
     win.on('closed', ()=>{app.quit();});
-    Menu.setApplicationMenu(Menu.buildFromTemplate(mainMenuTemplate));
+    // Menu.setApplicationMenu(Menu.buildFromTemplate(mainMenuTemplate));
 }
 
 app.on('ready', createWindow);

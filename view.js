@@ -377,7 +377,7 @@ function clearAdditionalSpaces(text){
             }
         }
         if (specialSymbols.includes(text[i])){
-            if (lastWasSpace && res) res = res.slice(0, res.length-1);
+            if (lastWasSpace && res && !specialSymbols.includes(res[res.length-1])) {res = res.slice(0, res.length-1);}
             lastWasSpace = true;
         }else lastWasSpace = false;
         res+=text[i];
