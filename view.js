@@ -170,7 +170,7 @@ function showDB() {
 }
 
 let lastFind;
-function find(rawArg, mark=true) {
+function find(rawArg, mark=true, indices = true) {
     if (mark)
         lastFind = rawArg;
     if (!rawArg) return Object.keys(blocks);
@@ -203,13 +203,16 @@ function find(rawArg, mark=true) {
             }
         }
         if (!valid) continue;
-        res.push([index, name]);
+        if(indices)
+            res.push([index, name]);
+        else
+            res.push(name);
     }
     return res;
 }
 
 function checkIfLastFindIncludesThese(names) {
-    let lastFindRes = find(lastFind, false);
+    let lastFindRes = find(lastFind, mark=false, indices = false);
     for (let name of names) {
         if (!lastFindRes.includes(name)) {
             return false;
@@ -483,7 +486,7 @@ let process = popup.createResponsiveFunction({
             }
             let names;
             if (name[name.length-1]=='*') {
-                names = find(clearAdditionalSpaces(name.slice(0,name.length-1)), false).map(x=>x[1]);
+                names = find(clearAdditionalSpaces(name.slice(0,name.length-1)), false, indices = false);
                 name = name.slice(0,name.length-1);
             } else {
                 names = [name];
@@ -505,7 +508,7 @@ let process = popup.createResponsiveFunction({
                         delete blocks[cName];
                     save();
                     // this is deleting blocks of 'names' so you can't find them
-                    if (lastFind && find(lastFind)>0) show(find(lastFind));
+                    if (lastFind && find(lastFind).length>0) show(find(lastFind));
                     else showDB();
                 }
             } else {
