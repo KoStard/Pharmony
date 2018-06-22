@@ -483,7 +483,7 @@ let process = popup.createResponsiveFunction({
             }
             let names;
             if (name[name.length-1]=='*') {
-                names = find(clearAdditionalSpaces(name.slice(0,name.length-1)), false);
+                names = find(clearAdditionalSpaces(name.slice(0,name.length-1)), false).map(x=>x[1]);
                 name = name.slice(0,name.length-1);
             } else {
                 names = [name];
