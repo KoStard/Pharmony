@@ -175,7 +175,6 @@ function find(rawArg, mark=true, indices = true) {
         lastFind = rawArg;
     if (!rawArg) return Object.keys(blocks);
     let argGroups = rawArg.split('|').map(x=>x.match(/(?:^|[&^!])[^!&^]+/g));
-    console.log(argGroups);
     let res = [];
     let index = 0;
     for (let name in blocks) {
@@ -205,7 +204,6 @@ function find(rawArg, mark=true, indices = true) {
                     break;
                 }
             }
-            console.log(name, valid);
             if (valid) break;
         }
         if (!valid) continue;
@@ -319,7 +317,10 @@ function exporterFromInput(attr) {
     return true;
 }
 
+let lastIDnames;
 function show(IDnames) {
+    changedBlockNames = [];
+    lastIDnames = IDnames;
     clearTable();
     let headersRow = document.createElement('tr');
     table.appendChild(headersRow);
@@ -448,6 +449,9 @@ let lastKey;
 let lastEdit;
 let editBlock = popup.createResponsiveFunction({
     func: function ({ key, newValue }) {
+        if (blocks[key].description == newValue){
+            return;
+        }
         lastKey = key;
         lastEdit = blocks[key].description;
         blocks[key].description = newValue;
@@ -465,92 +469,207 @@ let editBlock = popup.createResponsiveFunction({
     errorInfo: 'error'
 });
 
+let changedBlockNames = [];
+function createOrEditBlocks(name, newValue){
+    if (!name) throw 'Invalid name';
+    if (name.endsWith('*')) {
+        name = name.slice(0,name.length-1);
+        find(name, false, false).forEach((value, index, array)=>{
+            // blocks[value].description = newValue;
+            editBlock({key: value, newValue: newValue});
+        });
+    } else {
+        if (blocks[name]) editBlock({key: name, newValue: newValue});
+        else {blocks[name] = {name, description: newValue}; changedBlockNames.push(name);}
+    }
+}
+
+function removeBlocks(name, newValue){
+    if (!name) throw 'Invalid name';
+    if (name.endsWith('*')) {
+        name = name.slice(0,name.length-1);
+        find(name, false, false).forEach((value, index, array)=>{
+            delete blocks[value];
+        });
+    } else {
+        if (blocks[name]) delete blocks[name];
+    }
+}
+
+function addToBlocks(name, newValue){
+    if (!name) throw 'Invalid name';
+    if (name.endsWith('*')) {
+        name = name.slice(0,name.length-1);
+        find(name, false, false).forEach((value, index, array)=>{
+            if (!blocks[value].description.match(new RegExp(`(;|^)${newValue}(;|$)`))) {blocks[value].description += (blocks[value].description?';':'')+newValue;changedBlockNames.push(value);}
+        });
+    } else {
+        if (blocks[name] && !blocks[name].description.match(new RegExp(`(;|^)${newValue}(;|$)`))) {blocks[name].description += (blocks[name].description?';':'')+newValue;changedBlockNames.push(name);}
+    }
+}
+
+function removeFromBlocks(name, newValue){
+    if (!name) throw 'Invalid name';
+    if (name.endsWith('*')) {
+        name = name.slice(0,name.length-1);
+        find(name, false, false).forEach((value, index, array)=>{
+            if (blocks[value].description.includes(newValue)){
+                if (blocks[value].description.includes(';'+newValue+';')){ // Check the memory to be without spaces after ;
+                    blocks[value].description = blocks[value].description.replace(`;${newValue};`, ';');
+                    changedBlockNames.push(value);
+                } else {
+                    let temp = blocks[value].description;
+                    blocks[value].description = blocks[value].description.replace(new RegExp(';'+newValue+'$'), '').replace(new RegExp('^'+newValue+';'), '').replace(new RegExp('^'+newValue+'$'), '');
+                    if (temp!=blocks[value].description) changedBlockNames.push(value);
+                }
+            }
+        });
+    } else {
+        if (blocks[name].description.includes(newValue)){
+            if (blocks[name].description.includes(';'+newValue+';')){ // Check the memory to be without spaces after ;
+                blocks[name].description = blocks[name].description.replace(`;${newValue};`, ';');
+                changedBlockNames.push(name);
+            } else {
+                let temp = blocks[name].description;
+                blocks[name].description = blocks[name].description.replace(new RegExp(';'+newValue+'$'), '').replace(new RegExp('^'+newValue+';'), '').replace(new RegExp('^'+newValue+'$'), '');
+                if (temp != blocks[name].description) changedBlockNames.push(value);
+            }
+        }
+    }
+}
+
+function renameBlocks(name, newValue){
+    if (!name) throw 'Invalid name';
+    if (name.endsWith('*')) throw "You can't use * in rename function";
+    if (!newValue) throw 'Invalid newName';
+    if (blocks[newValue]) throw 'Existing element with newName';
+    blocks[newValue] = blocks[name];
+    delete blocks[name];
+    changedBlockNames.push(newValue);
+}
+
+const keys = {
+    '--': createOrEditBlocks,
+    '--/': removeBlocks,
+    '--+': addToBlocks,
+    '---': removeFromBlocks,
+    '-->': renameBlocks
+};
+
 function inputSlicer(command){
-    return command.match(/^([^\n\.]+)(?:\.([^\n\.]+)|)(?:--|=)([^\n]*)$/);
+    return command.match(/^((?:[^\n]+)(?:[^-]))(--(?:(?:\/)|(?:\+)|(?:-)|(?:\>)|(?:)))([^\n]*)$/);
 }
 
 let process = popup.createResponsiveFunction({
-    func: function (command) {
-    if (command[0] == '*'){
-        command = command.split(' ');
-        if (commands[command[0].slice(1)]){
-            commands[command[0].slice(1)](command.slice(1).join(' '));
-        }
-    }else if (command.includes('=') || command.includes('--')) {
+    // if (command[0] == '*'){
+    //     command = command.split(' ');
+    //     if (commands[command[0].slice(1)]){
+    //         commands[command[0].slice(1)](command.slice(1).join(' '));
+    //     }
+    // }else if (command.includes('=') || command.includes('--')) {
+    //     let resp = inputSlicer(command);
+    //     if (resp){
+    //         let [glob, name, attr, val] = resp;
+    //         name = clearAdditionalSpaces(name);
+    //         attr = clearAdditionalSpaces(attr);
+    //         val = clearAdditionalSpaces(val);
+    //         if (specialKeyWordBlockNames[name]) {
+    //             if (val[0]!='/')
+    //                 specialKeyWordBlockNames[name].create(name, attr, val);
+    //             else
+    //                 specialKeyWordBlockNames[name].remove(name, attr, clearAdditionalSpaces(val.slice(1)));
+    //             return true;
+    //         }
+    //         let names;
+    //         if (name[name.length-1]=='*') {
+    //             names = find(clearAdditionalSpaces(name.slice(0,name.length-1)), false, indices = false);
+    //             name = name.slice(0,name.length-1);
+    //         } else {
+    //             names = [name];
+    //         }
+    //         if (val[0]=='/') {
+    //             if (attr){
+    //                 if (attr == 'name') throw ("Can't remove names of blocks");
+    //                 for (let cName of names)
+    //                     delete blocks[cName][attr];
+    //                 // This is deleting only some attributes, so you have to show them
+    //                 save();
+    //                 if (checkIfLastFindIncludesThese(names)) {
+    //                     show(find(lastFind));
+    //                 } else {
+    //                     show(find(name));
+    //                 }
+    //             } else {
+    //                 for (let cName of names)
+    //                     delete blocks[cName];
+    //                 save();
+    //                 // this is deleting blocks of 'names' so you can't find them
+    //                 if (lastFind && find(lastFind).length>0) show(find(lastFind));
+    //                 else showDB();
+    //             }
+    //         } else {
+    //             if (attr){
+    //                 for (let cName of names)
+    //                     blocks[cName][attr] = val;
+    //                 if (checkIfLastFindIncludesThese(names)) {
+    //                     show(find(lastFind));
+    //                 } else {
+    //                     show(find(name));
+    //                 }
+    //             } else {
+    //                 if (names.length>0){
+    //                     for (let cName of names) {
+    //                         if (blocks[cName]) {
+    //                             editBlock({ key: cName, newValue: val });
+    //                         } else {
+    //                             blocks[cName] = {
+    //                                 name: cName,
+    //                                 description: val
+    //                             };
+    //                         }
+    //                     }
+    //                     save();
+    //                     if (checkIfLastFindIncludesThese(names)) {
+    //                         show(find(lastFind));
+    //                     } else {
+    //                         show(find(name));
+    //                     }
+    //                 } else throw `Can't find ${name}.`;
+    //             }
+    //         }
+    //     }
+    // }else
+    //     show(find(command));
+    //     refreshScrollLevel();
+    // },
+    func: (command)=>{
         let resp = inputSlicer(command);
-        if (resp){
-            let [glob, name, attr, val] = resp;
-            name = clearAdditionalSpaces(name);
-            attr = clearAdditionalSpaces(attr);
-            val = clearAdditionalSpaces(val);
-            if (specialKeyWordBlockNames[name]) {
-                if (val[0]!='/')
-                    specialKeyWordBlockNames[name].create(name, attr, val);
-                else
-                    specialKeyWordBlockNames[name].remove(name, attr, clearAdditionalSpaces(val.slice(1)));
-                return true;
-            }
-            let names;
-            if (name[name.length-1]=='*') {
-                names = find(clearAdditionalSpaces(name.slice(0,name.length-1)), false, indices = false);
-                name = name.slice(0,name.length-1);
-            } else {
-                names = [name];
-            }
-            if (val[0]=='/') {
-                if (attr){
-                    if (attr == 'name') throw ("Can't remove names of blocks");
-                    for (let cName of names)
-                        delete blocks[cName][attr];
-                    // This is deleting only some attributes, so you have to show them
-                    save();
-                    if (checkIfLastFindIncludesThese(names)) {
-                        show(find(lastFind));
-                    } else {
+        if (resp) {
+            let [glob, name, key, newValue] = resp;
+            keys[key](name, newValue);
+            save();
+            if (lastFind){
+                let lastFindRes = find(lastFind, false, false);
+                let valid = true;
+                for (let chName of changedBlockNames){
+                    if (!lastFindRes.includes(chName)) {
                         show(find(name));
+                        valid = false;
+                        break;
                     }
-                } else {
-                    for (let cName of names)
-                        delete blocks[cName];
-                    save();
-                    // this is deleting blocks of 'names' so you can't find them
-                    if (lastFind && find(lastFind).length>0) show(find(lastFind));
-                    else showDB();
+                }
+                if (valid) {
+                    show(find(lastFind));
                 }
             } else {
-                if (attr){
-                    for (let cName of names)
-                        blocks[cName][attr] = val;
-                    if (checkIfLastFindIncludesThese(names)) {
-                        show(find(lastFind));
-                    } else {
-                        show(find(name));
-                    }
-                } else {
-                    if (names.length>0){
-                        for (let cName of names) {
-                            if (blocks[cName]) {
-                                editBlock({ key: cName, newValue: val });
-                            } else {
-                                blocks[cName] = {
-                                    name: cName,
-                                    description: val
-                                };
-                            }
-                        }
-                        save();
-                        if (checkIfLastFindIncludesThese(names)) {
-                            show(find(lastFind));
-                        } else {
-                            show(find(name));
-                        }
-                    } else throw `Can't find ${name}.`;
-                }
+                showDB();
             }
+        } else {
+            if (command)
+                show(find(command));
+            else
+                showDB();
         }
-    }else
-        show(find(command));
-        refreshScrollLevel();
     },
     errorInfo: 'error',
     popupAlertPanel: popup.PopupAlertPanelSmall
