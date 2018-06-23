@@ -320,6 +320,7 @@ function exporterFromInput(attr) {
 let lastIDnames;
 function show(IDnames) {
     changedBlockNames = [];
+    changeFindTo = undefined;
     lastIDnames = IDnames;
     clearTable();
     let headersRow = document.createElement('tr');
@@ -470,6 +471,7 @@ let editBlock = popup.createResponsiveFunction({
 });
 
 let changedBlockNames = [];
+let changeFindTo;
 function createOrEditBlocks(name, newValue){
     if (!name) throw 'Invalid name';
     if (name.endsWith('*')) {
@@ -480,7 +482,7 @@ function createOrEditBlocks(name, newValue){
         });
     } else {
         if (blocks[name]) editBlock({key: name, newValue: newValue});
-        else {blocks[name] = {name, description: newValue}; changedBlockNames.push(name);}
+        else {blocks[name] = {name: name, description: newValue}; changedBlockNames.push(name);}
     }
 }
 
@@ -532,7 +534,7 @@ function removeFromBlocks(name, newValue){
             } else {
                 let temp = blocks[name].description;
                 blocks[name].description = blocks[name].description.replace(new RegExp(';'+newValue+'$'), '').replace(new RegExp('^'+newValue+';'), '').replace(new RegExp('^'+newValue+'$'), '');
-                if (temp != blocks[name].description) changedBlockNames.push(value);
+                if (temp != blocks[name].description) changedBlockNames.push(name);
             }
         }
     }
@@ -544,8 +546,10 @@ function renameBlocks(name, newValue){
     if (!newValue) throw 'Invalid newName';
     if (blocks[newValue]) throw 'Existing element with newName';
     blocks[newValue] = blocks[name];
+    blocks[newValue].name = newValue;
     delete blocks[name];
-    changedBlockNames.push(newValue);
+    // changedBlockNames.push(newValue);
+    changeFindTo = newValue;
 }
 
 const keys = {
@@ -561,105 +565,28 @@ function inputSlicer(command){
 }
 
 let process = popup.createResponsiveFunction({
-    // if (command[0] == '*'){
-    //     command = command.split(' ');
-    //     if (commands[command[0].slice(1)]){
-    //         commands[command[0].slice(1)](command.slice(1).join(' '));
-    //     }
-    // }else if (command.includes('=') || command.includes('--')) {
-    //     let resp = inputSlicer(command);
-    //     if (resp){
-    //         let [glob, name, attr, val] = resp;
-    //         name = clearAdditionalSpaces(name);
-    //         attr = clearAdditionalSpaces(attr);
-    //         val = clearAdditionalSpaces(val);
-    //         if (specialKeyWordBlockNames[name]) {
-    //             if (val[0]!='/')
-    //                 specialKeyWordBlockNames[name].create(name, attr, val);
-    //             else
-    //                 specialKeyWordBlockNames[name].remove(name, attr, clearAdditionalSpaces(val.slice(1)));
-    //             return true;
-    //         }
-    //         let names;
-    //         if (name[name.length-1]=='*') {
-    //             names = find(clearAdditionalSpaces(name.slice(0,name.length-1)), false, indices = false);
-    //             name = name.slice(0,name.length-1);
-    //         } else {
-    //             names = [name];
-    //         }
-    //         if (val[0]=='/') {
-    //             if (attr){
-    //                 if (attr == 'name') throw ("Can't remove names of blocks");
-    //                 for (let cName of names)
-    //                     delete blocks[cName][attr];
-    //                 // This is deleting only some attributes, so you have to show them
-    //                 save();
-    //                 if (checkIfLastFindIncludesThese(names)) {
-    //                     show(find(lastFind));
-    //                 } else {
-    //                     show(find(name));
-    //                 }
-    //             } else {
-    //                 for (let cName of names)
-    //                     delete blocks[cName];
-    //                 save();
-    //                 // this is deleting blocks of 'names' so you can't find them
-    //                 if (lastFind && find(lastFind).length>0) show(find(lastFind));
-    //                 else showDB();
-    //             }
-    //         } else {
-    //             if (attr){
-    //                 for (let cName of names)
-    //                     blocks[cName][attr] = val;
-    //                 if (checkIfLastFindIncludesThese(names)) {
-    //                     show(find(lastFind));
-    //                 } else {
-    //                     show(find(name));
-    //                 }
-    //             } else {
-    //                 if (names.length>0){
-    //                     for (let cName of names) {
-    //                         if (blocks[cName]) {
-    //                             editBlock({ key: cName, newValue: val });
-    //                         } else {
-    //                             blocks[cName] = {
-    //                                 name: cName,
-    //                                 description: val
-    //                             };
-    //                         }
-    //                     }
-    //                     save();
-    //                     if (checkIfLastFindIncludesThese(names)) {
-    //                         show(find(lastFind));
-    //                     } else {
-    //                         show(find(name));
-    //                     }
-    //                 } else throw `Can't find ${name}.`;
-    //             }
-    //         }
-    //     }
-    // }else
-    //     show(find(command));
-    //     refreshScrollLevel();
-    // },
     func: (command)=>{
         let resp = inputSlicer(command);
         if (resp) {
-            let [glob, name, key, newValue] = resp;
+            let [glob, name, key, newValue] = resp.map(x=>clearAdditionalSpaces(x));
             keys[key](name, newValue);
             save();
             if (lastFind){
-                let lastFindRes = find(lastFind, false, false);
-                let valid = true;
-                for (let chName of changedBlockNames){
-                    if (!lastFindRes.includes(chName)) {
-                        show(find(name));
-                        valid = false;
-                        break;
+                if (changeFindTo) {
+                    show(find(changeFindTo));
+                } else {
+                    let lastFindRes = find(lastFind, false, false);
+                    let valid = true;
+                    for (let chName of changedBlockNames){
+                        if (!lastFindRes.includes(chName)) {
+                            show(find((name==lastFind?name:newValue)));
+                            valid = false;
+                            break;
+                        }
                     }
-                }
-                if (valid) {
-                    show(find(lastFind));
+                    if (valid) {
+                        show(find(lastFind));
+                    }
                 }
             } else {
                 showDB();
