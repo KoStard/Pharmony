@@ -174,33 +174,39 @@ function find(rawArg, mark=true, indices = true) {
     if (mark)
         lastFind = rawArg;
     if (!rawArg) return Object.keys(blocks);
-    let args = rawArg.match(/(?:^|[&^])[^&^]+/g);
+    let argGroups = rawArg.split('|').map(x=>x.match(/(?:^|[&^])[^&^]+/g));
+    console.log(argGroups);
     let res = [];
     let index = 0;
     for (let name in blocks) {
         index++;
-        let valid = true;
-        for (let arg of args) {
-            switch(arg[0]) {
-                case '&':
-                    if (!name.includes(arg.slice(1))){
-                        valid = false;
-                    }
+        let valid;
+        for (let args of argGroups){
+            valid = true;
+            for (let arg of args) {
+                switch(arg[0]) {
+                    case '&':
+                        if (!name.includes(arg.slice(1))){
+                            valid = false;
+                        }
+                        break;
+                    case '^':
+                        if (name.includes(arg.slice(1))) {
+                            valid = false;
+                        }
+                        break;
+                    default:
+                        if (!name.includes(arg)) {
+                            valid = false;
+                        }
+                        break;
+                }
+                if (!valid){
                     break;
-                case '^':
-                    if (name.includes(arg.slice(1))) {
-                        valid = false;
-                    }
-                    break;
-                default:
-                    if (!name.includes(arg)) {
-                        valid = false;
-                    }
-                    break;
+                }
             }
-            if (!valid){
-                break;
-            }
+            console.log(name, valid);
+            if (valid) break;
         }
         if (!valid) continue;
         if(indices)
@@ -544,7 +550,7 @@ let process = popup.createResponsiveFunction({
         }
     }else
         show(find(command));
-    refreshScrollLevel();
+        refreshScrollLevel();
     },
     errorInfo: 'error',
     popupAlertPanel: popup.PopupAlertPanelSmall
