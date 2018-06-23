@@ -174,7 +174,7 @@ function find(rawArg, mark=true, indices = true) {
     if (mark)
         lastFind = rawArg;
     if (!rawArg) return Object.keys(blocks);
-    let argGroups = rawArg.split('|').map(x=>x.match(/(?:^|[&^])[^&^]+/g));
+    let argGroups = rawArg.split('|').map(x=>x.match(/(?:^|[&^!])[^!&^]+/g));
     console.log(argGroups);
     let res = [];
     let index = 0;
@@ -190,7 +190,7 @@ function find(rawArg, mark=true, indices = true) {
                             valid = false;
                         }
                         break;
-                    case '^':
+                    case '^':case '!':
                         if (name.includes(arg.slice(1))) {
                             valid = false;
                         }
