@@ -58,6 +58,11 @@ function settingsCreator(){
         owner: settingsDropdownContent
     });
     createButton({
+        value: 'Selective Export',
+        onclick: ()=>{responsiveExport({mode:'full', keys: Object.keys(blocks).filter(x=>blocks[x].description&&blocks[x].description.length>0)});},
+        owner: settingsDropdownContent
+    });
+    createButton({
         value: 'Exit',
         onclick: ()=>{close();},
         owner: settingsDropdownContent
