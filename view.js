@@ -558,11 +558,11 @@ function renameBlocks(name, newValue){
 }
 
 const keys = {
-    '--': createOrEditBlocks,
-    '--/': removeBlocks,
-    '--+': addToBlocks,
-    '---': removeFromBlocks,
-    '-->': renameBlocks
+    '--': createOrEditBlocks, // Creates or edits the block
+    '--/': removeBlocks, // Removes the block
+    '--+': addToBlocks, // Adds given line to the block's description if can't find it there
+    '---': removeFromBlocks, // Removes given line from block's description if can find it there 
+    '-->': renameBlocks // Renames the block
 };
 
 function inputSlicer(command){
@@ -573,7 +573,7 @@ let process = popup.createResponsiveFunction({
     func: (command)=>{
         let resp = inputSlicer(command);
         if (resp) {
-            let [glob, name, key, newValue] = resp.map(x=>clearAdditionalSpaces(x));
+            let [, name, key, newValue] = resp.map(x=>clearAdditionalSpaces(x));
             keys[key](name, newValue);
             save();
             if (lastFind){
@@ -581,7 +581,7 @@ let process = popup.createResponsiveFunction({
                     show(find(changeFindTo));
                 } else {
                     let lastFindRes = find(lastFind, false, false);
-                    if (lastFindRes.length || !lastIDnames.length){
+                    if (lastFindRes.length || !lastIDnames.length){ // Checking if all elements of last scope were deleted
                         let valid = true;
                         for (let chName of changedBlockNames){
                             if (!lastFindRes.includes(chName)) {
@@ -613,7 +613,7 @@ let process = popup.createResponsiveFunction({
 
 function openDetailedMode() {
     let resp = inputSlicer(input.value);
-    new popup.PopupInputPanelBigCentral({
+    new popup.PopupInputPanelBigCentral({ // Creating the editor window
         headerText: 'Editor',
         inputNames: ['Name', '*textDescription'],
         finishFunction: (panel) => {
@@ -639,26 +639,22 @@ function openDetailedMode() {
     });
 }
 
-function editCollectionsList(){
+function editCollectionsList(){ // Future feature
     console.log('editCollectionsList');
 }
 
 function init() {
-    input.addEventListener('keydown', (event)=>{
+    input.addEventListener('keydown', (event)=>{ // Responding to enter
         if (event.keyCode == '13') {
-            if (input.value)
-                process(input.value);
-               else {
-                   showDB();
-               }
+            if (input.value) process(input.value);
+            else showDB();
             input.select();
         }
     });
     
-    document.addEventListener('keyup', (event)=>{
+    document.addEventListener('keyup', (event)=>{ // Responding to Esc button
         if (event.keyCode == '27') {
             if (popup.runningPopup()) {
-                // popup.runningPopup().panelHolder.remove();
                 popup.removeRunningPopup();
             }
             else
@@ -666,21 +662,21 @@ function init() {
         }
     });
 
-    ipcRenderer.on('edit-collections-list-clicked', ()=>{
+    ipcRenderer.on('edit-collections-list-clicked', ()=>{ // Will allow to remove collections in the future
         editCollectionsList();
     });
 
-    table.parentElement.addEventListener('scroll', (event)=>{
+    table.parentElement.addEventListener('scroll', (event)=>{ // Scroll anchors
         if (table.parentElement.scrollTop+table.parentElement.clientHeight == table.parentElement.scrollHeight) tableScrollAnchor = 'bottom';
         else if (table.parentElement.scrollTop == 0) tableScrollAnchor = 'top';
         else tableScrollAnchor = undefined;
     });
-    detailsButton.addEventListener('click', () => {
+    detailsButton.addEventListener('click', () => { // Opening editor when clicking to the button
         openDetailedMode();
     });
-    settingsCreator();
-    loadMenu();
+    settingsCreator(); // Creating settings panel
+    loadMenu(); // Creating menu
 }
 
-init();
+init(); // Starting the program
 
