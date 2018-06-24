@@ -581,16 +581,20 @@ let process = popup.createResponsiveFunction({
                     show(find(changeFindTo));
                 } else {
                     let lastFindRes = find(lastFind, false, false);
-                    let valid = true;
-                    for (let chName of changedBlockNames){
-                        if (!lastFindRes.includes(chName)) {
-                            show(find((name==lastFind?name:newValue)));
-                            valid = false;
-                            break;
+                    if (lastFindRes.length){
+                        let valid = true;
+                        for (let chName of changedBlockNames){
+                            if (!lastFindRes.includes(chName)) {
+                                show(find(name));
+                                valid = false;
+                                break;
+                            }
                         }
-                    }
-                    if (valid) {
-                        show(find(lastFind));
+                        if (valid) {
+                            show(find(lastFind));
+                        }
+                    } else {
+                        showDB();
                     }
                 }
             } else {
