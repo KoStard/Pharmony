@@ -614,12 +614,12 @@ function openDetailedMode() {
         inputNames: ['Name', '*textDescription'],
         finishFunction: (panel) => {
             if (!resp) resp = ['', input.value, '', ''];
-            let [glob, name, attr, val] = resp;
+            let [glob, name, key, val] = resp;
             name = clearAdditionalSpaces(name);
-            attr = clearAdditionalSpaces(attr);
+            key = clearAdditionalSpaces(key);
             val = clearAdditionalSpaces(val);
             let inputs = panel.inputs;
-            inputs[0].value = name + (attr ? `.${attr}` : '');
+            inputs[0].value = name;
             inputs[1].value = clearAdditionalSpaces(val.replace(/;/g, ';\n'));
         },
         buttons: [
