@@ -69,4 +69,4 @@ If you want to add some point and get view like this in the bottom then just use
 2. Second point
 3. Third point
 <img width="912" alt="screen shot 2018-06-20 at 12 23 03" src="https://user-images.githubusercontent.com/30292877/41649172-f20c6fb6-748b-11e8-9ab5-636d50dafb30.png">
-With regards **KoStard**.
+With regards **KoStard**. 
