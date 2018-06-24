@@ -581,7 +581,7 @@ let process = popup.createResponsiveFunction({
                     show(find(changeFindTo));
                 } else {
                     let lastFindRes = find(lastFind, false, false);
-                    if (lastFindRes.length){
+                    if (lastFindRes.length || !lastIDnames.length){
                         let valid = true;
                         for (let chName of changedBlockNames){
                             if (!lastFindRes.includes(chName)) {
