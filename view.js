@@ -4,6 +4,7 @@ let docx = require('docx');
 let popup = require('./popup');
 let launch = require('./launchFiles');
 let {ipcRenderer} = require('electron');
+let Selector = require('./selector');
 
 let blocks = {};
 const databasesFolder = 'Databases/';
@@ -15,6 +16,7 @@ let table = document.getElementById('table');
 let input = document.getElementById('input');
 let settingsDropdownContent = document.getElementById('settings-dropdown-content');
 let detailsButton = document.getElementById('details-button');
+let newCollectionButton, removeCollectionsButton;
 
 let tableScrollAnchor = 'bottom';
 
@@ -77,19 +79,24 @@ function menuButtonClicked(){
     showDB();
 }
 
+let menuButtons = [];
 function loadMenuButtons() {
+    stopEditCollectionsListMode();
+
+    menuButtons = [];
     menuButtonContainer.innerHTML = '';
     let files = fs.readdirSync(databasesFolder);
     files.forEach((file) => {
         let name = file.split('.');
         name = name.slice(0, name.length - 1).join('.');
-        createButton({
+        menuButtons.push(createButton({
             value: name,
             buttonClass: 'menu-databases-button',
             owner: menuButtonContainer,
             onclick: menuButtonClicked
-        });
+        }));
     });
+    menuButtons = menuButtons.filter(x=>x);
 }
 
 function toggleToMain(){
@@ -101,6 +108,30 @@ function toggleToMenu(){
     container.className = 'menu';
 }
 
+function openNewCollectionAdder(){
+    new popup.PopupInputPanelBigCentral({
+        headerText: 'Enter the new collection name',
+        inputNames: ['Collection name'],
+        buttons: [
+            createButton({
+                value: 'Done',
+                onclick: function (panelObject) {
+                    createDatabase(panelObject.inputs[0].value);
+                    loadMenuButtons();
+                }
+            })
+        ],
+        owner: container
+    });
+}
+
+function removeCollections(names) {
+    for (let name of names) {
+        fs.unlinkSync(databasesFolder+name+'.txt');
+    }
+    loadMenuButtons();
+}
+
 function loadMenu(){
     for (let node of menu.childNodes) {
         if (node !== menuButtonContainer) {
@@ -108,27 +139,41 @@ function loadMenu(){
         }
     }
     loadMenuButtons();
-    createButton({
+    newCollectionButton = createButton({
         value: 'New Collection',
-        buttonID: 'menu-newCollectionButton',
+        buttonClass: 'menu-generalButton menu-newCollectionButton',
         owner: menu,
         onclick: ()=>{
-            new popup.PopupInputPanelBigCentral({
-                headerText: 'Enter the new collection name',
-                inputNames: ['Collection name'],
-                buttons: [
-                    createButton({
-                        value: 'Done',
-                        onclick: function (panelObject) {
-                            createDatabase(panelObject.inputs[0].value);
-                            loadMenuButtons();
-                        }
-                    })
-                ],
-                owner: container
-            });
+            openNewCollectionAdder();
         }
     });
+    removeCollectionsButton = createButton({
+        value: 'Remove Selected Collections',
+        buttonClass: 'menu-generalButton menu-removeCollectionsButton',
+        owner: menu,
+        onclick: ()=>{
+            console.log(removeCollectionsSelector.selectedElements);
+            removeCollections(removeCollectionsSelector.selectedElements.map((x)=>{return x.innerText;}));
+        }
+    });
+    removeCollectionsButton.style.display = 'none';
+}
+
+let removeCollectionsSelector;
+function editCollectionsList(){ // Future feature
+    removeCollectionsSelector = new Selector({elements: menuButtons});
+    removeCollectionsSelector.start();
+    newCollectionButton.style.display = 'none';
+    removeCollectionsButton.style.display = 'block';
+}
+
+function stopEditCollectionsListMode(){
+    if (!removeCollectionsSelector) return;
+    ipcRenderer.send('stopEditCollectionsListMode');
+    removeCollectionsSelector.stop();
+    removeCollectionsSelector = undefined;
+    newCollectionButton.style.display = 'block';
+    removeCollectionsButton.style.display = 'none';
 }
 
 function load(){
@@ -639,11 +684,8 @@ function openDetailedMode() {
     });
 }
 
-function editCollectionsList(){ // Future feature
-    console.log('editCollectionsList');
-}
-
 function init() {
+    ipcRenderer.send('started');
     input.addEventListener('keydown', (event)=>{ // Responding to enter
         if (event.keyCode == '13') {
             if (input.value) process(input.value);
@@ -654,7 +696,9 @@ function init() {
     
     document.addEventListener('keyup', (event)=>{ // Responding to Esc button
         if (event.keyCode == '27') {
-            if (popup.runningPopup()) {
+            if (removeCollectionsSelector){
+                stopEditCollectionsListMode();
+            }else if (popup.runningPopup()) {
                 popup.removeRunningPopup();
             }
             else
@@ -665,7 +709,8 @@ function init() {
     ipcRenderer.on('edit-collections-list-clicked', ()=>{ // Will allow to remove collections in the future
         editCollectionsList();
     });
-
+    ipcRenderer.on('add-new-collection-clicked', openNewCollectionAdder);
+    ipcRenderer.on('back-to-menu-clicked', stopEditCollectionsListMode);
     table.parentElement.addEventListener('scroll', (event)=>{ // Scroll anchors
         if (table.parentElement.scrollTop+table.parentElement.clientHeight == table.parentElement.scrollHeight) tableScrollAnchor = 'bottom';
         else if (table.parentElement.scrollTop == 0) tableScrollAnchor = 'top';
@@ -678,5 +723,5 @@ function init() {
     loadMenu(); // Creating menu
 }
 
-init(); // Starting the program
+window.onload = init; // Starting the program
 
