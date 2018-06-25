@@ -160,7 +160,7 @@ function loadMenu(){
 }
 
 let removeCollectionsSelector;
-function editCollectionsList(){ // Future feature
+function editCollectionsList(){
     removeCollectionsSelector = new Selector({elements: menuButtons});
     removeCollectionsSelector.start();
     newCollectionButton.style.display = 'none';

@@ -59,24 +59,15 @@ let mainMenuTemplate = [
         submenu: [
             {
                 label: 'Toggle DevTools',
-                role: 'toggledevtools',
-                click: ()=>{
-                    console.log('reloading');
-                }
+                role: 'toggledevtools'
             },
             {
                 label: 'Reload',
-                role: 'reload',
-                click: ()=>{
-                    console.log('reloading');
-                }
+                role: 'reload'
             },
             {
                 label: 'Force Reload',
-                role: 'forceReload',
-                click: ()=>{
-                    console.log('reloading');
-                }
+                role: 'forceReload'
             }
         ]
     }
