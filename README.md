@@ -30,7 +30,7 @@ And we run `test* --+ added comments`, then we'll get this result.
 2. test2 -- some comments2; added comments
 3. test3 -- some comments3; added comments
 ```
-In the table `;`'s will be shown as multiple lines.
+In the table `;`s will be shown as multiple lines.
 ```
 test1 - 1. some comments1
         2. added comments
@@ -38,9 +38,9 @@ test1 - 1. some comments1
          
 Pharmony provides nice searching ability too.
 You can use these characters to find more correctly.
-`[A]&[B]` - if you want both A and B be in the result. For example `am&cillin` will give you some results which will contain `ampicillin`, because it contains both `am` and `cillin`.
-`[A]^[B]` - if you want A to be in result and B **not** to be in the result. You can use `!` instead of `^` too.
-`[A]|[B]` - if you want at least A or B to be in the result. 
+1. `[A]&[B]` - if you want both A and B be in the result. For example `am&cillin` will give you some results which will contain `ampicillin`, because it contains both `am` and `cillin`.
+2. `[A]^[B]` - if you want A to be in result and B **not** to be in the result. You can use `!` instead of `^` too.
+3. `[A]|[B]` - if you want at least A or B to be in the result. 
 All these searching tips can be used with commands to edit/remove multiple elements using `*`.
 
 After all this, you can even export to the docx file in two modes by settings button
