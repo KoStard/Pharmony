@@ -19,16 +19,22 @@ for example - `amoxiclav -- amoxicillin + clavulanic acid`
 2-5 commands can be run on multiple elements with `*`
 When using `*` after the `[block name]`, the program will search with that `[block name]` and do the command on all results.
 For example if we have
-`1. test1 -- some comments1
+```
+1. test1 -- some comments1
 2. test2 -- some comments2
-3. test3 -- some comments3`
+3. test3 -- some comments3
+```
 And we run `test* --+ added comments`, then we'll get this result.
-`1. test1 -- some comments1; added comments
+```
+1. test1 -- some comments1; added comments
 2. test2 -- some comments2; added comments
-3. test3 -- some comments3; added comments`
+3. test3 -- some comments3; added comments
+```
 In the table `;`'s will be shown as multiple lines.
-`test1 - 1. some comments1
-         2. added comments`
+```
+test1 - 1. some comments1
+         2. added comments
+```
          
 Pharmony provides nice searching ability too.
 You can use these characters to find more correctly.
