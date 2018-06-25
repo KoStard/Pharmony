@@ -48,6 +48,11 @@ After all this, you can even export to the docx file in two modes by settings bu
 2. Full export - when both the block name and description appear in the document
 3. Selective export - does full export of blocks which have description.
 
+You can add or delete collections.
+1. Adding collections - you can add collections by clicking the **New Collection** button or by clicking **Add new collection.** from the **Collections** of menu bar.
+2. Removing collections - you can remove collections by clicking the **Edit collections list.** from the **Collections** of menu bar, then selecting the collections you want to delete and then clicking the **Remove Selected Collections** button in the bottom (will appear when you click Edit collections list button).
+
+Running the program - for developers.
 Just use `npm start` to run the program. When running first time, you have to remove the `node_modules` folder and run `npm install` to let the program normally start (electron's main image can't be passed through github).
 Now as you see I have added some temp collections and now we'll add one together.
 <img width="912" alt="screen shot 2018-06-20 at 12 31 38" src="https://user-images.githubusercontent.com/30292877/41647145-9b8162f0-7486-11e8-96d3-9e519022d703.png">
