@@ -8,8 +8,8 @@ let win;
 function createWindow(){
     win = new BrowserWindow({width: 800, height: 600});
     ['started', 'stopEditCollectionsListMode'].forEach((x)=>{ipcMain.on(x, ()=>{
-        mainMenuTemplate[0].submenu[1].visible = true;
-        mainMenuTemplate[0].submenu[2].visible = false;
+        mainMenuTemplate[1].submenu[1].visible = true;
+        mainMenuTemplate[1].submenu[2].visible = false;
         Menu.setApplicationMenu(Menu.buildFromTemplate(mainMenuTemplate));
     });
     win.loadURL(url.format({
@@ -26,6 +26,48 @@ app.on('ready', createWindow);
 
 let mainMenuTemplate = [
     {
+        label: 'Electron',
+        submenu: [
+            {
+                label: 'Undo',
+                role: 'undo'
+            },{
+                label: 'Redo',
+                role: 'redo'
+            },{
+                label: 'Copy',
+                role: 'copy'
+            },{
+                label: 'Cut',
+                role: 'cut'
+            },{
+                label: 'Paste',
+                role: 'paste'
+            },{
+                label: 'SelectAll',
+                role: 'selectAll'
+            },{
+                label: 'Delete',
+                role: 'delete'
+            },{
+                label: 'Close',
+                role: 'close'
+            },{
+                label: 'Quit',
+                role: 'quit'
+            },{
+                label: 'ZoomIn',
+                role: 'zoomIn'
+            },{
+                label: 'ZoomOut',
+                role: 'zoomOut'
+            },{
+                label: 'Hide',
+                role: 'hide'
+            }
+        ]
+    },
+    {
         label: 'Collections',
         submenu: [
             {
@@ -37,8 +79,8 @@ let mainMenuTemplate = [
                 label: 'Edit collections list.',
                 visible: true,
                 click: ()=>{
-                    mainMenuTemplate[0].submenu[1].visible = false;
-                    mainMenuTemplate[0].submenu[2].visible = true;
+                    mainMenuTemplate[1].submenu[1].visible = false;
+                    mainMenuTemplate[1].submenu[2].visible = true;
                     Menu.setApplicationMenu(Menu.buildFromTemplate(mainMenuTemplate));
                     win.webContents.send('edit-collections-list-clicked');
                 }
@@ -46,8 +88,8 @@ let mainMenuTemplate = [
                 label: 'Back to menu.',
                 visible: false,
                 click: ()=>{
-                    mainMenuTemplate[0].submenu[1].visible = true;
-                    mainMenuTemplate[0].submenu[2].visible = false;
+                    mainMenuTemplate[1].submenu[1].visible = true;
+                    mainMenuTemplate[1].submenu[2].visible = false;
                     Menu.setApplicationMenu(Menu.buildFromTemplate(mainMenuTemplate));
                     win.webContents.send('back-to-menu-clicked');
                 }
