@@ -43,6 +43,10 @@ body {
     overflow: auto;
 }
 
+.table-lists {
+    margin: 0;
+}
+
 #input {
     outline: none;
 	font-family: inherit;

@@ -379,7 +379,15 @@ function show(IDnames) {
 
     let tempH = document.createElement('th');
     tempH.innerHTML = 'ID';
-    tempH.id = 'tableHeader-'+'ID';
+    tempH.id = 'tableHeader-ID';
+    headersRow.appendChild(tempH);
+    tempH = document.createElement('th');
+    tempH.innerHTML = 'Name';
+    tempH.id = 'tableHeader-Name';
+    headersRow.appendChild(tempH);
+    tempH = document.createElement('th');
+    tempH.innerHTML = 'Description';
+    tempH.id = 'tableHeader-Description';
     headersRow.appendChild(tempH);
 
     let keys = Object.keys(blocks);
@@ -388,28 +396,20 @@ function show(IDnames) {
         if (!IDname) continue;
         let [ID, name] = (typeof IDname == 'string'?[tempIndex++, IDname]:IDname);
         let tempRow = document.createElement('tr');
-        if ((assatemp = Object.keys(specialKeyWordBlockNames).filter(curr => name.match(new RegExp(curr+' - [\s\S]+')))).length > 0){
-            tempRow.innerHTML = specialKeyWordBlockNames[assatemp[0]].show(blocks[name].description);
-            table.appendChild(tempRow);
-            continue;
-        }
-        for (let attr in blocks[name]) {
-            if (!headers.has(attr)) {
-                let tempH = document.createElement('th');
-                tempH.innerHTML = attr;
-                tempH.id = 'tableHeader-'+attr;
-                headersRow.appendChild(tempH);
-                headers.add(attr);
-            }
-        }
         let tempD = document.createElement('td');
         tempD.innerHTML = ID;
         tempRow.appendChild(tempD);
-        headers.forEach((attr) => {
-            let tempD = document.createElement('td');
-            tempD.innerHTML = `${blocks[name][attr].split(';').map((elem, index, array)=>{return (array.length>1 && clearAdditionalSpaces(elem)[0]!='#'?index+1+'. ':'')+clearAdditionalSpaces(elem);}).join('<br>')}`;
-            tempRow.appendChild(tempD);
-        });
+        
+        tempD = document.createElement('td');
+        tempD.className = 'tableElement-Name';
+        tempD.innerHTML = blocks[name].name;
+        tempRow.appendChild(tempD);
+
+        tempD = document.createElement('td');
+        tempD.className = 'tableElement-Description';
+        tempD.innerHTML = `<ol class='table-lists'>${blocks[name].description.split(';').map((elem, index, array)=>{return (array.length>1?(clearAdditionalSpaces(elem)[0]!='#'?`<li>${clearAdditionalSpaces(elem)}</li>`:`<b>${clearAdditionalSpaces(elem).slice(1)}</b>`):`<div>${clearAdditionalSpaces(elem)}</div>`);}).join('')}</ol>`;
+        tempRow.appendChild(tempD);
+
         tempRow.addEventListener('dblclick', (event) => {
             input.value = `${blocks[name].name} -- ${blocks[name].description}`;
         });
