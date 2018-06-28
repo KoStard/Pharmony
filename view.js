@@ -407,7 +407,7 @@ function show(IDnames) {
 
         tempD = document.createElement('td');
         tempD.className = 'tableElement-Description';
-        tempD.innerHTML = `<ol class='table-lists'>${blocks[name].description.split(';').map((elem, index, array)=>{return (array.length>1?(clearAdditionalSpaces(elem)[0]!='#'?`<li>${clearAdditionalSpaces(elem)}</li>`:`<b>${clearAdditionalSpaces(elem).slice(1)}</b>`):`<div>${clearAdditionalSpaces(elem)}</div>`);}).join('')}</ol>`;
+        tempD.innerHTML = `<ol class='table-lists'>${blocks[name].description.split(';').map((elem, index, array)=>{return (array.length>1?(elem[0]!='#'?`<li>${elem}</li>`:`<b>${elem.slice(1)}</b>`):`<div>${elem}</div>`);}).join('')}</ol>`;
         tempRow.appendChild(tempD);
 
         tempRow.addEventListener('dblclick', (event) => {
