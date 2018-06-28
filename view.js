@@ -426,6 +426,10 @@ const specialSymbols = [
 ];
 function clearAdditionalSpaces(text){
     if (!text) return text;
+    let regex = new RegExp(`([^\\s${specialSymbols.join('').replace('\n', '\\n')}]+)([${specialSymbols.join('').replace('\n', '\\n')}]|)`, 'gm');
+    console.log(`([^\\s${specialSymbols.join('').replace('\n', '\\n')}]+)([${specialSymbols.join('').replace('\n', '\\n')}]|)`);
+    console.log(text);
+    console.log(text.match(regex));
     let lastWasSpace = true;
     let res = '';
     for (let i in text){
