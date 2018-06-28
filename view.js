@@ -316,7 +316,7 @@ function exportToDocx (config) {
             if (blocks[key].description.includes(';')) {
                 let lineIndex = 1;
                 for (let line of blocks[key].description.split(';')) {
-                    text = new docx.TextRun(`${lineIndex++}. ${clearAdditionalSpaces(line)}`);
+                    text = new docx.TextRun((clearAdditionalSpaces(line)[0]!='#'?`${lineIndex++}. `:'')+`${clearAdditionalSpaces(line)}`);
                     text.font('Segoe UI');
                     table.getCell(rowIndex, 1).addContent(new docx.Paragraph().addRun(text));
                 }
@@ -407,7 +407,7 @@ function show(IDnames) {
         tempRow.appendChild(tempD);
         headers.forEach((attr) => {
             let tempD = document.createElement('td');
-            tempD.innerHTML = `${blocks[name][attr].split(';').map((elem, index, array)=>{return (array.length>1?index+1+'. ':'')+clearAdditionalSpaces(elem);}).join('<br>')}`;
+            tempD.innerHTML = `${blocks[name][attr].split(';').map((elem, index, array)=>{return (array.length>1 && clearAdditionalSpaces(elem)[0]!='#'?index+1+'. ':'')+clearAdditionalSpaces(elem);}).join('<br>')}`;
             tempRow.appendChild(tempD);
         });
         tempRow.addEventListener('dblclick', (event) => {
