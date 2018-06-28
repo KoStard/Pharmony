@@ -517,6 +517,7 @@ let editBlock = popup.createResponsiveFunction({
             show(find(lastFind));
         }
     },
+    successLogic: ({ key, newValue })=>{return blocks[key] && blocks[key].description != newValue;},
     errorInfo: 'error'
 });
 

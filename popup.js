@@ -8,14 +8,15 @@ module.exports = {
     removeRunningPopup: () => { runningPopup.panelHolder.remove(); runningPopup=undefined; }
 };
 let runningPopup;
-function createResponsiveFunction({func, popupAlertPanel, startInfo, successInfo, errorInfo}) {
+function createResponsiveFunction({func, popupAlertPanel, startInfo, successInfo, successLogic, errorInfo}) {
     return (attrs)=>{
         if (startInfo) {
             new popupAlertPanel(startInfo);
         }
         try{
+            let successLogicResp = (successLogic?successLogic(attrs):true);
             if (func(attrs) === false) throw false;
-            if (successInfo) new popupAlertPanel(successInfo);
+            if (successInfo && successLogicResp) new popupAlertPanel(successInfo);
         } catch (err) {
             if (errorInfo == 'error') {
                 new popupAlertPanel({text:err});
