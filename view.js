@@ -681,6 +681,7 @@ function openDetailedMode() {
             })
         ],
         owner: container,
+        onclose: (panel)=>{input.value = `${panel.inputs[0].value} -- ${clearAdditionalSpaces(panel.inputs[1].value).replace(/;\n/g, ';').replace(/\n/g, ';')}`;}
     });
 }
 

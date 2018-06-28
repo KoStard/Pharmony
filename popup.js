@@ -46,13 +46,15 @@ function PopupAlertPanelSmall({ text, color, icon, parent, delay, onclick }) {
     }, delay);
 }
 
-function PopupBigPanelCentral(owner) {
+function PopupBigPanelCentral(owner, onclose) {
+    this.onclose = onclose;
     let panelHolder = document.createElement('div');
     panelHolder.className = 'popupBigPanelCentralHolder';
 
     let backgroundCover = document.createElement('div');
     backgroundCover.className = 'backgroundCover';
-    backgroundCover.onclick = function(){
+    backgroundCover.onclick = () => {
+        this.onclose && this.onclose();
         runningPopup = undefined;
         panelHolder.remove();
     };
@@ -68,7 +70,7 @@ function PopupBigPanelCentral(owner) {
     this.panel = panel;
 }
 
-function PopupInputPanelBigCentral({headerText, inputNames, finishFunction, buttons, owner}){
+function PopupInputPanelBigCentral({headerText, inputNames, finishFunction, buttons, owner, onclose}){
     this.args = arguments[0];
 
     let popupBigPanelCentral = new PopupBigPanelCentral(owner);
@@ -104,6 +106,7 @@ function PopupInputPanelBigCentral({headerText, inputNames, finishFunction, butt
         button.onclick = ()=>{tempFunc(this);};
         panel.appendChild(button);
     }
+    if (onclose) popupBigPanelCentral.onclose = ()=>{onclose(this);};
 
     this.panel = panel;
 
