@@ -665,7 +665,10 @@ function openDetailedMode() {
             })
         ],
         owner: container,
-        onclose: (panel)=>{input.value = `${panel.inputs[0].value} -- ${standardizeText(panel.inputs[1].value)}`;}
+        onclose: (panel)=>{
+            if (panel.inputs[0].value || standardizeText(panel.inputs[1].value))
+                input.value = `${panel.inputs[0].value} -- ${standardizeText(panel.inputs[1].value)}`;
+        }
     });
 }
 
@@ -689,6 +692,11 @@ function init() {
             else
                 toggleToMenu();
         }
+    });
+
+    input.addEventListener('keydown', (event)=>{
+        if (event.keyCode == 9)
+            openDetailedMode();
     });
 
     ipcRenderer.on('edit-collections-list-clicked', ()=>{ // Will allow to remove collections in the future
