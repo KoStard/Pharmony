@@ -606,7 +606,14 @@ let process = popup.createResponsiveFunction({
         let resp = inputSlicer(command);
         if (resp) {
             let [, name, key, newValue] = resp.map(x=>standardizeText(x));
-            keys[key](name, newValue);
+            if (name.includes(';')){
+                name = name.split(';');
+                for (let curr of name) {
+                    if (curr)
+                        keys[key](curr, newValue);
+                }
+            }else 
+                keys[key](name, newValue);
             save();
             if (lastFind){
                 if (changeFindTo) {
