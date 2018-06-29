@@ -420,11 +420,6 @@ function show(IDnames) {
     return true;
 }
 
-// const specialSymbols = [
-//     ';',
-//     '\n'
-// ];
-
 const specialSymbols = {
     '': ['^\\s+','\\s+$'],
     ';': [';\\n', ';\\r', '\\n', '\\r'],
