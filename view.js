@@ -152,7 +152,6 @@ function loadMenu(){
         buttonClass: 'menu-generalButton menu-removeCollectionsButton',
         owner: menu,
         onclick: ()=>{
-            console.log(removeCollectionsSelector.selectedElements);
             removeCollections(removeCollectionsSelector.selectedElements.map((x)=>{return x.innerText;}));
         }
     });
@@ -316,7 +315,8 @@ function exportToDocx (config) {
             if (blocks[key].description.includes(';')) {
                 let lineIndex = 1;
                 for (let line of blocks[key].description.split(';')) {
-                    text = new docx.TextRun((clearAdditionalSpaces(line)[0]!='#'?`${lineIndex++}. `:'')+`${clearAdditionalSpaces(line)}`);
+                    line = standardizeText(line);
+                    text = new docx.TextRun((line[0]!='#'?`${lineIndex++}. `:'')+`${line}`);
                     text.font('Segoe UI');
                     table.getCell(rowIndex, 1).addContent(new docx.Paragraph().addRun(text));
                 }
@@ -420,37 +420,24 @@ function show(IDnames) {
     return true;
 }
 
-const specialSymbols = [
-    ';',
-    '\n'
-];
-function clearAdditionalSpaces(text){
-    if (!text) return text;
-    let regex = new RegExp(`([^\\s${specialSymbols.join('').replace('\n', '\\n')}]+)([${specialSymbols.join('').replace('\n', '\\n')}]|)`, 'gm');
-    console.log(`([^\\s${specialSymbols.join('').replace('\n', '\\n')}]+)([${specialSymbols.join('').replace('\n', '\\n')}]|)`);
-    console.log(text);
-    console.log(text.match(regex));
-    let lastWasSpace = true;
-    let res = '';
-    for (let i in text){
-        if (text[i]==' ') {
-            if (lastWasSpace) continue;
-            else {
-                lastWasSpace = true;
-                res+=text[i];
-                continue;
-            }
+// const specialSymbols = [
+//     ';',
+//     '\n'
+// ];
+
+const specialSymbols = {
+    '': ['^\\s+','\\s+$'],
+    ';': [';\\n', ';\\r', '\\n', '\\r'],
+    ' ': ['\\s+']
+};
+
+function standardizeText(text) {
+    for (let symb in specialSymbols) {
+        for (let curr of specialSymbols[symb]){
+            text = text.replace(new RegExp(curr, 'g'), symb);
         }
-        if (specialSymbols.includes(text[i])){
-            if (lastWasSpace && res && !specialSymbols.includes(res[res.length-1])) {res = res.slice(0, res.length-1);}
-            lastWasSpace = true;
-        }else lastWasSpace = false;
-        res+=text[i];
     }
-    if (res[res.length-1] == ' '){
-        res = res.slice(0, res.length-1);
-    }
-    return res;
+    return text;
 }
 
 let commands = {
@@ -623,7 +610,7 @@ let process = popup.createResponsiveFunction({
     func: (command)=>{
         let resp = inputSlicer(command);
         if (resp) {
-            let [, name, key, newValue] = resp.map(x=>clearAdditionalSpaces(x));
+            let [, name, key, newValue] = resp.map(x=>standardizeText(x));
             keys[key](name, newValue);
             save();
             if (lastFind){
@@ -667,26 +654,23 @@ function openDetailedMode() {
         headerText: 'Editor',
         inputNames: ['Name', '*textDescription'],
         finishFunction: (panel) => {
-            if (!resp) resp = ['', input.value, '', ''];
-            let [glob, name, key, val] = resp;
-            name = clearAdditionalSpaces(name);
-            key = clearAdditionalSpaces(key);
-            val = clearAdditionalSpaces(val);
+            if (!resp) resp = ['', input.value, '', '']; else resp = resp.map(x=>standardizeText(x));
+            let [, name, key, val] = resp;
             let inputs = panel.inputs;
             inputs[0].value = name;
-            inputs[1].value = clearAdditionalSpaces(val.replace(/;/g, ';\n'));
+            inputs[1].value = val.split(';').map(x=>standardizeText(x)).join(';\n');
         },
         buttons: [
             createButton({
                 value: 'Done',
                 onclick: (panel) => {
-                    input.value = `${panel.inputs[0].value} -- ${clearAdditionalSpaces(panel.inputs[1].value).replace(/;\n/g, ';').replace(/\n/g, ';')}`;
+                    input.value = `${panel.inputs[0].value} -- ${standardizeText(panel.inputs[1].value)}`;
                     process(input.value);
                 }
             })
         ],
         owner: container,
-        onclose: (panel)=>{input.value = `${panel.inputs[0].value} -- ${clearAdditionalSpaces(panel.inputs[1].value).replace(/;\n/g, ';').replace(/\n/g, ';')}`;}
+        onclose: (panel)=>{input.value = `${panel.inputs[0].value} -- ${standardizeText(panel.inputs[1].value)}`;}
     });
 }
 
