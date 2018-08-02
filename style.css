@@ -1,10 +1,14 @@
-body {
-    /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
-    /* font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */
+html, body {
     background: #FAFAFA;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     color: #252529;
-    font-size: 15px;
+    font-size: 13px;
+}
+button {
+    font-size: inherit;
+}
+textarea, input {
+    font-size: 1.15em;
 }
 
 #container.menu #menu{display: block;}
@@ -18,6 +22,7 @@ body {
 
 #table {
     /* table-layout: fixed; */
+    font-size: 1.2em;
     width: 100%;
     word-wrap: break-word;
     border-spacing: 0px;
@@ -28,7 +33,12 @@ body {
     border-bottom: 1px solid rgb(167, 169, 170);
 }
 
-#tableHeader-name {
+#tableHeader-ID {
+    width: 5%;
+    max-width: 7%;
+}
+
+#tableHeader-Name {
     width: 30%;
 }
 
@@ -61,7 +71,6 @@ body {
     border: none;
     border-top: 1px solid rgb(167, 169, 170);
     border-bottom: 1px solid rgb(167, 169, 170);
-    font-size: 15px;
 }
 
 .panel-button {

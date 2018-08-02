@@ -650,18 +650,12 @@ let process = popup.createResponsiveFunction({
     popupAlertPanel: popup.PopupAlertPanelSmall
 });
 
-function openDetailedMode() {
-    let resp = inputSlicer(input.value);
-    new popup.PopupInputPanelBigCentral({ // Creating the editor window
+let Editor;
+    
+function initEditor(){
+    Editor = new popup.PopupInputPanelBigCentral({ // Creating the editor window
         headerText: 'Editor',
         inputNames: ['Name', '*textDescription'],
-        finishFunction: (panel) => {
-            if (!resp) resp = ['', input.value, '', '']; else resp = resp.map(x=>standardizeText(x));
-            let [, name, key, val] = resp;
-            let inputs = panel.inputs;
-            inputs[0].value = name;
-            inputs[1].value = val.split(';').map(x=>standardizeText(x)).join(';\n');
-        },
         buttons: [
             createButton({
                 value: 'Done',
@@ -672,11 +666,25 @@ function openDetailedMode() {
             })
         ],
         owner: container,
-        onclose: (panel)=>{
+        onclose: (panel) => {
             if (panel.inputs[0].value || standardizeText(panel.inputs[1].value))
                 input.value = `${panel.inputs[0].value} -- ${standardizeText(panel.inputs[1].value)}`;
-        }
+        },
+        initialState: "hidden"
     });
+}
+
+function openEditor() {
+    let resp = inputSlicer(input.value);
+    Editor.openingFunction = (panel) => {
+        if (!resp) resp = ['', input.value, '', ''];
+        else resp = resp.map(x => standardizeText(x));
+        let [, name, key, val] = resp;
+        let inputs = panel.inputs;
+        inputs[0].value = name;
+        inputs[1].value = val.split(';').map(x => standardizeText(x)).join(';\n');
+    };
+    Editor.show();
 }
 
 function init() {
@@ -686,6 +694,10 @@ function init() {
             if (input.value) process(input.value);
             else showDB();
             input.select();
+        }
+        else if (event.keyCode == 9) { // Responding to tab
+            event.preventDefault();
+            openEditor();
         }
     });
     
@@ -701,11 +713,6 @@ function init() {
         }
     });
 
-    input.addEventListener('keydown', (event)=>{
-        if (event.keyCode == 9)
-            openDetailedMode();
-    });
-
     ipcRenderer.on('edit-collections-list-clicked', ()=>{ // Will allow to remove collections in the future
         editCollectionsList();
     });
@@ -717,10 +724,11 @@ function init() {
         else tableScrollAnchor = undefined;
     });
     detailsButton.addEventListener('click', () => { // Opening editor when clicking to the button
-        openDetailedMode();
+        openEditor();
     });
     settingsCreator(); // Creating settings panel
     loadMenu(); // Creating menu
+    initEditor();
 }
 
 window.onload = init; // Starting the program
