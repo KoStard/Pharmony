@@ -97,6 +97,7 @@
 }
 
 .popup-standart {
+    margin-right: 3px;
     border: 2px solid #63a5e7;
     border-radius: 5px;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;

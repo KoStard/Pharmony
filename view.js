@@ -660,8 +660,18 @@ function initEditor(){
             createButton({
                 value: 'Done',
                 onclick: (panel) => {
-                    input.value = `${panel.inputs[0].value} -- ${standardizeText(panel.inputs[1].value)}`;
-                    process(input.value);
+                    if (panel.inputs[0].value || standardizeText(panel.inputs[1].value)) {
+                        input.value = `${panel.inputs[0].value} -- ${standardizeText(panel.inputs[1].value)}`;
+                        process(input.value);
+                    }
+                }
+            }),
+            createButton({
+                value: 'Erase',
+                onclick: (panel) => {
+                    for (let i = 0; i < panel.inputs.length; i++) {
+                        panel.inputs[i].value = "";
+                    }
                 }
             })
         ],
