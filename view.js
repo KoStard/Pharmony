@@ -582,20 +582,16 @@ function renameBlocks(name, newValue){
     if (name.endsWith('*')) throw "You can't use * in rename function";
     if (!newValue) throw 'Invalid newName';
     if (blocks[newValue]) throw 'Existing element with newName';
-    // blocks[newValue] = blocks[name];
-    // blocks[newValue].name = newValue;
-    // delete blocks[name];
     let keys = Object.keys(blocks);
-    let newBlocks = {};
+    let newBlocks = {}; // Creating new blocks dictionary and initializing it one by one
     for (let key of keys) {
-        if (key == name) {
+        if (key == name) { // Doing this to avoid rearrangement of elements
             newBlocks[newValue] = blocks[name];
             newBlocks[newValue].name = newValue;
         }else 
             newBlocks[key] = blocks[key];
     }
     blocks = newBlocks;
-    // changedBlockNames.push(newValue);
     changeFindTo = newValue;
 }
 
@@ -607,11 +603,11 @@ const keys = {
     '-->': renameBlocks // Renames the block
 };
 
-function inputSlicer(command){
+function inputSlicer(command){ // Will give you content from the input panel
     return command.match(/^((?:[^\n]+)(?:[^-]))(--(?:(?:\/)|(?:\+)|(?:-)|(?:\>)|(?:)))([^\n]*)$/);
 }
 
-let process = popup.createResponsiveFunction({
+let process = popup.createResponsiveFunction({ // creating responsive process method
     func: (command)=>{
         let resp = inputSlicer(command);
         if (resp) {
@@ -662,7 +658,7 @@ let process = popup.createResponsiveFunction({
 
 let Editor;
     
-function initEditor(){
+function initEditor(){ // Will initialize the editor window
     Editor = new popup.PopupInputPanelBigCentral({ // Creating the editor window
         headerText: 'Editor',
         inputNames: ['Name', '*textDescription'],
@@ -694,9 +690,9 @@ function initEditor(){
     });
 }
 
-function openEditor() {
+function openEditor() { // Will show the editor
     let resp = inputSlicer(input.value);
-    Editor.openingFunction = (panel) => {
+    Editor.openingFunction = (panel) => { // setting the editor content
         if (!resp) resp = ['', input.value, '', ''];
         else resp = resp.map(x => standardizeText(x));
         let [, name, key, val] = resp;
@@ -704,7 +700,7 @@ function openEditor() {
         inputs[0].value = name;
         inputs[1].value = val.split(';').map(x => standardizeText(x)).join(';\n');
     };
-    Editor.show();
+    Editor.show(); // opening the editor
 }
 
 function init() {
@@ -748,7 +744,7 @@ function init() {
     });
     settingsCreator(); // Creating settings panel
     loadMenu(); // Creating menu
-    initEditor();
+    initEditor(); // Initializing editor object once
 }
 
 window.onload = init; // Starting the program
