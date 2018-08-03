@@ -391,7 +391,6 @@ function show(IDnames) {
     tempH.id = 'tableHeader-Description';
     headersRow.appendChild(tempH);
 
-    let keys = Object.keys(blocks);
     let tempIndex = 1;
     for (let IDname of IDnames) {
         if (!IDname) continue;

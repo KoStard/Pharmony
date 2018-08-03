@@ -88,7 +88,7 @@ textarea, input {
     outline: none;
 }
 #details-button svg path{
-    transition: fill 0.3s;
+    transition: all 0.3s;
 }
 
 #details-button{
@@ -96,12 +96,9 @@ textarea, input {
     right: 30px;
 }
 
-#details-button:hover{
-    background: #aeaeb3;
-}
-
 #details-button:hover svg path{
-    stroke: #ffffff;
+    stroke-width: 1.5px;
+    stroke: #051b27;
 }
 
 #settings-button-dropdown {
@@ -121,7 +118,10 @@ textarea, input {
     position: absolute;
     top: 0;
     left: 0;
-    transition: fill 0.3s;
+}
+
+#settings-button svg path {
+    transition: all 0.3s;
 }
 
 .dropdown {
@@ -129,11 +129,12 @@ textarea, input {
 }
 
 .dropdown:hover #settings-button {
-    background: #aeaeb3;
+    /* background: #aeaeb3; */
 }
 
-.dropdown:hover #settings-button svg {
-    fill: white;
+.dropdown:hover #settings-button svg path{
+    stroke-width: 1px;
+    stroke: #051b27;
 }
 
 .dropdown:hover .dropdown-content {
