@@ -434,9 +434,7 @@ const specialSymbols = {
 
 function standardizeText(text) {
     for (let symb in specialSymbols) {
-        for (let curr of specialSymbols[symb]){
-            text = text.replace(new RegExp(curr, 'g'), symb);
-        }
+        text = text.replace(new RegExp(specialSymbols[symb].map((x) => `(${x})`).join("|"), 'g'), symb);
     }
     return text;
 }
