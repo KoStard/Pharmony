@@ -582,9 +582,19 @@ function renameBlocks(name, newValue){
     if (name.endsWith('*')) throw "You can't use * in rename function";
     if (!newValue) throw 'Invalid newName';
     if (blocks[newValue]) throw 'Existing element with newName';
-    blocks[newValue] = blocks[name];
-    blocks[newValue].name = newValue;
-    delete blocks[name];
+    // blocks[newValue] = blocks[name];
+    // blocks[newValue].name = newValue;
+    // delete blocks[name];
+    let keys = Object.keys(blocks);
+    let newBlocks = {};
+    for (let key of keys) {
+        if (key == name) {
+            newBlocks[newValue] = blocks[name];
+            newBlocks[newValue].name = newValue;
+        }else 
+            newBlocks[key] = blocks[key];
+    }
+    blocks = newBlocks;
     // changedBlockNames.push(newValue);
     changeFindTo = newValue;
 }
