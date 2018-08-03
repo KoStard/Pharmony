@@ -729,7 +729,8 @@ function init() {
         }
     });
 
-    ipcRenderer.on('edit-collections-list-clicked', ()=>{ // Will allow to remove collections in the future
+    ipcRenderer.on('edit-collections-list-clicked', () => { // Will allow to remove collections in the future
+        toggleToMenu();
         editCollectionsList();
     });
     ipcRenderer.on('add-new-collection-clicked', openNewCollectionAdder);

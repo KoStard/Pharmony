@@ -128,10 +128,6 @@ textarea, input {
     position: relative;
 }
 
-.dropdown:hover #settings-button {
-    /* background: #aeaeb3; */
-}
-
 .dropdown:hover #settings-button svg path{
     stroke-width: 1px;
     stroke: #051b27;
