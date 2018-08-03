@@ -5,7 +5,7 @@ module.exports = {
     PopupAlertPanelSmall: PopupAlertPanelSmall,
     PopupInputPanelBigCentral: PopupInputPanelBigCentral,
     runningPopup: () => { return runningPopup; },
-    removeRunningPopup: () => { if (runningPopup.hide) runningPopup.hide(); else runningPopup.panelHolder.remove(); runningPopup=undefined; }
+    removeRunningPopup: () => { runningPopup.close(); runningPopup=undefined; }
 };
 let runningPopup;
 function createResponsiveFunction({func, popupAlertPanel, startInfo, successInfo, successLogic, errorInfo}) {
@@ -47,7 +47,7 @@ function PopupAlertPanelSmall({ text, color, icon, parent, delay, onclick }) {
     }, delay);
 }
 
-function PopupBigPanelCentral(owner, onclose) {
+function PopupBigPanelCentral({ owner, onclose, buffered }) {
     this.onclose = onclose;
     let panelHolder = document.createElement('div');
     panelHolder.className = 'popupBigPanelCentralHolder';
@@ -64,13 +64,22 @@ function PopupBigPanelCentral(owner, onclose) {
 
     this.panelHolder = panelHolder;
     this.panel = panel;
-    this.hide = () => {
-        this.onclose && this.onclose();
-        runningPopup = undefined;
-        this.panelHolder.style.display = "none";
-    };
+    if (buffered)
+        this.hide = () => {
+            if (this.onclose) this.onclose();
+            runningPopup = undefined;
+            this.panelHolder.style.display = "none";
+        };
+    else {
+        this.exit = () => {
+            this.onclose && this.onclose();
+            runningPopup = undefined;
+            this.panelHolder.remove();
+        };
+    }
     backgroundCover.onclick = () => {
-        this.hide();
+        if (this.hide) this.hide();
+        else this.exit();
     };
 }
 
@@ -79,7 +88,7 @@ openingFunction, buffered = true}) {
     this.args = arguments[0];
     this.openingFunction = openingFunction;
 
-    this.popupBigPanelCentral = new PopupBigPanelCentral(owner);
+    this.popupBigPanelCentral = new PopupBigPanelCentral({ owner: owner, buffered: buffered });
     this.panelHolder = this.popupBigPanelCentral.panelHolder;
     this.panelHolder.classList.add('popupInputPanelBigCentral');
     let panel = this.popupBigPanelCentral.panel;
@@ -135,6 +144,15 @@ openingFunction, buffered = true}) {
         } else if (buttons.length > 0) {
             buttons[0].focus();
         }
+    };
+
+    this.exit = () => {
+        this.popupBigPanelCentral.close();
+    };
+
+    this.close = () => {
+        if (this.hide) this.hide();
+        else this.exit();
     };
 
     if (initialState == "hidden") {

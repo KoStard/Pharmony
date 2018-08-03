@@ -119,6 +119,12 @@ function openNewCollectionAdder(){
                     createDatabase(panelObject.inputs[0].value);
                     loadMenuButtons();
                 }
+            }),
+            createButton({
+                value: 'Close',
+                onclick: function (panelObject) {
+                    panelObject.close();
+                }
             })
         ],
         owner: container
@@ -412,8 +418,6 @@ function show(IDnames) {
             tempD.innerHTML = `<ol class='table-lists'>${descrBlocks.map((elem) => { return elem[0] != '#' ? `<li>${elem}</li>` : `<b>${elem.slice(1)}</b>`; }).join("")}</ol>`;
         else
             tempD.innerHTML = `<div class='table-element'>${descrBlocks[0]}</div>`;
-        
-        // tempD.innerHTML = `<ol class='table-lists'>${blocks[name].description.split(';').map((elem, index, array)=>{return (array.length>1?(elem[0]!='#'?`<li>${elem}</li>`:`<b>${elem.slice(1)}</b>`):`<div>${elem}</div>`);}).join('')}</ol>`;
         tempRow.appendChild(tempD);
 
         tempRow.addEventListener('dblclick', (event) => {
@@ -518,7 +522,6 @@ function createOrEditBlocks(name, newValue){
     if (name.endsWith('*')) {
         name = name.slice(0,name.length-1);
         find(name, false, false).forEach((value, index, array)=>{
-            // blocks[value].description = newValue;
             editBlock({key: value, newValue: newValue});
         });
     } else {
@@ -682,6 +685,12 @@ function initEditor(){ // Will initialize the editor window
                     for (let i = 0; i < panel.inputs.length; i++) {
                         panel.inputs[i].value = "";
                     }
+                }
+            }),
+            createButton({
+                value: 'Close',
+                onclick: (panel) => {
+                    panel.close();
                 }
             })
         ],

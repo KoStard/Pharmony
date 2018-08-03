@@ -2,7 +2,7 @@
 
 module.exports = Selector;
 
-function Selector({elements, selectedColor = '#D62839', unselectedColor = '#CCE6F4'}) {
+function Selector({elements, selectedColor = '#D62839', unselectedColor = 'rgb(178, 192, 199)'}) {
     this.elements = elements;
     this.selectedColor = selectedColor;
     this.unselectedColor = unselectedColor;
