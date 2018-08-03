@@ -43,7 +43,12 @@ function createButton({value, buttonClass, buttonID, onclick, owner}) {
     return newButton;
 }
 
-function settingsCreator(){
+function settingsCreator() {
+    createButton({
+        value: 'Examinate',
+        onclick: () => { startExamination(); },
+        owner: settingsDropdownContent
+    });
     createButton({
         value: 'Menu',
         onclick: ()=>{toggleToMenu();},
@@ -71,6 +76,7 @@ function settingsCreator(){
     });
 }
 
+// Menu stuff
 function menuButtonClicked(){
     runningDatabase = this.innerText;
     document.title = runningDatabase;
@@ -181,6 +187,7 @@ function stopEditCollectionsListMode(){
     removeCollectionsButton.style.display = 'none';
 }
 
+// Data manipulations
 function load(){
     blocks = {};
     let data = fs.readFileSync(databasesFolder+runningDatabase+'.txt').toString().split('\n');
@@ -216,6 +223,7 @@ function save(){
     fs.writeFile(databasesFolder+runningDatabase+'.txt', data, function(){});
 }
 
+// Table creation and finding
 function showDB() {
     tableScrollAnchor = 'bottom';
     lastFind = undefined;
@@ -284,6 +292,64 @@ function clearTable() {
     table.innerHTML = '';
 }
 
+let lastIDnames;
+function show(IDnames) {
+    changedBlockNames = [];
+    changeFindTo = undefined;
+    lastIDnames = IDnames;
+    clearTable();
+    let headersRow = document.createElement('tr');
+    headersRow.className = "headerRow";
+    table.appendChild(headersRow);
+    let headers = new Set();
+
+    let tempH = document.createElement('th');
+    tempH.innerHTML = 'ID';
+    tempH.id = 'tableHeader-ID';
+    headersRow.appendChild(tempH);
+    tempH = document.createElement('th');
+    tempH.innerHTML = 'Name';
+    tempH.id = 'tableHeader-Name';
+    headersRow.appendChild(tempH);
+    tempH = document.createElement('th');
+    tempH.innerHTML = 'Description';
+    tempH.id = 'tableHeader-Description';
+    headersRow.appendChild(tempH);
+
+    let tempIndex = 1;
+    for (let IDname of IDnames) {
+        if (!IDname) continue;
+        let [ID, name] = (typeof IDname == 'string' ? [tempIndex++, IDname] : IDname);
+        let tempRow = document.createElement('tr');
+        let tempD = document.createElement('td');
+        tempD.innerHTML = ID;
+        tempRow.appendChild(tempD);
+
+        tempD = document.createElement('td');
+        tempD.className = 'tableElement-Name';
+        tempD.innerHTML = blocks[name].name;
+        tempRow.appendChild(tempD);
+
+        tempD = document.createElement('td');
+        tempD.className = 'tableElement-Description';
+        let descrBlocks = blocks[name].description.split(";");
+        if (descrBlocks.length > 1)
+            tempD.innerHTML = `<ol class='table-lists'>${descrBlocks.map((elem) => { return elem[0] != '#' ? `<li>${elem}</li>` : `<b>${elem.slice(1)}</b>`; }).join("")}</ol>`;
+        else
+            tempD.innerHTML = `<div class='table-element'>${descrBlocks[0]}</div>`;
+        tempRow.appendChild(tempD);
+
+        tempRow.addEventListener('dblclick', (event) => {
+            input.value = `${blocks[name].name} -- ${blocks[name].description}`;
+        });
+        if (tempRow.innerHTML)
+            table.appendChild(tempRow);
+    }
+    refreshScrollLevel();
+    return true;
+}
+
+// Exporting content
 function getNotExistingName(info){
     let name = info.name, extension = info.extension;
     let tempName = name, index = 1;
@@ -373,63 +439,6 @@ function exporterFromInput(attr) {
     return true;
 }
 
-let lastIDnames;
-function show(IDnames) {
-    changedBlockNames = [];
-    changeFindTo = undefined;
-    lastIDnames = IDnames;
-    clearTable();
-    let headersRow = document.createElement('tr');
-    headersRow.className = "headerRow";
-    table.appendChild(headersRow);
-    let headers = new Set();
-
-    let tempH = document.createElement('th');
-    tempH.innerHTML = 'ID';
-    tempH.id = 'tableHeader-ID';
-    headersRow.appendChild(tempH);
-    tempH = document.createElement('th');
-    tempH.innerHTML = 'Name';
-    tempH.id = 'tableHeader-Name';
-    headersRow.appendChild(tempH);
-    tempH = document.createElement('th');
-    tempH.innerHTML = 'Description';
-    tempH.id = 'tableHeader-Description';
-    headersRow.appendChild(tempH);
-
-    let tempIndex = 1;
-    for (let IDname of IDnames) {
-        if (!IDname) continue;
-        let [ID, name] = (typeof IDname == 'string'?[tempIndex++, IDname]:IDname);
-        let tempRow = document.createElement('tr');
-        let tempD = document.createElement('td');
-        tempD.innerHTML = ID;
-        tempRow.appendChild(tempD);
-        
-        tempD = document.createElement('td');
-        tempD.className = 'tableElement-Name';
-        tempD.innerHTML = blocks[name].name;
-        tempRow.appendChild(tempD);
-
-        tempD = document.createElement('td');
-        tempD.className = 'tableElement-Description';
-        let descrBlocks = blocks[name].description.split(";");
-        if (descrBlocks.length > 1)
-            tempD.innerHTML = `<ol class='table-lists'>${descrBlocks.map((elem) => { return elem[0] != '#' ? `<li>${elem}</li>` : `<b>${elem.slice(1)}</b>`; }).join("")}</ol>`;
-        else
-            tempD.innerHTML = `<div class='table-element'>${descrBlocks[0]}</div>`;
-        tempRow.appendChild(tempD);
-
-        tempRow.addEventListener('dblclick', (event) => {
-            input.value = `${blocks[name].name} -- ${blocks[name].description}`;
-        });
-        if (tempRow.innerHTML)
-            table.appendChild(tempRow);
-    }
-    refreshScrollLevel();
-    return true;
-}
-
 const specialSymbols = {
     '': ['^\\s+','\\s+$'],
     ';': [';\\n', ';\\r', '\\n', '\\r'],
@@ -490,6 +499,7 @@ let specialKeyWordBlockNames = {
     }
 };
 
+// Block manipulations
 let lastKey;
 let lastEdit;
 let editBlock = popup.createResponsiveFunction({
@@ -663,8 +673,8 @@ let process = popup.createResponsiveFunction({ // creating responsive process me
     popupAlertPanel: popup.PopupAlertPanelSmall
 });
 
+// Editor stuff
 let Editor;
-    
 function initEditor(){ // Will initialize the editor window
     Editor = new popup.PopupInputPanelBigCentral({ // Creating the editor window
         headerText: 'Editor',
@@ -714,6 +724,11 @@ function openEditor() { // Will show the editor
         inputs[1].value = val.split(';').map(x => standardizeText(x)).join(';\n');
     };
     Editor.show(); // opening the editor
+}
+
+// Examination stuff
+function startExamination() {
+    
 }
 
 function init() {
