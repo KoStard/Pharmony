@@ -730,7 +730,7 @@ function init() {
     });
 
     ipcRenderer.on('edit-collections-list-clicked', () => { // Will allow to remove collections in the future
-        toggleToMenu();
+        toggleToMenu(); // If you are currently in the viewer, then this will toggle to the menu, to allow you edit collections list
         editCollectionsList();
     });
     ipcRenderer.on('add-new-collection-clicked', openNewCollectionAdder);
