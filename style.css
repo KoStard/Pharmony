@@ -62,6 +62,18 @@ textarea, input {
     margin: 0;
 }
 
+.table-lists li {
+    border-bottom: 1px solid rgb(167, 169, 170);
+}
+
+.table-lists li:last-child {
+    border: none;
+}
+
+.table-element {
+    padding-left: 20px;
+}
+
 #input {
     outline: none;
 	font-family: inherit;

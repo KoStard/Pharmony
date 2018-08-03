@@ -407,7 +407,13 @@ function show(IDnames) {
 
         tempD = document.createElement('td');
         tempD.className = 'tableElement-Description';
-        tempD.innerHTML = `<ol class='table-lists'>${blocks[name].description.split(';').map((elem, index, array)=>{return (array.length>1?(elem[0]!='#'?`<li>${elem}</li>`:`<b>${elem.slice(1)}</b>`):`<div>${elem}</div>`);}).join('')}</ol>`;
+        let descrBlocks = blocks[name].description.split(";");
+        if (descrBlocks.length > 1)
+            tempD.innerHTML = `<ol class='table-lists'>${descrBlocks.map((elem) => { return elem[0] != '#' ? `<li>${elem}</li>` : `<b>${elem.slice(1)}</b>`; }).join("")}</ol>`;
+        else
+            tempD.innerHTML = `<div class='table-element'>${descrBlocks[0]}</div>`;
+        
+        // tempD.innerHTML = `<ol class='table-lists'>${blocks[name].description.split(';').map((elem, index, array)=>{return (array.length>1?(elem[0]!='#'?`<li>${elem}</li>`:`<b>${elem.slice(1)}</b>`):`<div>${elem}</div>`);}).join('')}</ol>`;
         tempRow.appendChild(tempD);
 
         tempRow.addEventListener('dblclick', (event) => {
