@@ -29,6 +29,11 @@ textarea, input {
     border-collapse: collapse;
 }
 
+#table .headerRow {
+    background: #0075A2;
+    color: #EDF2F4;
+}
+
 #table tr {
     border-bottom: 1px solid rgb(167, 169, 170);
 }

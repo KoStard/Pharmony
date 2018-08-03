@@ -374,6 +374,7 @@ function show(IDnames) {
     lastIDnames = IDnames;
     clearTable();
     let headersRow = document.createElement('tr');
+    headersRow.className = "headerRow";
     table.appendChild(headersRow);
     let headers = new Set();
 

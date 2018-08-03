@@ -71,12 +71,12 @@ let mainMenuTemplate = [
         label: 'Collections',
         submenu: [
             {
-                label: 'Add new collection.',
+                label: 'Add new collection',
                 click: ()=>{
                     win.webContents.send('add-new-collection-clicked');
                 }
             },{
-                label: 'Edit collections list.',
+                label: 'Edit collections list',
                 visible: true,
                 click: ()=>{
                     mainMenuTemplate[1].submenu[1].visible = false;
@@ -85,7 +85,7 @@ let mainMenuTemplate = [
                     win.webContents.send('edit-collections-list-clicked');
                 }
             },{
-                label: 'Back to menu.',
+                label: 'Back to menu',
                 visible: false,
                 click: ()=>{
                     mainMenuTemplate[1].submenu[1].visible = true;
