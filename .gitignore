@@ -1,8 +1,8 @@
-Databases/LocalTest.txt
-Databases/Pathophysiology.txt
-Databases/Therapy ARM.txt
-Databases/Pharmacology.txt
-Databases/PharmTerms.txt
+Databases/LocalTest.json
+Databases/Pathophysiology.json
+Databases/Therapy ARM.json
+Databases/Pharmacology.json
+Databases/PharmTerms.json
 *.docx
 node_modules/*
 node_modules

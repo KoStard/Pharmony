@@ -95,13 +95,16 @@ function loadMenuButtons() {
     let files = fs.readdirSync(databasesFolder);
     files.forEach((file) => {
         let name = file.split('.');
+        let extension = name[name.length-1];
         name = name.slice(0, name.length - 1).join('.');
-        menuButtons.push(createButton({
-            value: name,
-            buttonClass: 'menu-databases-button',
-            owner: menuButtonContainer,
-            onclick: menuButtonClicked
-        }));
+        if (name && extension == 'json'){
+            menuButtons.push(createButton({
+                value: name,
+                buttonClass: 'menu-databases-button',
+                owner: menuButtonContainer,
+                onclick: menuButtonClicked
+            }));
+        }
     });
     menuButtons = menuButtons.filter(x=>x);
 }
@@ -141,7 +144,7 @@ function openNewCollectionAdder(){
 
 function removeCollections(names) {
     for (let name of names) {
-        fs.unlinkSync(databasesFolder+name+'.txt');
+        fs.unlinkSync(databasesFolder+name+'.json');
     }
     loadMenuButtons();
 }
@@ -191,22 +194,13 @@ function stopEditCollectionsListMode(){
 
 // Data manipulations
 function load(){
-    blocks = {};
-    let data = fs.readFileSync(databasesFolder+runningDatabase+'.txt').toString().split('\n');
-    for (let i of data) {
-        if (i){
-            let temp = JSON.parse(i);
-            if (temp.name){
-                blocks[temp.name] = temp;
-            }
-        }
-    }
+    blocks = JSON.parse(fs.readFileSync(databasesFolder+runningDatabase+'.json').toString());
 }
 
 let createDatabase = popup.createResponsiveFunction({
     func: function (name) {
         if (!name || name.length == '') throw 'Invalid input.';
-        if (!name.match(/[\s\S]\.txt/)) name += '.txt';
+        if (!name.match(/[\s\S]\.json/)) name += '.json';
         if (fs.existsSync(databasesFolder + name)) throw 'Existing name';
         fs.writeFileSync(databasesFolder + name, '');
     },
@@ -218,11 +212,7 @@ let createDatabase = popup.createResponsiveFunction({
 });
 
 function save(){
-    let data = '';
-    for (let name in blocks) {
-        data += JSON.stringify(blocks[name])+'\n';
-    }
-    fs.writeFile(databasesFolder+runningDatabase+'.txt', data, function(){});
+    fs.writeFile(databasesFolder+runningDatabase+'.json', JSON.stringify(blocks), function(){});
 }
 
 // Table creation and finding
@@ -329,7 +319,7 @@ function show(IDnames) {
 
         tempD = document.createElement('td');
         tempD.className = 'tableElement-Name';
-        tempD.innerHTML = blocks[name].name;
+        tempD.innerHTML = name;
         tempRow.appendChild(tempD);
 
         tempD = document.createElement('td');
@@ -342,7 +332,7 @@ function show(IDnames) {
         tempRow.appendChild(tempD);
 
         tempRow.addEventListener('dblclick', (event) => {
-            input.value = `${blocks[name].name} -- ${blocks[name].description}`;
+            input.value = `${name} -- ${blocks[name].description}`;
         });
         if (tempRow.innerHTML)
             table.appendChild(tempRow);
@@ -538,7 +528,7 @@ function createOrEditBlocks(name, newValue){
         });
     } else {
         if (blocks[name]) editBlock({key: name, newValue: newValue});
-        else {blocks[name] = {name: name, description: newValue}; changedBlockNames.push(name);}
+        else {blocks[name] = {description: newValue}; changedBlockNames.push(name);}
     }
 }
 
@@ -606,7 +596,6 @@ function renameBlocks(name, newValue){
     for (let key of keys) {
         if (key == name) { // Doing this to avoid rearrangement of elements
             newBlocks[newValue] = blocks[name];
-            newBlocks[newValue].name = newValue;
         }else 
             newBlocks[key] = blocks[key];
     }

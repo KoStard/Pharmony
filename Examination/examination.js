@@ -2,7 +2,7 @@
 module.exports = {
     start: start,
     stop: stop,
-    init: init,
+    init: init
 };
 
 let container = document.getElementById('container');
@@ -15,8 +15,12 @@ let examination = document.getElementById("examination");
 let blocks = "";
 
 const modes = {
-    'Standard Flashcards': ()=>{},
+    'Standard Flashcards': startStandardFlashcards,
 };
+
+function startStandardFlashcards(){
+
+}
 
 let createButton;
 function init(args){
