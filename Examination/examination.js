@@ -13,21 +13,13 @@ let examinationModeButtons = document.getElementById("examination-mode-buttons")
 let examination = document.getElementById("examination");
 
 
-let data = {};
+let data;
 
 let runningMode = '';
 const modes = {
     'Standard Flashcards': require('./standardFlashcards')
 };
 const {createButton} = require('./../Universals');
-
-function toggleToModeSelection(){
-    if (runningMode){
-        modes[runningMode].stop();
-        examination.innerHTML = '';
-        runningMode = '';
-    }
-}
 
 function loadModeButtons() {
     for (let element of examinationModes.childNodes){
@@ -40,7 +32,7 @@ function loadModeButtons() {
         createButton({
             value: key,
             buttonClass: 'examination-mode-button',
-            onclick: ()=>{modes[key].start(); runningMode = key;},
+            onclick: ()=>{container.className = 'examination';modes[key].start(data); runningMode = key;},
             owner: examinationModeButtons
         });
     }
@@ -56,6 +48,15 @@ function start(dataInput){
     container.className = 'examination-mode-selection';
     data = dataInput;
     loadModeButtons();
+}
+
+function toggleToModeSelection(){
+    if (runningMode){
+        modes[runningMode].stop();
+        container.className = 'examination-mode-selection';
+        examination.innerHTML = '';
+        runningMode = '';
+    }
 }
 
 function stop(){
