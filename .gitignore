@@ -4,3 +4,5 @@ Databases/Therapy ARM.txt
 Databases/Pharmacology.txt
 Databases/PharmTerms.txt
 *.docx
+node_modules/*
+node_modules
