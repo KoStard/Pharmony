@@ -12,7 +12,7 @@ let examinationModeButtons = document.getElementById("examination-mode-buttons")
 let examination = document.getElementById("examination");
 
 
-let blocks = "";
+let data = {};
 
 const modes = {
     'Standard Flashcards': startStandardFlashcards,
@@ -50,9 +50,9 @@ function loadModeButtons() {
     });
 }
 
-function start(blocksInput){
+function start(dataInput){
     container.className = 'examination';
-    blocks = blocksInput;
+    data = dataInput;
     loadModeButtons();
 }
 
