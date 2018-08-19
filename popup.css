@@ -1,6 +1,12 @@
 .popupAlertPanelSmall {
+    /* display: inline-block; */
     padding: 15px 10px;
-    outline: none;
+    background: #166088;
+    color: white;
+    border: none;
+    border-radius: 0;
+
+    /* padding: 15px 10px; */
     position: fixed;
     right: 30px;
     bottom: 25px;
@@ -8,8 +14,8 @@
     min-width: max-content;
     max-width: 400px;
     max-height: 200px;
-    border-radius: 15px;
-    border: 1px solid gray;
+    /* border-radius: 15px;
+    border: 1px solid gray; */
     font-weight: bold;
     z-index: 1;
 }
@@ -50,10 +56,13 @@
     box-sizing: border-box;
 }
 
+* {
+    outline: none;
+}
+
 .popupBigPanelCentral * {
     margin: 3px 0;
     transition: all 0.2s;
-    outline: none;
     box-sizing: border-box;
 }
 

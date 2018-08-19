@@ -30,7 +30,7 @@ function createResponsiveFunction({func, popupAlertPanel, startInfo, successInfo
 function PopupAlertPanelSmall({ text, color, icon, parent, delay, onclick }) {
     if (!parent) parent = document.body;
     if (!delay) delay = 2000;
-    if (!color) color = '#fff';
+    // if (!color) color = '#fff';
     let oldPanels = document.getElementsByClassName('popupAlertPanelSmall');
     for (let oldPanel of oldPanels) {
         oldPanel.remove();
@@ -38,7 +38,7 @@ function PopupAlertPanelSmall({ text, color, icon, parent, delay, onclick }) {
     let panel = document.createElement('div');
     panel.className = 'popupAlertPanelSmall';
     panel.innerHTML = `<p>${text}</p>`;
-    panel.style.backgroundColor = color;
+    if (color) panel.style.backgroundColor = color;
     if (onclick) {panel.onclick = onclick; panel.style.cursor = 'pointer';}
     parent.appendChild(panel);
     this.panel = panel;
