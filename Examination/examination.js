@@ -19,17 +19,14 @@ let runningMode = '';
 const modes = {
     'Standard Flashcards': require('./standardFlashcards')
 };
+const {createButton} = require('./../Universals');
 
 function toggleToModeSelection(){
     if (runningMode){
         modes[runningMode].stop();
         examination.innerHTML = '';
+        runningMode = '';
     }
-}
-
-let createButton;
-function init(args){
-    createButton = args.createButton;
 }
 
 function loadModeButtons() {

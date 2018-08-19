@@ -6,6 +6,7 @@ const launch = require('./launchFiles');
 const {ipcRenderer} = require('electron');
 const Selector = require('./selector');
 const Examination = require('./Examination/examination');
+const {createButton} = require('./Universals');
 
 let data = {};
 let blocks = {};
@@ -30,20 +31,7 @@ function refreshScrollLevel(){
     }
 }
 
-function createButton({value, buttonClass, buttonID, onclick, owner}) {
-    if (!value) {
-        return false;
-    }
-    let newButton = document.createElement('button');
-    newButton.innerText = value;
-    if (buttonClass) newButton.className = buttonClass;
-    if (buttonID) newButton.id = buttonID;
-    if (onclick) newButton.onclick = onclick;
-    if (owner) {
-        owner.appendChild(newButton);
-    }
-    return newButton;
-}
+
 
 function settingsCreator() {
     createButton({
@@ -200,10 +188,6 @@ function load(){
     blocks = data.blocks;
 }
 
-function convertToNewFormat(){
-    data = {blocks: blocks};
-}
-
 function save(){
     fs.writeFile(databasesFolder+runningDatabase+'.json', JSON.stringify(data), function(){});
 }
@@ -275,16 +259,6 @@ function find(rawArg, mark=true, indices = true) {
             res.push(name);
     }
     return res;
-}
-
-function checkIfLastFindIncludesThese(names) {
-    let lastFindRes = find(lastFind, mark=false, indices = false);
-    for (let name of names) {
-        if (!lastFindRes.includes(name)) {
-            return false;
-        }
-    }
-    return true;
 }
 
 function clearTable() {
@@ -754,9 +728,6 @@ function init() {
     settingsCreator(); // Creating settings panel
     loadMenu(); // Creating menu
     initEditor(); // Initializing editor object once
-    Examination.init({
-        createButton: createButton
-    });
 }
 
 window.onload = init; // Starting the program
