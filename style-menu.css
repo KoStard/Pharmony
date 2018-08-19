@@ -12,15 +12,16 @@ body {
     right: 0;
 }
 
-#menu {
+#menu, #examination-modes {
     margin: auto;
-    display: block;
+    display: none;
     position: absolute;
     height: 100%;
     width: 100%;
 }
 
-#menu-buttonContainer {
+#menu-buttonContainer, #examination-mode-buttons {
+    display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-content: flex-start;
@@ -30,7 +31,7 @@ body {
     bottom: 40px;
 }
 
-#menu button {
+#menu button, #examination-modes button {
     font-weight: bold;
     /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
     font-family: inherit;
@@ -38,7 +39,7 @@ body {
     outline: none;
 }
 
-#menu .menu-databases-button{
+#menu .menu-databases-button, #examination-modes .examination-mode-button{
     background: #166088;
     border: none;
     box-shadow: 0px 3px 10px -4px black;
@@ -51,18 +52,18 @@ body {
     height: 40px;
 }
 
-#menu .menu-databases-button:hover {
+#menu .menu-databases-button:hover , #examination-modes .examination-mode-button:hover{
     background: hsla(201, 72%, 19%, 1);
     box-shadow: 0px 5px 15px -3px black;
     width: 205px;
     position: relative;
 }
 
-#menu .menu-databases-button:active {
+#menu .menu-databases-button:active , #examination-modes .examination-mode-button:active{
     background: hsl(205, 57%, 68%);
 }
 
-.menu-generalButton {
+.menu-generalButton, .examination-mode-close-button{
     background: #ecebf0;
     color: #4D5382;
     display: block;
@@ -76,15 +77,15 @@ body {
     border: none;
 }
 
-.menu-generalButton:hover {
+.menu-generalButton:hover, .examination-mode-close-button:hover{
     width: 95%;
 }
 
-.menu-generalButton:active {
+.menu-generalButton:active, .examination-mode-close-button:active{
     width: 100%;
 }
 
-.menu-newCollectionButton:hover{
+.menu-newCollectionButton:hover, .examination-mode-close-button:hover{
     background: #3772FF;
     color: azure;
 }

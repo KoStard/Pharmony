@@ -11,14 +11,15 @@ textarea, input {
     font-size: 1.15em;
 }
 
-#container.menu #menu{display: block;}
-#container.menu #menu-buttonContainer{display: flex;}
-#container.menu #tableHolder{display: none;}
-#container.menu #panel{display: none;}
+#container>* {display: none;}
 
-#container.main #menu{display: none;}
+#container.menu #menu{display: block;}
+
 #container.main #tableHolder{display: block;}
 #container.main #panel{display: block;}
+
+#container.examination #examination-container{display: block;}
+#container.examination #examination-modes{display: block;}
 
 #table {
     /* table-layout: fixed; */

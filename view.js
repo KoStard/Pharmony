@@ -1,10 +1,11 @@
 /* jshint esversion: 6 */
-let fs = require('fs');
-let docx = require('docx');
-let popup = require('./popup');
-let launch = require('./launchFiles');
-let {ipcRenderer} = require('electron');
-let Selector = require('./selector');
+const fs = require('fs');
+const docx = require('docx');
+const popup = require('./popup');
+const launch = require('./launchFiles');
+const {ipcRenderer} = require('electron');
+const Selector = require('./selector');
+const Examination = require('./examination');
 
 let blocks = {};
 const databasesFolder = 'Databases/';
@@ -110,6 +111,7 @@ function toggleToMain(){
 }
 
 function toggleToMenu(){
+    clearTable();
     document.title = 'Pharmony';
     container.className = 'menu';
 }
@@ -728,7 +730,9 @@ function openEditor() { // Will show the editor
 
 // Examination stuff
 function startExamination() {
-    
+    clearTable();
+    Examination.start(blocks);
+    show(lastIDnames);
 }
 
 function init() {
@@ -774,6 +778,9 @@ function init() {
     settingsCreator(); // Creating settings panel
     loadMenu(); // Creating menu
     initEditor(); // Initializing editor object once
+    Examination.init({
+        createButton: createButton
+    });
 }
 
 window.onload = init; // Starting the program
