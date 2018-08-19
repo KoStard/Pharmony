@@ -7,6 +7,7 @@ const {ipcRenderer} = require('electron');
 const Selector = require('./selector');
 const Examination = require('./Examination/examination');
 
+let data = {};
 let blocks = {};
 const databasesFolder = 'Databases/';
 let runningDatabase = '';
@@ -104,6 +105,7 @@ function loadMenuButtons() {
                 owner: menuButtonContainer,
                 onclick: menuButtonClicked
             }));
+            runningDatabase = name;
         }
     });
     menuButtons = menuButtons.filter(x=>x);
@@ -194,7 +196,16 @@ function stopEditCollectionsListMode(){
 
 // Data manipulations
 function load(){
-    blocks = JSON.parse(fs.readFileSync(databasesFolder+runningDatabase+'.json').toString());
+    data = JSON.parse(fs.readFileSync(databasesFolder+runningDatabase+'.json').toString());
+    blocks = data.blocks;
+}
+
+function convertToNewFormat(){
+    data = {blocks: blocks};
+}
+
+function save(){
+    fs.writeFile(databasesFolder+runningDatabase+'.json', JSON.stringify(data), function(){});
 }
 
 let createDatabase = popup.createResponsiveFunction({
@@ -210,10 +221,6 @@ let createDatabase = popup.createResponsiveFunction({
         text: 'Done.'
     }
 });
-
-function save(){
-    fs.writeFile(databasesFolder+runningDatabase+'.json', JSON.stringify(blocks), function(){});
-}
 
 // Table creation and finding
 function showDB() {
@@ -565,7 +572,8 @@ function renameBlocks(name, newValue){
         }else 
             newBlocks[key] = blocks[key];
     }
-    blocks = newBlocks;
+    data.blocks = newBlocks;
+    blocks = data.blocks;
     changeFindTo = newValue;
 }
 
