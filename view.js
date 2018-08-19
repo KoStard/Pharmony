@@ -694,7 +694,7 @@ function openEditor() { // Will show the editor
 // Examination stuff
 function startExamination() {
     clearTable();
-    Examination.start(blocks);
+    Examination.start(data);
     show(lastIDnames);
 }
 
@@ -722,6 +722,9 @@ function init() {
             else {
                 switch (container.className){
                     case 'examination':
+                    Examination.toggleToModeSelection();
+                    break;
+                    case 'examination-mode-selection':
                     Examination.stop();
                     break;
                     case 'main':

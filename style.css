@@ -18,8 +18,10 @@ textarea, input {
 #container.main #tableHolder{display: block;}
 #container.main #panel{display: block;}
 
+#container.examination-mode-selection #examination-container{display: block;}
+#container.examination-mode-selection #examination-modes{display: block;}
+
 #container.examination #examination-container{display: block;}
-#container.examination #examination-modes{display: block;}
 
 #table {
     /* table-layout: fixed; */

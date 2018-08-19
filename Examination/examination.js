@@ -2,7 +2,8 @@
 module.exports = {
     start: start,
     stop: stop,
-    init: init
+    init: init,
+    toggleToModeSelection: toggleToModeSelection
 };
 
 let container = document.getElementById('container');
@@ -14,12 +15,16 @@ let examination = document.getElementById("examination");
 
 let data = {};
 
+let runningMode = '';
 const modes = {
-    'Standard Flashcards': startStandardFlashcards,
+    'Standard Flashcards': require('./standardFlashcards')
 };
 
-function startStandardFlashcards(){
-
+function toggleToModeSelection(){
+    if (runningMode){
+        modes[runningMode].stop();
+        examination.innerHTML = '';
+    }
 }
 
 let createButton;
@@ -38,7 +43,7 @@ function loadModeButtons() {
         createButton({
             value: key,
             buttonClass: 'examination-mode-button',
-            onclick: modes[key],
+            onclick: ()=>{modes[key].start(); runningMode = key;},
             owner: examinationModeButtons
         });
     }
@@ -51,7 +56,7 @@ function loadModeButtons() {
 }
 
 function start(dataInput){
-    container.className = 'examination';
+    container.className = 'examination-mode-selection';
     data = dataInput;
     loadModeButtons();
 }
