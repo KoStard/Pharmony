@@ -9,7 +9,7 @@ const Examination = require('./Examination/examination');
 
 let blocks = {};
 const databasesFolder = 'Databases/';
-let runningDatabase = 'Pharmacology';
+let runningDatabase = '';
 let container = document.getElementById('container');
 let menu = document.getElementById('menu');
 let menuButtonContainer = document.getElementById('menu-buttonContainer');
@@ -412,25 +412,6 @@ let responsiveExport = popup.createResponsiveFunction({
     popupAlertPanel: popup.PopupAlertPanelSmall
 });
 
-function exporterFromInput(attr) {
-    let [glob, name, extension] = attr.match(/^(?:(?:to|as) ([^.\n]+)(?:(\.\w+)|)|)$/);
-    if (glob==undefined) {
-        return false;
-    }
-    if (!name) name = runningDatabase+' - export';
-    if (!extension) extension = '.txt';
-    let info = getNotExistingName({name: name, extension: extension});
-    name = info.name;
-    extension = info.extension;
-    let data = '';
-    for (let block in blocks) {
-        if (block)
-            data += block+"\n";
-    }
-    fs.writeFileSync(name+extension, data);
-    return true;
-}
-
 const specialSymbols = {
     '': ['^\\s+','\\s+$'],
     ';': [';\\n', ';\\r', '\\n', '\\r'],
@@ -443,21 +424,6 @@ function standardizeText(text) {
     }
     return text;
 }
-
-let commands = {
-    show: popup.createResponsiveFunction({
-        func: showDB,
-        popupAlertPanel: popup.PopupAlertPanelSmall,
-        successInfo: {text: 'Done.'},
-        errorInfo: {text: 'Error.'}
-    }),
-    export: popup.createResponsiveFunction({
-        func: exporterFromInput,
-        popupAlertPanel: popup.PopupAlertPanelSmall,
-        successInfo: {text: 'Done.'},
-        errorInfo: {text: 'Error.'}
-    })
-};
 
 let specialKeyWordBlockNames = {
     checkpoint: {
