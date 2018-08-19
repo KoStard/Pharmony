@@ -5,7 +5,7 @@ const popup = require('./popup');
 const launch = require('./launchFiles');
 const {ipcRenderer} = require('electron');
 const Selector = require('./selector');
-const Examination = require('./examination');
+const Examination = require('./Examination/examination');
 
 let blocks = {};
 const databasesFolder = 'Databases/';
