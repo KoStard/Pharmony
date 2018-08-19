@@ -756,8 +756,18 @@ function init() {
             }else if (popup.runningPopup()) {
                 popup.removeRunningPopup();
             }
-            else
-                toggleToMenu();
+            else {
+                switch (container.className){
+                    case 'examination':
+                    Examination.stop();
+                    break;
+                    case 'main':
+                    toggleToMenu();
+                    break;
+                    case 'menu':
+                    break;
+                }
+            }
         }
     });
 
