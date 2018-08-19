@@ -5,6 +5,7 @@ module.exports = {
 };
 
 const {createButton} = require('./../Universals');
+const examinationUniversals = require('./examinationUniversals');
 
 let container = document.getElementById('container');
 let examinationContainer = document.getElementById("examination-container");
@@ -16,4 +17,5 @@ function start(dataInput){
 }
 
 function stop(){
+    examinationUniversals.clearExamination(examination);
 }
