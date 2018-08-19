@@ -1,0 +1,28 @@
+.examination-button {
+    transition: all 0.5s cubic-bezier();
+    position: absolute;
+    padding: 0;
+}
+
+#examination-settings-button-container {
+    top: 16px;
+    right: 16px;
+}
+
+#examination-settings-button {
+    position: absolute;
+    padding: 0;
+    right: 0;
+    border: none;
+    width: 32px;
+    height: 32px;
+    background: none;
+}
+
+#examination-settings-button:hover svg .st0{
+    stroke-width: 2.3px;
+}
+
+#examination-settings-button-container .dropdown-content {
+    top: 32px;
+}

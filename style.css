@@ -12,6 +12,7 @@ textarea, input {
 }
 
 #container>* {display: none;}
+#examination {display: none;}
 
 #container.menu #menu{display: block;}
 
@@ -22,6 +23,7 @@ textarea, input {
 #container.examination-mode-selection #examination-modes{display: block;}
 
 #container.examination #examination-container{display: block;}
+#container.examination #examination{display: block;}
 
 #table {
     /* table-layout: fixed; */
@@ -102,9 +104,6 @@ textarea, input {
     background: none;
     outline: none;
 }
-#details-button svg path{
-    transition: all 0.3s;
-}
 
 #details-button{
     top: 5px;
@@ -133,10 +132,6 @@ textarea, input {
     position: absolute;
     top: 0;
     left: 0;
-}
-
-#settings-button svg path {
-    transition: all 0.3s;
 }
 
 .dropdown {

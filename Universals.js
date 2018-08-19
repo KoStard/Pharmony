@@ -1,4 +1,8 @@
 /* jshint esversion: 6 */
+module.exports = {
+    createButton: createButton
+};
+
 function createButton({value, buttonClass, buttonID, onclick, owner}) {
     if (!value) {
         return false;

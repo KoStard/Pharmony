@@ -16,6 +16,7 @@ let examination = document.getElementById("examination");
 let data;
 
 let runningMode = '';
+// Examination modes
 const modes = {
     'Standard Flashcards': require('./standardFlashcards')
 };
