@@ -25,7 +25,8 @@ textarea, input {
 #container.examination #examination-container{display: block;}
 #container.examination #examination{display: block;}
 
-#table {
+/* #table { */
+table {
     /* table-layout: fixed; */
     font-size: 1.2em;
     width: 100%;
@@ -34,12 +35,12 @@ textarea, input {
     border-collapse: collapse;
 }
 
-#table .headerRow {
+table .headerRow {
     background: #0075A2;
     color: #EDF2F4;
 }
 
-#table tr {
+table tr {
     border-bottom: 1px solid rgb(167, 169, 170);
 }
 

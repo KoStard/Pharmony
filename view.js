@@ -274,7 +274,6 @@ function show(IDnames) {
     let headersRow = document.createElement('tr');
     headersRow.className = "headerRow";
     table.appendChild(headersRow);
-    let headers = new Set();
 
     let tempH = document.createElement('th');
     tempH.innerHTML = 'ID';

@@ -10,6 +10,7 @@
 }
 
 #examination-settings-button {
+    display: none;
     position: absolute;
     padding: 0;
     right: 0;
