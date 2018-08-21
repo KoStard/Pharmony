@@ -20,6 +20,7 @@ let input = document.getElementById('input');
 let settingsDropdownContent = document.getElementById('settings-dropdown-content');
 let detailsButton = document.getElementById('details-button');
 let newCollectionButton, removeCollectionsButton;
+const examination = document.getElementById('examination');
 
 let tableScrollAnchor = 'bottom';
 
@@ -673,40 +674,53 @@ function startExamination() {
 
 function init() {
     ipcRenderer.send('started');
-    input.addEventListener('keydown', (event)=>{ // Responding to enter
-        if (event.keyCode == '13') {
+    input.addEventListener('keydown', (event)=>{ 
+        switch (event.keyCode) {
+        case 13: // Responding to enter
             if (input.value) process(input.value);
             else showDB();
             input.select();
-        }
-        else if (event.keyCode == 9) { // Responding to tab
+            break;
+        case 9: // Responding to tab
             event.preventDefault();
             openEditor();
+            break;
         }
     });
     
-    document.addEventListener('keyup', (event)=>{ // Responding to Esc button
-        if (event.keyCode == '27') {
-            if (removeCollectionsSelector){
-                stopEditCollectionsListMode();
-            }else if (popup.runningPopup()) {
-                popup.removeRunningPopup();
-            }
-            else {
-                switch (container.className){
-                    case 'examination':
-                    Examination.toggleToModeSelection();
-                    break;
-                    case 'examination-mode-selection':
-                    Examination.stop();
-                    break;
-                    case 'main':
-                    toggleToMenu();
-                    break;
-                    case 'menu':
-                    break;
+    document.addEventListener('keyup', (event)=>{ 
+        switch (event.keyCode) {
+            case 32: // Responding to space keyup
+                const flashcards = examination.getElementsByClassName('flashcard');
+                if (flashcards) {
+                    const flashcard = flashcards[0];
+                    if (flashcard.className == 'flashcard front')
+                        flashcard.className = 'flashcard both';
+                    else
+                        Examination.getRunningExamination().next();
                 }
-            }
+                break;
+            case 27: // Responding to Esc button
+                if (removeCollectionsSelector){
+                    stopEditCollectionsListMode();
+                }else if (popup.runningPopup()) {
+                    popup.removeRunningPopup();
+                }
+                else {
+                    switch (container.className){
+                        case 'examination':
+                        Examination.toggleToModeSelection();
+                        break;
+                        case 'examination-mode-selection':
+                        Examination.stop();
+                        break;
+                        case 'main':
+                        toggleToMenu();
+                        break;
+                        case 'menu':
+                        break;
+                    }
+                }
         }
     });
 

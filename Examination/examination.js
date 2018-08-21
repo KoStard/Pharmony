@@ -3,7 +3,8 @@ module.exports = {
     start: start,
     stop: stop,
     init: init,
-    toggleToModeSelection: toggleToModeSelection
+    toggleToModeSelection: toggleToModeSelection,
+    getRunningExamination: getRunningExamination,
 };
 
 let container = document.getElementById('container');
@@ -57,6 +58,12 @@ function toggleToModeSelection(){
         container.className = 'examination-mode-selection';
         examination.innerHTML = '';
         runningMode = '';
+    }
+}
+
+function getRunningExamination() {
+    if (runningMode) {
+        return modes[runningMode];
     }
 }
 

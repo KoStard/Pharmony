@@ -1,7 +1,8 @@
 /* jshint esversion: 6 */
 module.exports = {
     start: start,
-    stop: stop
+    stop: stop,
+    next: next
 };
 
 const {createButton} = require('./../Universals');
@@ -13,6 +14,7 @@ const examinationContainer = document.getElementById("examination-container");
 const examination = document.getElementById("examination");
 let data;
 
+let sequence;
 function createTable(sequence) {
     const table = document.createElement('table');
     for (let blockName of sequence) {
@@ -30,10 +32,7 @@ const shuffleArray = arr => arr
   .sort((a, b) => a[0] - b[0])
   .map(a => a[1]);
 
-function start(dataInput){
-    examinationUniversals.clearExamination();
-    data = dataInput;
-    let sequence = Object.keys(data.blocks);
+function createIntroductoryScreen(){
     table = createTable(sequence);
     examinationUniversals.createIntroductoryScreen({
         content: table,
@@ -43,7 +42,7 @@ function start(dataInput){
                 buttonClass: 'popup-standart popup-button',
                 onclick: ()=>{
                     examinationUniversals.clearExamination();
-                    main(sequence);
+                    main();
                 }
             }),
             createButton({
@@ -73,10 +72,60 @@ function start(dataInput){
     });
 }
 
-function main(sequence) {
-    console.log(sequence);
+function start(dataInput){
+    examinationUniversals.clearExamination();
+    data = dataInput;
+    sequence = Object.keys(data.blocks)
+    createIntroductoryScreen();
+}
+
+let flashcard;
+function main() {
+    examinationUniversals.turnOnExaminationSettingsButton();
+    flashcard = runFlashcard(sequence);
+    flashcard.next();
+}
+
+let done = false;
+function next() {
+    if(!done && flashcard.next().done){
+        finish();
+    }
+}
+
+function finish(){
+    done = true;
+    examinationUniversals.clearExamination();
+    createIntroductoryScreen(sequence);
+}
+
+function* runFlashcard(sequence) {
+    done = false;
+    for (let name of sequence){
+        yield createFlashcard(name, data.blocks[name].description);
+    }
+}
+
+function createFlashcard(front, back) {
+    examinationUniversals.clearExamination();
+    const flashcardNode = document.createElement('div');
+    flashcardNode.className = 'flashcard front';
+    const frontSide = document.createElement('div');
+    let content = document.createElement('div');
+    content.innerText = front;
+    frontSide.className = 'front';
+    frontSide.appendChild(content);
+    flashcardNode.appendChild(frontSide);
+    const backSide = document.createElement('div');
+    content = document.createElement('div');
+    content.innerText = back;
+    backSide.className = 'back';
+    backSide.appendChild(content);
+    flashcardNode.appendChild(backSide);
+    examination.appendChild(flashcardNode);
 }
 
 function stop(){
     examinationUniversals.clearExamination();
+    sequence = undefined;
 }

@@ -50,3 +50,48 @@
     justify-content: center;
     align-items: center;
 }
+
+.flashcard .front {
+    font-size: 2em;
+}
+.flashcard .back {
+    font-size: 1.8em;
+}
+
+.flashcard.front .front {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+}
+
+.flashcard * div{
+    word-wrap: break-word;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%); 
+    width: 100%;
+}
+.flashcard.front .back {display: none;}
+
+.flashcard.both .front {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 70%;
+    right: 0;
+    overflow: auto;
+    border-bottom: 1px solid gray;
+}
+.flashcard.both .back {
+    position: fixed;
+    top: 30%;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+}
+
