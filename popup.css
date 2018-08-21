@@ -89,6 +89,7 @@
     color: white;
     border: none;
     border-radius: 0;
+    height: 25px;
 }
 
 .popup-standart.popup-button:hover {
@@ -96,7 +97,7 @@
 }
 
 .popup-standart.popup-button:active {
-    background: #e0e0e0;
+    background: hsla(201, 72%, 13%, 1);
 }
 
 .popup-textarea {

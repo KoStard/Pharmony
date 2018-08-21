@@ -60,7 +60,7 @@ body {
 }
 
 #menu .menu-databases-button:active , #examination-modes .examination-mode-button:active{
-    background: hsl(205, 57%, 68%);
+    background: hsla(201, 72%, 13%, 1);
 }
 
 .menu-generalButton, .examination-mode-close-button{

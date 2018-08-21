@@ -30,7 +30,6 @@ function createResponsiveFunction({func, popupAlertPanel, startInfo, successInfo
 function PopupAlertPanelSmall({ text, color, icon, parent, delay, onclick }) {
     if (!parent) parent = document.body;
     if (!delay) delay = 2000;
-    // if (!color) color = '#fff';
     let oldPanels = document.getElementsByClassName('popupAlertPanelSmall');
     for (let oldPanel of oldPanels) {
         oldPanel.remove();
@@ -64,12 +63,14 @@ function PopupBigPanelCentral({ owner, onclose, buffered }) {
 
     this.panelHolder = panelHolder;
     this.panel = panel;
-    if (buffered)
+    if (buffered){
         this.hide = () => {
             if (this.onclose) this.onclose();
             runningPopup = undefined;
             this.panelHolder.style.display = "none";
         };
+        this.panelHolder.style.display = 'block';
+    }
     else {
         this.exit = () => {
             this.onclose && this.onclose();

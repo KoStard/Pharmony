@@ -27,3 +27,26 @@
 #examination-settings-button-container .dropdown-content {
     top: 34px;
 }
+
+.introductory-screen-content {
+    position: fixed;
+    top: 7px;
+    left: 7px;
+    right: 7px;
+    bottom: 40px;
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 5px;
+    overflow: auto;
+}
+
+.introductory-screen-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
