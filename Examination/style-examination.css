@@ -5,12 +5,14 @@
 }
 
 #examination-settings-button-container {
+    display: none;
     top: 16px;
     right: 16px;
+    width: 32px;
+    height: 32px;
 }
 
 #examination-settings-button {
-    display: none;
     position: absolute;
     padding: 0;
     right: 0;

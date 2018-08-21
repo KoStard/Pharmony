@@ -137,6 +137,7 @@ table tr {
 
 .dropdown {
     position: relative;
+    z-index: 1;
 }
 
 .dropdown:hover #settings-button svg path{

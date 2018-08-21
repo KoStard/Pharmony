@@ -22,6 +22,24 @@ const modes = {
     'Standard Flashcards': require('./standardFlashcards')
 };
 const {createButton} = require('./../Universals');
+const examinationUniversals = require('./examinationUniversals');
+
+const defaultExaminationSettingsButtonContent = [
+    createButton({
+        value: 'Viewer',
+        onclick: ()=>{modes[runningMode].createIntroductoryScreen();}
+    }),
+    createButton({
+        value: 'Main',
+        onclick: ()=>{stop();}
+    }),
+    createButton({
+        value: 'Menu',
+        onclick: ()=>{toggleToModeSelection(); container.className = 'menu';}
+    })
+];
+
+examinationUniversals.setExaminationSettingsContent(defaultExaminationSettingsButtonContent);
 
 function loadModeButtons() {
     for (let element of examinationModes.childNodes){
@@ -56,7 +74,7 @@ function toggleToModeSelection(){
     if (runningMode){
         modes[runningMode].stop();
         container.className = 'examination-mode-selection';
-        examination.innerHTML = '';
+        examinationUniversals.clearExamination();
         runningMode = '';
     }
 }
@@ -68,5 +86,6 @@ function getRunningExamination() {
 }
 
 function stop(){
+    toggleToModeSelection();
     container.className = 'main';
 }

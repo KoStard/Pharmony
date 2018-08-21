@@ -1,6 +1,6 @@
 /* jshint esversion: 6 */
 const examinationSettingsButtonContainer = document.getElementById('examination-settings-button-container');
-const examinationSettingsButtonContent = examinationSettingsButtonContainer.children.item(0).getElementsByClassName('dropdown-content').item(0);
+const examinationSettingsButtonContent = examinationSettingsButtonContainer.getElementsByClassName('dropdown-content').item(0);
 
 module.exports = {
     clearExamination: clearExamination,
@@ -39,6 +39,7 @@ function turnOnExaminationSettingsButton() {
 }
 let introductoryScreen, introductoryScreenContent, introductoryScreenPanel;
 function createIntroductoryScreen({content, buttons}){
+    turnOffExaminationSettingsButton();
     introductoryScreen = document.createElement('div');
     introductoryScreen.className = 'introductory-screen';
     introductoryScreenContent = document.createElement('div');

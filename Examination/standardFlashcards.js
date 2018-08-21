@@ -2,7 +2,8 @@
 module.exports = {
     start: start,
     stop: stop,
-    next: next
+    next: next,
+    createIntroductoryScreen: createIntroductoryScreen
 };
 
 const {createButton} = require('./../Universals');
@@ -126,6 +127,8 @@ function createFlashcard(front, back) {
 }
 
 function stop(){
+    console.log("Here");
+    examinationUniversals.turnOffExaminationSettingsButton();
     examinationUniversals.clearExamination();
     sequence = undefined;
 }
