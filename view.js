@@ -709,7 +709,10 @@ function init() {
                 else {
                     switch (container.className){
                         case 'examination':
-                        Examination.toggleToModeSelection();
+                        if (examination.getElementsByClassName('flashcard').length > 0) {
+                            Examination.toggleToIntroduction();
+                        }
+                        else Examination.toggleToModeSelection();
                         break;
                         case 'examination-mode-selection':
                         Examination.stop();

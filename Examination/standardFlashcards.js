@@ -127,7 +127,6 @@ function createFlashcard(front, back) {
 }
 
 function stop(){
-    console.log("Here");
     examinationUniversals.turnOffExaminationSettingsButton();
     examinationUniversals.clearExamination();
     sequence = undefined;

@@ -5,6 +5,7 @@ module.exports = {
     init: init,
     toggleToModeSelection: toggleToModeSelection,
     getRunningExamination: getRunningExamination,
+    toggleToIntroduction: toggleToIntroduction,
 };
 
 let container = document.getElementById('container');
@@ -76,6 +77,12 @@ function toggleToModeSelection(){
         container.className = 'examination-mode-selection';
         examinationUniversals.clearExamination();
         runningMode = '';
+    }
+}
+
+function toggleToIntroduction(){
+    if (runningMode) {
+        modes[runningMode].createIntroductoryScreen();
     }
 }
 
