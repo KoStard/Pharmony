@@ -87,7 +87,6 @@ function createIntroductoryScreen(){
                 value: 'Restart',
                 buttonClass: 'popup-standart popup-button',
                 onclick: () => {
-                    sequence = Object.keys(data.blocks);
                     for (let name in data.blocks) {
                         data.blocks[name].individual.standardFlashcards.status = statusEnum.raw;
                     }
