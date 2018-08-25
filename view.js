@@ -26,11 +26,15 @@ let tableScrollAnchor = 'bottom';
 
 const standardDataTemplate = {
     blocks: {},
-    global: {}
+    global: {
+        standardFlashcards: {},
+    }
 },
     standardBlockTemplate = {
         description: '',
-        individual: {}
+        individual: {
+            standardFlashcards: {},
+        }
     };
 
 function refreshScrollLevel(){
@@ -712,6 +716,13 @@ function doForAllDBs(f) {
         load();
         f();
         save();
+    });
+}
+
+function reformAllCorrespondingToStandards(){
+    doForAllDBs(() => {
+        reformBlocks(standardBlockTemplate);
+        reformData(standardDataTemplate);
     });
 }
 
