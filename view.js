@@ -674,19 +674,25 @@ function startExamination() {
 
 function reformBlocks(template) {
     for (let blockName in blocks) {
-        for (let currentKey in blocks) {
+        for (let currentKey in template) {
             blocks[blockName][currentKey] = blocks[blockName][currentKey] || {};
         }
     }
 }
 
-function reformBlocksWithRemove(tempalte) {
+function reformBlocksWithRemove(template) {
     for (let blockName in blocks) {
         tempBlock = blocks[blockName];
         blocks[blockName] = {};
-        for (let currentKey in blocks) {
+        for (let currentKey in template) {
             blocks[blockName][currentKey] = tempBlock[currentKey] || {};            
         }
+    }
+}
+
+function reformData(template) {
+    for (let currentKey in template) {
+        data[currentKey] = data[currentKey] || {};
     }
 }
 
