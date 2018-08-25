@@ -107,7 +107,6 @@ function loadMenuButtons() {
                 owner: menuButtonContainer,
                 onclick: menuButtonClicked
             }));
-            runningDatabase = name;
         }
     });
     menuButtons = menuButtons.filter(x=>x);
@@ -203,7 +202,7 @@ function load(){
 }
 
 function save(){
-    fs.writeFile(databasesFolder+runningDatabase+'.json', JSON.stringify(data), function(){});
+    fs.writeFileSync(databasesFolder+runningDatabase+'.json', JSON.stringify(data), function(){});
 }
 
 let createDatabase = popup.createResponsiveFunction({
@@ -710,13 +709,25 @@ function reformData(template) {
 }
 
 function doForAllDBs(f) {
+    let wasOpened = runningDatabase;
     let files = fs.readdirSync(databasesFolder);
     files.forEach((filename) => {
-        runningDatabase = filename;
-        load();
-        f();
-        save();
+        filename = filename.split('.')
+        if (filename[1] == 'json'){
+            filename = filename[0];
+            runningDatabase = filename;
+            load();
+            f();
+            save();
+        }
     });
+    if (wasOpened) {
+        runningDatabase = wasOpened;
+        load();
+        showDB();
+    } else {
+        data = {};
+    }
 }
 
 function reformAllCorrespondingToStandards(){
