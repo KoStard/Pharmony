@@ -61,11 +61,17 @@ function createIntroductoryScreen(){
         content: table,
         buttons: [
             createButton({
-                value: 'Continue',
+                value: 'Close',
                 buttonClass: 'popup-standart popup-button',
-                onclick: ()=>{
-                    examinationUniversals.clearExamination();
-                    main();
+                onclick: ()=>{examinationUniversals.clearExamination(); examinationController.toggleToModeSelection();},
+            }),
+            createButton({
+                value: 'Initial',
+                buttonClass: 'popup-standart popup-button',
+                onclick: () => {
+                    sequence = Object.keys(data.blocks);
+                    table = createTable(sequence);
+                    examinationUniversals.resetIntroductoryScreenContent(table);
                 }
             }),
             createButton({
@@ -73,15 +79,6 @@ function createIntroductoryScreen(){
                 buttonClass: 'popup-standart popup-button',
                 onclick: ()=>{
                     sequence = shuffleArray(sequence);
-                    table = createTable(sequence);
-                    examinationUniversals.resetIntroductoryScreenContent(table);
-                }
-            }),
-            createButton({
-                value: 'Initial',
-                buttonClass: 'popup-standart popup-button',
-                onclick: ()=>{
-                    sequence = Object.keys(data.blocks);
                     table = createTable(sequence);
                     examinationUniversals.resetIntroductoryScreenContent(table);
                 }
@@ -99,9 +96,12 @@ function createIntroductoryScreen(){
                 }
             }),
             createButton({
-                value: 'Close',
+                value: 'Start',
                 buttonClass: 'popup-standart popup-button',
-                onclick: ()=>{examinationUniversals.clearExamination(); examinationController.toggleToModeSelection();},
+                onclick: () => {
+                    examinationUniversals.clearExamination();
+                    main();
+                }
             })
         ]
     });
