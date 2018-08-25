@@ -25,7 +25,7 @@ const examination = document.getElementById('examination');
 let tableScrollAnchor = 'bottom';
 
 const standardDataTemplate = {
-    data: {},
+    blocks: {},
     global: {}
 },
     standardBlockTemplate = {
@@ -703,6 +703,16 @@ function reformData(template) {
     for (let currentKey in template) {
         data[currentKey] = data[currentKey] || template[currentKey];
     }
+}
+
+function doForAllDBs(f) {
+    let files = fs.readdirSync(databasesFolder);
+    files.forEach((filename) => {
+        runningDatabase = filename;
+        load();
+        f();
+        save();
+    });
 }
 
 function init() {
