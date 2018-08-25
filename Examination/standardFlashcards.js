@@ -41,7 +41,10 @@ function createTable(sequence) {
 
         cell = document.createElement('td');
         cell.className = 'standardFlashcardsIntroduction-status';
-        if (!data.blocks[blockName].individual.standardFlashcards.status) data.blocks[blockName].individual.standardFlashcards.status = statusEnum.raw;
+        if (!data.blocks[blockName].individual.standardFlashcards.status) { 
+            data.blocks[blockName].individual.standardFlashcards.status = statusEnum.raw; 
+            data.blocks[blockName].individual.standardFlashcards.realEffort = 0;
+        }
         cell.innerText = data.blocks[blockName].individual.standardFlashcards.status.text;
         cell.style.backgroundColor = data.blocks[blockName].individual.standardFlashcards.status.color;
         row.appendChild(cell);

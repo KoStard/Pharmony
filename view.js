@@ -33,7 +33,10 @@ const standardDataTemplate = {
     standardBlockTemplate = {
         description: '',
         individual: {
-            standardFlashcards: {},
+            standardFlashcards: {
+                lastSequence: [],
+                last: ''
+            },
         }
     };
 
