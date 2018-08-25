@@ -6,6 +6,7 @@ module.exports = {
     toggleToModeSelection: toggleToModeSelection,
     getRunningExamination: getRunningExamination,
     toggleToIntroduction: toggleToIntroduction,
+    createAccessories: createAccessories,
 };
 
 let container = document.getElementById('container');
@@ -53,7 +54,7 @@ function loadModeButtons() {
         createButton({
             value: key,
             buttonClass: 'examination-mode-button',
-            onclick: ()=>{container.className = 'examination';modes[key].start(data); runningMode = key;},
+            onclick: ()=>{container.className = 'examination';modes[key].start(data, globals); runningMode = key;},
             owner: examinationModeButtons
         });
     }
@@ -95,4 +96,16 @@ function getRunningExamination() {
 function stop(){
     toggleToModeSelection();
     container.className = 'main';
+}
+
+function createAccessories() {
+    for (let mode in modes) {
+        modes[mode].createAccessories();
+    }
+}
+
+let globals;
+function init(args) {
+    createAccessories();
+    globals = args;
 }

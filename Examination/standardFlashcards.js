@@ -3,29 +3,36 @@ module.exports = {
     start: start,
     stop: stop,
     next: next,
-    createIntroductoryScreen: createIntroductoryScreen
+    createIntroductoryScreen: createIntroductoryScreen,
+    createAccessories: createAccessories,
+    getCurrentFlashcard: getCurrentFlashcard
 };
 
-const {createButton} = require('./../Universals');
+const {createButton, hoverColorMaker} = require('./../Universals');
 const examinationUniversals = require('./examinationUniversals');
 const examinationController = require('./examination');
 
 const container = document.getElementById('container');
 const examinationContainer = document.getElementById("examination-container");
 const examination = document.getElementById("examination");
-let data;
+const backButtons = document.getElementById("backButtons");
 
-function createStatus(text, color) {
+let data, blocks;
+let currentFlashcard;
+
+function createStatus(name, text, color) {
     return Object.freeze({
+        name: name,
         text: text,
-        color: color
+        color: color,
+        hoverColor: hoverColorMaker(color)
     });
 }
 
 const statusEnum = Object.freeze({
-    raw: createStatus("raw", '#e65100'),
-    inProcess: createStatus("in process", "#006064"),
-    finished: createStatus("finished", "#43a047")
+    raw: createStatus('raw', "Raw", '#e65100'),
+    inProcess: createStatus('inProcess', "In Process", "#006064"),
+    finished: createStatus('finished', "Finished", "#43a047")
 });
 
 
@@ -41,12 +48,12 @@ function createTable(sequence) {
 
         cell = document.createElement('td');
         cell.className = 'standardFlashcardsIntroduction-status';
-        if (!data.blocks[blockName].individual.standardFlashcards.status) { 
-            data.blocks[blockName].individual.standardFlashcards.status = statusEnum.raw; 
-            data.blocks[blockName].individual.standardFlashcards.realEffort = 0;
+        if (!blocks[blockName].individual.standardFlashcards.status) { 
+            blocks[blockName].individual.standardFlashcards.status = statusEnum.raw.name; 
+            blocks[blockName].individual.standardFlashcards.realEffort = 0;
         }
-        cell.innerText = data.blocks[blockName].individual.standardFlashcards.status.text;
-        cell.style.backgroundColor = data.blocks[blockName].individual.standardFlashcards.status.color;
+        cell.innerText = statusEnum[blocks[blockName].individual.standardFlashcards.status].text;
+        cell.style.backgroundColor = statusEnum[blocks[blockName].individual.standardFlashcards.status].color;
         row.appendChild(cell);
         table.appendChild(row);
     }
@@ -59,6 +66,8 @@ const shuffleArray = arr => arr
   .map(a => a[1]);
 
 function createIntroductoryScreen(){
+    backButtons.style.display = 'none'; 
+    currentFlashcard = undefined;
     table = createTable(sequence);
     examinationUniversals.createIntroductoryScreen({
         content: table,
@@ -72,7 +81,7 @@ function createIntroductoryScreen(){
                 value: 'Initial',
                 buttonClass: 'popup-standart popup-button',
                 onclick: () => {
-                    sequence = Object.keys(data.blocks);
+                    sequence = Object.keys(blocks);
                     table = createTable(sequence);
                     examinationUniversals.resetIntroductoryScreenContent(table);
                 }
@@ -90,8 +99,8 @@ function createIntroductoryScreen(){
                 value: 'Restart',
                 buttonClass: 'popup-standart popup-button',
                 onclick: () => {
-                    for (let name in data.blocks) {
-                        data.blocks[name].individual.standardFlashcards.status = statusEnum.raw;
+                    for (let name in blocks) {
+                        blocks[name].individual.standardFlashcards.status = statusEnum.raw.name;
                     }
                     table = createTable(sequence);
                     examinationUniversals.resetIntroductoryScreenContent(table);
@@ -109,10 +118,14 @@ function createIntroductoryScreen(){
     });
 }
 
-function start(dataInput){
+let globals;
+function start(dataInput, args){
+    globals = args;
     examinationUniversals.clearExamination();
     data = dataInput;
-    sequence = Object.keys(data.blocks);
+    blocks = data.blocks;
+    currentFlashcard = null;
+    sequence = Object.keys(blocks);
     createIntroductoryScreen();
 }
 
@@ -139,11 +152,76 @@ function finish(){
 function* runFlashcard(sequence) {
     done = false;
     for (let name of sequence){
-        yield createFlashcard(name, data.blocks[name].description);
+        yield new Flashcard(name, blocks[name].description);
     }
 }
+let accessories;
+function createAccessories() {
+    accessories = this;
+    backButtons.style.justifyContent = 'center';
 
-function createFlashcard(front, back) {
+    let f = function(b, statusName) {
+        b.style.backgroundColor = statusEnum[statusName].color;
+        b.onmouseenter = function () {
+            this.style.backgroundColor = statusEnum[statusName].hoverColor;
+        };
+        b.onmouseleave = function () {
+            this.style.backgroundColor = statusEnum[statusName].color;
+        };
+    };
+
+    this.raw = createButton({
+        value: statusEnum.raw.text,
+        buttonClass: 'popup-standart popup-button',
+        onclick: () => {
+            blocks[currentFlashcard.front].individual.standardFlashcards.status = statusEnum.raw.name;
+            globals.save();
+            resetAccessoriesSelection();
+            next();
+        },
+        owner: backButtons
+    });
+    f(this.raw, 'raw');
+
+    this.inProcess = createButton({
+        value: statusEnum.inProcess.text,
+        buttonClass: 'popup-standart popup-button',
+        onclick: () => {
+            blocks[currentFlashcard.front].individual.standardFlashcards.status = statusEnum.inProcess.name;
+            globals.save();
+            resetAccessoriesSelection();
+            next();
+        },
+        owner: backButtons
+    });
+    f(this.inProcess, 'inProcess');
+
+    this.finished = createButton({
+        value: statusEnum.finished.text,
+        buttonClass: 'popup-standart popup-button',
+        onclick: () => {
+            blocks[currentFlashcard.front].individual.standardFlashcards.status = statusEnum.finished.name;
+            globals.save();
+            resetAccessoriesSelection();
+            next();
+        },
+        owner: backButtons
+    });
+    f(this.finished, 'finished');
+}
+function resetAccessoriesSelection() {
+    Object.keys(accessories).forEach((st) => {
+        accessories[st].className = 'popup-standart popup-button';
+    });
+    accessories[blocks[currentFlashcard.front].individual.standardFlashcards.status].className += ' selected';
+}
+function getCurrentFlashcard(){return currentFlashcard;}
+function Flashcard(front, back) {
+    backButtons.style.display = 'none';
+    currentFlashcard = this;
+    this.front = front;
+    this.back = back;
+
     examinationUniversals.clearExamination();
     const flashcardNode = document.createElement('div');
     flashcardNode.className = 'flashcard front';
@@ -153,6 +231,7 @@ function createFlashcard(front, back) {
     frontSide.className = 'front';
     frontSide.appendChild(content);
     flashcardNode.appendChild(frontSide);
+
     const backSide = document.createElement('div');
     content = document.createElement('div');
     content.innerText = back;
@@ -160,10 +239,19 @@ function createFlashcard(front, back) {
     backSide.appendChild(content);
     flashcardNode.appendChild(backSide);
     examination.appendChild(flashcardNode);
+
+    this.rotate = function(){
+        if (flashcardNode.className == 'flashcard front') {
+            backButtons.style.display = 'flex';
+            flashcardNode.className = 'flashcard both';
+        }
+    };
+    resetAccessoriesSelection();
 }
 
 function stop(){
     examinationUniversals.turnOffExaminationSettingsButton();
     examinationUniversals.clearExamination();
     sequence = undefined;
+    backButtons.style.display = 'none';
 }

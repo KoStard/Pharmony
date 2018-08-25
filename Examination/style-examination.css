@@ -78,6 +78,7 @@
     width: 100%;
 }
 .flashcard.front .back {display: none;}
+.flashcard.front #backButtons {display: none;}
 
 .flashcard.both .front {
     position: fixed;
@@ -92,9 +93,22 @@
     position: fixed;
     top: 30%;
     left: 0;
-    bottom: 0;
+    bottom: 30px;
     right: 0;
     overflow: auto;
+}
+
+#backButtons {
+    display: none;
+    position: fixed;
+    height: 30px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#backButtons .selected {
+    border-bottom: 2px solid #0288d1;
 }
 
 .standardFlashcardsIntroduction-status {

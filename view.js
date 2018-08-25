@@ -1,4 +1,9 @@
 /* jshint esversion: 6 */
+
+module.exports = {
+    save: save
+};
+
 const fs = require('fs');
 const docx = require('docx');
 const popup = require('./popup');
@@ -6,6 +11,7 @@ const launch = require('./launchFiles');
 const {ipcRenderer} = require('electron');
 const Selector = require('./selector');
 const Examination = require('./Examination/examination');
+const standardFlashcards = require('./Examination/standardFlashcards');
 const {createButton} = require('./Universals');
 
 let data = {};
@@ -743,6 +749,7 @@ function reformAllCorrespondingToStandards(){ // Is being called from devtools
 function init() {
     ipcRenderer.send('started');
     input.addEventListener('keydown', (event)=>{ 
+        event.preventDefault();
         switch (event.keyCode) {
         case 13: // Responding to enter
             if (input.value) process(input.value);
@@ -750,7 +757,6 @@ function init() {
             input.select();
             break;
         case 9: // Responding to tab
-            event.preventDefault();
             openEditor();
             break;
         }
@@ -759,13 +765,9 @@ function init() {
     document.addEventListener('keyup', (event)=>{ 
         switch (event.keyCode) {
             case 32: // Responding to space keyup
-                const flashcards = examination.getElementsByClassName('flashcard');
-                if (flashcards) {
-                    const flashcard = flashcards[0];
-                    if (flashcard.className == 'flashcard front')
-                        flashcard.className = 'flashcard both';
-                    else
-                        Examination.getRunningExamination().next();
+                const flashcard = standardFlashcards.getCurrentFlashcard();
+                if (flashcard) {
+                    flashcard.rotate();
                 }
                 break;
             case 27: // Responding to Esc button
@@ -812,6 +814,10 @@ function init() {
     settingsCreator(); // Creating settings panel
     loadMenu(); // Creating menu
     initEditor(); // Initializing editor object once
+    // Examination.createAccessories();
+    Examination.init({
+        save: save
+    });
 }
 
 window.onload = init; // Starting the program
