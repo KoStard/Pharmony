@@ -672,7 +672,7 @@ function startExamination() {
     show(lastIDnames);
 }
 
-function reformData(template) {
+function reformBlocks(template) {
     for (let blockName in blocks) {
         for (let currentKey in blocks) {
             blocks[blockName][currentKey] = blocks[blockName][currentKey] || {};
@@ -680,7 +680,7 @@ function reformData(template) {
     }
 }
 
-function reformDataWithRemove(tempalte) {
+function reformBlocksWithRemove(tempalte) {
     for (let blockName in blocks) {
         tempBlock = blocks[blockName];
         blocks[blockName] = {};
