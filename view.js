@@ -672,6 +672,24 @@ function startExamination() {
     show(lastIDnames);
 }
 
+function reformData(template) {
+    for (let blockName in blocks) {
+        for (let currentKey in blocks) {
+            blocks[blockName][currentKey] = blocks[blockName][currentKey] || {};
+        }
+    }
+}
+
+function reformDataWithRemove(tempalte) {
+    for (let blockName in blocks) {
+        tempBlock = blocks[blockName];
+        blocks[blockName] = {};
+        for (let currentKey in blocks) {
+            blocks[blockName][currentKey] = tempBlock[currentKey] || {};            
+        }
+    }
+}
+
 function init() {
     ipcRenderer.send('started');
     input.addEventListener('keydown', (event)=>{ 
