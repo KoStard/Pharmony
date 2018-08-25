@@ -24,6 +24,15 @@ const examination = document.getElementById('examination');
 
 let tableScrollAnchor = 'bottom';
 
+const standardDataTemplate = {
+    data: {},
+    global: {}
+},
+    standardBlockTemplate = {
+        description: '',
+        individual: {}
+    };
+
 function refreshScrollLevel(){
     if (tableScrollAnchor == 'top') {
         table.parentElement.scrollTo(0,0);
@@ -198,7 +207,7 @@ let createDatabase = popup.createResponsiveFunction({
         if (!name || name.length == '') throw 'Invalid input.';
         if (!name.match(/[\s\S]\.json/)) name += '.json';
         if (fs.existsSync(databasesFolder + name)) throw 'Existing name';
-        fs.writeFileSync(databasesFolder + name, '');
+        fs.writeFileSync(databasesFolder + name, JSON.stringify(standardDataTemplate));
     },
     popupAlertPanel: popup.PopupAlertPanelSmall,
     errorInfo: 'error',
@@ -475,7 +484,7 @@ function createOrEditBlocks(name, newValue){
         });
     } else {
         if (blocks[name]) editBlock({key: name, newValue: newValue});
-        else {blocks[name] = {description: newValue}; changedBlockNames.push(name);}
+        else {blocks[name] = Object(standardBlockTemplate); blocks[name].description = newValue; changedBlockNames.push(name);}
     }
 }
 
@@ -675,7 +684,7 @@ function startExamination() {
 function reformBlocks(template) {
     for (let blockName in blocks) {
         for (let currentKey in template) {
-            blocks[blockName][currentKey] = blocks[blockName][currentKey] || {};
+            blocks[blockName][currentKey] = blocks[blockName][currentKey] || template[currentKey];
         }
     }
 }
@@ -685,14 +694,14 @@ function reformBlocksWithRemove(template) {
         tempBlock = blocks[blockName];
         blocks[blockName] = {};
         for (let currentKey in template) {
-            blocks[blockName][currentKey] = tempBlock[currentKey] || {};            
+            blocks[blockName][currentKey] = tempBlock[currentKey] || template[currentKey];
         }
     }
 }
 
 function reformData(template) {
     for (let currentKey in template) {
-        data[currentKey] = data[currentKey] || {};
+        data[currentKey] = data[currentKey] || template[currentKey];
     }
 }
 
