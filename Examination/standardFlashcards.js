@@ -15,6 +15,20 @@ const examinationContainer = document.getElementById("examination-container");
 const examination = document.getElementById("examination");
 let data;
 
+function createStatus(text, color) {
+    return Object.freeze({
+        text: text,
+        color: color
+    });
+}
+
+const statusEnum = Object.freeze({
+    raw: createStatus("raw", '#e65100'),
+    inProcess: createStatus("in process", "#006064"),
+    finished: createStatus("finished", "#43a047")
+});
+
+
 let sequence;
 function createTable(sequence) {
     const table = document.createElement('table');
@@ -22,6 +36,14 @@ function createTable(sequence) {
         const row = document.createElement('tr');
         let cell = document.createElement('td');
         cell.innerText = blockName;
+        row.appendChild(cell);
+        table.appendChild(row);
+
+        cell = document.createElement('td');
+        cell.className = 'standardFlashcardsIntroduction-status';
+        if (!data.blocks[blockName].individual.standardFlashcards.status) data.blocks[blockName].individual.standardFlashcards.status = statusEnum.raw;
+        cell.innerText = data.blocks[blockName].individual.standardFlashcards.status.text;
+        cell.style.backgroundColor = data.blocks[blockName].individual.standardFlashcards.status.color;
         row.appendChild(cell);
         table.appendChild(row);
     }
@@ -56,10 +78,22 @@ function createIntroductoryScreen(){
                 }
             }),
             createButton({
-                value: 'Reset',
+                value: 'Initial',
                 buttonClass: 'popup-standart popup-button',
                 onclick: ()=>{
                     sequence = Object.keys(data.blocks);
+                    table = createTable(sequence);
+                    examinationUniversals.resetIntroductoryScreenContent(table);
+                }
+            }),
+            createButton({
+                value: 'Restart',
+                buttonClass: 'popup-standart popup-button',
+                onclick: () => {
+                    sequence = Object.keys(data.blocks);
+                    for (let name in data.blocks) {
+                        data.blocks[name].individual.standardFlashcards.status = statusEnum.raw;
+                    }
                     table = createTable(sequence);
                     examinationUniversals.resetIntroductoryScreenContent(table);
                 }
@@ -76,7 +110,7 @@ function createIntroductoryScreen(){
 function start(dataInput){
     examinationUniversals.clearExamination();
     data = dataInput;
-    sequence = Object.keys(data.blocks)
+    sequence = Object.keys(data.blocks);
     createIntroductoryScreen();
 }
 

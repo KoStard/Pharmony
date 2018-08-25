@@ -730,7 +730,7 @@ function doForAllDBs(f) {
     }
 }
 
-function reformAllCorrespondingToStandards(){
+function reformAllCorrespondingToStandards(){ // Is being called from devtools
     doForAllDBs(() => {
         reformBlocks(standardBlockTemplate);
         reformData(standardDataTemplate);
