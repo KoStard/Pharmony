@@ -197,6 +197,19 @@ function createIntroductoryScreen(){
                 }
             }),
             createButton({
+                value: 'Invert',
+                buttonClass: 'popup-standart popup-button',
+                onclick: () => {
+                    for (let name in blocks) {
+                        blocks[name].individual.standardFlashcards.status = Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[name].individual.standardFlashcards.status) == 2 ? 0 : 2];
+                    }
+                    globals.save();
+                    createPlaylist(sequence);
+                    table = createTable(playlist);
+                    examinationUniversals.resetIntroductoryScreenContent(table);
+                }
+            }),
+            createButton({
                 value: 'Start',
                 buttonClass: 'popup-standart popup-button',
                 onclick: () => {
