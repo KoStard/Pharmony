@@ -751,14 +751,15 @@ function reformAllCorrespondingToStandards(){ // Is being called from devtools
 function init() {
     ipcRenderer.send('started');
     input.addEventListener('keydown', (event)=>{ 
-        event.preventDefault();
         switch (event.keyCode) {
         case 13: // Responding to enter
+            event.preventDefault();
             if (input.value) process(input.value);
             else showDB();
             input.select();
             break;
         case 9: // Responding to tab
+            event.preventDefault();
             openEditor();
             break;
         }
