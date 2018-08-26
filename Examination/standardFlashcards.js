@@ -240,16 +240,16 @@ function createAccessories() {
         }
     };
 
+    this.waitingForMainButtonClick = false;
+
     this.mainButtonPressed = () => {
+        this.waitingForMainButtonClick = true;
         this.press(Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[currentFlashcard.front].individual.standardFlashcards.status) == 0 ? 1 : 2]);
     };
 
     this.mainButtonClicked = () => {
-        this.click(Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[currentFlashcard.front].individual.standardFlashcards.status) == 0 ? 1 : 2]);
-        // blocks[currentFlashcard.front].individual.standardFlashcards.status = Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[currentFlashcard.front].individual.standardFlashcards.status) == 0 ? 1 : 2];
-        // globals.save();
-        // resetAccessoriesSelection();
-        // next();
+        if (this.waitingForMainButtonClick)
+            this.click(Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[currentFlashcard.front].individual.standardFlashcards.status) == 0 ? 1 : 2]);
     };
 }
 function resetAccessoriesSelection() {

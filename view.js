@@ -773,7 +773,7 @@ function init() {
         if (flashcard) {
             if (flashcard.flashcardNode.className == 'flashcard both') {
                 flashcard.accessories.mainButtonClicked();
-            }else 
+            }else
                 flashcard.rotate();
         } else {
             const introductoryScreen = ExaminationUniversals.getIntroductoryScreen();
