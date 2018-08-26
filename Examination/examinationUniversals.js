@@ -13,6 +13,7 @@ module.exports = {
     turnOffExaminationSettingsButton: turnOffExaminationSettingsButton,
     turnOnExaminationSettingsButton: turnOnExaminationSettingsButton,
     setExaminationSettingsContent: setExaminationSettingsContent,
+    stop: stop,
 };
 
 const examination = document.getElementById("examination");
@@ -61,6 +62,14 @@ function createIntroductoryScreen({ content, buttons, start}) {
 
 function getIntroductoryScreen() {
     return introductoryScreen;
+}
+
+function clearIntroductoryScreen(){
+    introductoryScreen = undefined;
+}
+
+function stop() {
+    clearIntroductoryScreen();
 }
 
 function resetIntroductoryScreenContent(content) {

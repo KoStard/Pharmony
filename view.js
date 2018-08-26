@@ -763,11 +763,16 @@ function init() {
             break;
         }
     });
+    Mousetrap.bind('space', ()=> {
+        const flashcard = standardFlashcards.getCurrentFlashcard();
+        if (flashcard && flashcard.flashcardNode.className == 'flashcard both')
+            flashcard.accessories.mainButtonPressed();
+    });
     Mousetrap.bind("space", (e) => { // Responding to space keyup
         const flashcard = standardFlashcards.getCurrentFlashcard();
         if (flashcard) {
             if (flashcard.flashcardNode.className == 'flashcard both') {
-                flashcard.accessories.mainButtonPressed();
+                flashcard.accessories.mainButtonClicked();
             }else 
                 flashcard.rotate();
         } else {
@@ -782,17 +787,35 @@ function init() {
         if (flashcard && flashcard.flashcardNode.className == 'flashcard both') {
             flashcard.accessories.press('raw');
         }
-    }, 'keyup');
+    });
     Mousetrap.bind("right", (e) => {
         const flashcard = standardFlashcards.getCurrentFlashcard();
         if (flashcard && flashcard.flashcardNode.className == 'flashcard both') {
             flashcard.accessories.press('finished');
         }
-    }, 'keyup');
+    });
     Mousetrap.bind(["down", "up"], (e) => {
         const flashcard = standardFlashcards.getCurrentFlashcard();
         if (flashcard && flashcard.flashcardNode.className == 'flashcard both') {
             flashcard.accessories.press('inProcess');
+        }
+    });
+    Mousetrap.bind("left", (e) => {
+        const flashcard = standardFlashcards.getCurrentFlashcard();
+        if (flashcard && flashcard.flashcardNode.className == 'flashcard both') {
+            flashcard.accessories.click('raw');
+        }
+    }, 'keyup');
+    Mousetrap.bind("right", (e) => {
+        const flashcard = standardFlashcards.getCurrentFlashcard();
+        if (flashcard && flashcard.flashcardNode.className == 'flashcard both') {
+            flashcard.accessories.click('finished');
+        }
+    }, 'keyup');
+    Mousetrap.bind(["down", "up"], (e) => {
+        const flashcard = standardFlashcards.getCurrentFlashcard();
+        if (flashcard && flashcard.flashcardNode.className == 'flashcard both') {
+            flashcard.accessories.click('inProcess');
         }
     }, 'keyup');
     Mousetrap.bind("esc", () => { 

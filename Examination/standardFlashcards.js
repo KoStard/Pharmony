@@ -212,22 +212,48 @@ function createAccessories() {
     });
     f(this.finished, 'finished');
 
-    this.press = function (name) {
-        blocks[currentFlashcard.front].individual.standardFlashcards.status = name;
-        globals.save();
-        resetAccessoriesSelection();
-        next();
+    this.pressed = undefined;
+    this.press = (name) => {
+        this.unpressAll();
+        this.pressed = name;
+        this[name].style.backgroundColor = statusEnum[name].hoverColor;
     };
 
-    this.mainButtonPressed = function () {
-        blocks[currentFlashcard.front].individual.standardFlashcards.status = Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[currentFlashcard.front].individual.standardFlashcards.status) == 0 ? 1 : 2];
-        globals.save();
-        resetAccessoriesSelection();
-        next();
+    this.unpress = (name) => {
+        if (this.pressed == name) this.pressed = undefined;
+        this[name].style.backgroundColor = statusEnum[name].color;
+    };
+
+    this.unpressAll = () => {
+        this.unpress('raw');
+        this.unpress('inProcess');
+        this.unpress('finished');
+    };
+
+    this.click = (name) => {
+        if (name == this.pressed) {
+            blocks[currentFlashcard.front].individual.standardFlashcards.status = name;
+            this.unpressAll();
+            globals.save();
+            resetAccessoriesSelection();
+            next();
+        }
+    };
+
+    this.mainButtonPressed = () => {
+        this.press(Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[currentFlashcard.front].individual.standardFlashcards.status) == 0 ? 1 : 2]);
+    };
+
+    this.mainButtonClicked = () => {
+        this.click(Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[currentFlashcard.front].individual.standardFlashcards.status) == 0 ? 1 : 2]);
+        // blocks[currentFlashcard.front].individual.standardFlashcards.status = Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[currentFlashcard.front].individual.standardFlashcards.status) == 0 ? 1 : 2];
+        // globals.save();
+        // resetAccessoriesSelection();
+        // next();
     };
 }
 function resetAccessoriesSelection() {
-    Object.keys(accessories).forEach((st) => {
+    Object.keys(statusEnum).forEach((st) => {
         accessories[st].className = 'popup-standart popup-button';
     });
     accessories[blocks[currentFlashcard.front].individual.standardFlashcards.status].className += ' selected';
@@ -272,5 +298,7 @@ function stop(){
     examinationUniversals.turnOffExaminationSettingsButton();
     examinationUniversals.clearExamination();
     sequence = undefined;
+    console.log("Stopping");
+    currentFlashcard = undefined;
     backButtons.style.display = 'none';
 }

@@ -73,7 +73,8 @@ function start(dataInput){
 }
 
 function toggleToModeSelection(){
-    if (runningMode){
+    if (runningMode) {
+        examinationUniversals.stop();
         modes[runningMode].stop();
         container.className = 'examination-mode-selection';
         examinationUniversals.clearExamination();
@@ -93,11 +94,6 @@ function getRunningExamination() {
     }
 }
 
-function stop(){
-    toggleToModeSelection();
-    container.className = 'main';
-}
-
 function createAccessories() {
     for (let mode in modes) {
         modes[mode].createAccessories();
@@ -108,4 +104,9 @@ let globals;
 function init(args) {
     createAccessories();
     globals = args;
+}
+
+function stop() {
+    toggleToModeSelection();
+    container.className = 'main';
 }

@@ -107,6 +107,11 @@
     bottom: 0;
 }
 
+#backButtons button {
+    width: 87px;
+    margin: 0 2px;
+}
+
 #backButtons .selected {
     border-bottom: 2px solid #515d61;
 }
