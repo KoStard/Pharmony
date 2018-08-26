@@ -140,9 +140,10 @@ table tr {
     z-index: 1;
 }
 
-.dropdown:hover #settings-button svg path{
-    stroke-width: 1px;
+.dropdown:hover #settings-button svg line{
+    stroke-width: 1.5px;
     stroke: #051b27;
+    stroke-linecap: round;
 }
 
 .dropdown:hover .dropdown-content {
@@ -152,7 +153,7 @@ table tr {
 .dropdown-content {
     display: none;
     position: absolute;
-    top: 20px;
+    top: 21px;
     right: 0;
     z-index: 1;
     background: #f5f5f5;
