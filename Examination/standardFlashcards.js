@@ -30,7 +30,7 @@ function createStatus(name, text, color) {
 
 const statusEnum = Object.freeze({
     raw: createStatus('raw', "Raw", '#e65100'),
-    inProcess: createStatus('inProcess', "In Process", "#006064"),
+    inProcess: createStatus('inProcess', "In Process", "#279ca0"),
     finished: createStatus('finished', "Finished", "#43a047")
 });
 
