@@ -818,31 +818,32 @@ function init() {
             flashcard.accessories.click('inProcess');
         }
     }, 'keyup');
-    Mousetrap.bind("esc", () => { 
-        if (removeCollectionsSelector) {
-            stopEditCollectionsListMode();
-        } else if (popup.runningPopup()) {
-            popup.removeRunningPopup();
-        } else {
-            switch (container.className) {
-                case 'examination':
-                    if (examination.getElementsByClassName('flashcard').length > 0) {
-                        Examination.toggleToIntroduction();
-                    } else Examination.toggleToModeSelection();
-                    break;
-                case 'examination-mode-selection':
-                    Examination.stop();
-                    break;
-                case 'main':
-                    toggleToMenu();
-                    break;
-                case 'menu':
-                    break;
+
+    document.addEventListener('keyup', (ev)=>{
+        if (ev.key == 'Escape') {
+            if (removeCollectionsSelector) {
+                stopEditCollectionsListMode();
+            } else if (popup.runningPopup()) {
+                popup.removeRunningPopup();
+            } else {
+                switch (container.className) {
+                    case 'examination':
+                        if (examination.getElementsByClassName('flashcard').length > 0) {
+                            Examination.toggleToIntroduction();
+                        } else Examination.toggleToModeSelection();
+                        break;
+                    case 'examination-mode-selection':
+                        Examination.stop();
+                        break;
+                    case 'main':
+                        toggleToMenu();
+                        break;
+                    case 'menu':
+                        break;
+                }
             }
         }
-    }, 'keyup');
-
-    document.addEventListener('keyup', (ev)=>{console.log(ev);});
+    });
 
     ipcRenderer.on('edit-collections-list-clicked', () => { // Will allow to remove collections in the future
         toggleToMenu(); // If you are currently in the viewer, then this will toggle to the menu, to allow you edit collections list
