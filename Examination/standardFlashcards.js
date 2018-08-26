@@ -34,11 +34,69 @@ const statusEnum = Object.freeze({
     finished: createStatus('finished', "Finished", "#43a047")
 });
 
+let playlist = {
+    waiting: [[]],
+    finished: []
+}; // playlist - groups - names x 20
+let playlistGroupSize = 20;
+function createPlaylist(sequence){
+    playlist = {
+        waiting: [[]],
+        finished: []
+    };
+    for (let name of sequence) {
+        if (blocks[name].individual.standardFlashcards.status != statusEnum.finished.name)
+            playlist.waiting[playlist.waiting.length-1].push(name);
+        else
+            playlist.finished.push(name);
+        if (playlist.waiting[playlist.waiting.length-1].length > playlistGroupSize) {
+            playlist.waiting.push([]); // Creating new group
+        }
+    }
+    return playlist;
+}
+
+function checkGroupStatus(index) {
+    for (let element of playlist.waiting[index]) {
+        if (blocks[element].individual.standardFlashcards.status != statusEnum.finished.name)
+            return false;
+    }
+    return true;
+}
 
 let sequence;
-function createTable(sequence) {
+function createTable(playlist) {
     const table = document.createElement('table');
-    for (let blockName of sequence) {
+    for (let groupIndex in playlist.waiting){
+        for (let blockName of playlist.waiting[groupIndex]) {
+            const row = document.createElement('tr');
+            let cell = document.createElement('td');
+            cell.innerText = blockName;
+            row.appendChild(cell);
+            table.appendChild(row);
+
+            cell = document.createElement('td');
+            cell.className = 'standardFlashcardsIntroduction-status';
+            if (!blocks[blockName].individual.standardFlashcards.status) { 
+                blocks[blockName].individual.standardFlashcards.status = statusEnum.raw.name; 
+                blocks[blockName].individual.standardFlashcards.realEffort = 0;
+            }
+            cell.innerText = statusEnum[blocks[blockName].individual.standardFlashcards.status].text;
+            cell.style.backgroundColor = statusEnum[blocks[blockName].individual.standardFlashcards.status].color;
+            row.appendChild(cell);
+            table.appendChild(row);
+        }
+        // if (groupIndex != playlist.waiting.length - 1) {
+        const row = document.createElement('tr');
+        row.className = 'insulationRow';
+        let cell = document.createElement('td');
+        row.appendChild(cell);
+        cell = document.createElement('td');
+        row.appendChild(cell);
+        table.appendChild(row);
+        // }
+    }
+    for (let blockName of playlist.finished) {
         const row = document.createElement('tr');
         let cell = document.createElement('td');
         cell.innerText = blockName;
@@ -47,8 +105,8 @@ function createTable(sequence) {
 
         cell = document.createElement('td');
         cell.className = 'standardFlashcardsIntroduction-status';
-        if (!blocks[blockName].individual.standardFlashcards.status) { 
-            blocks[blockName].individual.standardFlashcards.status = statusEnum.raw.name; 
+        if (!blocks[blockName].individual.standardFlashcards.status) {
+            blocks[blockName].individual.standardFlashcards.status = statusEnum.raw.name;
             blocks[blockName].individual.standardFlashcards.realEffort = 0;
         }
         cell.innerText = statusEnum[blocks[blockName].individual.standardFlashcards.status].text;
@@ -67,7 +125,8 @@ const shuffleArray = arr => arr
 function createIntroductoryScreen(){
     backButtons.style.display = 'none'; 
     currentFlashcard = undefined;
-    table = createTable(sequence);
+    createPlaylist(sequence);
+    table = createTable(playlist);
     new examinationUniversals.createIntroductoryScreen({
         content: table,
         buttons: [
@@ -81,7 +140,8 @@ function createIntroductoryScreen(){
                 buttonClass: 'popup-standart popup-button',
                 onclick: () => {
                     sequence = Object.keys(blocks);
-                    table = createTable(sequence);
+                    createPlaylist(sequence);
+                    table = createTable(playlist);
                     examinationUniversals.resetIntroductoryScreenContent(table);
                 }
             }),
@@ -90,7 +150,8 @@ function createIntroductoryScreen(){
                 buttonClass: 'popup-standart popup-button',
                 onclick: ()=>{
                     sequence = shuffleArray(sequence);
-                    table = createTable(sequence);
+                    createPlaylist(sequence);
+                    table = createTable(playlist);
                     examinationUniversals.resetIntroductoryScreenContent(table);
                 }
             }),
@@ -101,7 +162,9 @@ function createIntroductoryScreen(){
                     for (let name in blocks) {
                         blocks[name].individual.standardFlashcards.status = statusEnum.raw.name;
                     }
-                    table = createTable(sequence);
+                    globals.save();
+                    createPlaylist(sequence);
+                    table = createTable(playlist);
                     examinationUniversals.resetIntroductoryScreenContent(table);
                 }
             }),
@@ -109,14 +172,18 @@ function createIntroductoryScreen(){
                 value: 'Start',
                 buttonClass: 'popup-standart popup-button',
                 onclick: () => {
-                    examinationUniversals.clearExamination();
-                    main();
+                    if (playlist.waiting[0].length > 0){
+                        examinationUniversals.clearExamination();
+                        main();
+                    }
                 }
             })
         ],
         start: () => {
-            examinationUniversals.clearExamination();
-            main();
+            if (playlist.waiting[0].length > 0) {
+                examinationUniversals.clearExamination();
+                main();
+            }
         }
     });
 }
@@ -135,7 +202,7 @@ function start(dataInput, args){
 let flashcard;
 function main() {
     examinationUniversals.turnOnExaminationSettingsButton();
-    flashcard = runFlashcard(sequence);
+    flashcard = runFlashcard();
     flashcard.next();
 }
 
@@ -149,13 +216,24 @@ function next() {
 function finish(){
     done = true;
     examinationUniversals.clearExamination();
-    createIntroductoryScreen(sequence);
+    createIntroductoryScreen();
 }
 
-function* runFlashcard(sequence) {
+const maxCycles = 3;
+function* runFlashcard() {
     done = false;
-    for (let name of sequence){
-        yield new Flashcard(name, blocks[name].description);
+    let cycle = 0;
+    for (let groupIndex in playlist.waiting){
+        cycle = 0;
+        while (!checkGroupStatus(groupIndex)){
+            cycle += 1;
+            if (cycle > maxCycles) break;
+            for (let name of playlist.waiting[groupIndex]){
+                if (blocks[name].individual.standardFlashcards.status != statusEnum.finished.name){
+                    yield new Flashcard(name, blocks[name].description);
+                }
+            }
+        }
     }
 }
 let accessories;

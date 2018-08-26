@@ -121,3 +121,8 @@
     width: 100px;
     color: white;
 }
+
+table .insulationRow {
+    background: #e1e8ea;
+    height: 10px;
+}
