@@ -842,6 +842,8 @@ function init() {
         }
     }, 'keyup');
 
+    document.addEventListener('keyup', (ev)=>{console.log(ev);});
+
     ipcRenderer.on('edit-collections-list-clicked', () => { // Will allow to remove collections in the future
         toggleToMenu(); // If you are currently in the viewer, then this will toggle to the menu, to allow you edit collections list
         editCollectionsList();

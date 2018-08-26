@@ -136,8 +136,10 @@ openingFunction, buffered = true}) {
             this.popupBigPanelCentral.hide();
         };
     } else {
-        if (initialState!="hidden")
+        if (initialState!="hidden") {
             this.focus();
+            runningPopup = this;
+        }
     }
     this.focus = () => {
         if (this.inputs.length > 0) {
