@@ -2,7 +2,6 @@
 module.exports = {
     start: start,
     stop: stop,
-    next: next,
     createIntroductoryScreen: createIntroductoryScreen,
     createAccessories: createAccessories,
     getCurrentFlashcard: getCurrentFlashcard
@@ -69,7 +68,7 @@ function createIntroductoryScreen(){
     backButtons.style.display = 'none'; 
     currentFlashcard = undefined;
     table = createTable(sequence);
-    examinationUniversals.createIntroductoryScreen({
+    new examinationUniversals.createIntroductoryScreen({
         content: table,
         buttons: [
             createButton({
@@ -114,7 +113,11 @@ function createIntroductoryScreen(){
                     main();
                 }
             })
-        ]
+        ],
+        start: () => {
+            examinationUniversals.clearExamination();
+            main();
+        }
     });
 }
 
@@ -208,6 +211,20 @@ function createAccessories() {
         owner: backButtons
     });
     f(this.finished, 'finished');
+
+    this.press = function (name) {
+        blocks[currentFlashcard.front].individual.standardFlashcards.status = name;
+        globals.save();
+        resetAccessoriesSelection();
+        next();
+    };
+
+    this.mainButtonPressed = function () {
+        blocks[currentFlashcard.front].individual.standardFlashcards.status = Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[currentFlashcard.front].individual.standardFlashcards.status) == 0 ? 1 : 2];
+        globals.save();
+        resetAccessoriesSelection();
+        next();
+    };
 }
 function resetAccessoriesSelection() {
     Object.keys(accessories).forEach((st) => {
@@ -221,9 +238,11 @@ function Flashcard(front, back) {
     currentFlashcard = this;
     this.front = front;
     this.back = back;
+    this.accessories = accessories;
 
     examinationUniversals.clearExamination();
     const flashcardNode = document.createElement('div');
+    this.flashcardNode = flashcardNode;
     flashcardNode.className = 'flashcard front';
     const frontSide = document.createElement('div');
     let content = document.createElement('div');

@@ -6,6 +6,7 @@ module.exports = {
     clearExamination: clearExamination,
     createIntroductoryScreen: createIntroductoryScreen,
     resetIntroductoryScreenContent: resetIntroductoryScreenContent,
+    getIntroductoryScreen: getIntroductoryScreen,
     examinationSettingsButtonContainer: examinationSettingsButtonContainer,
     examinationSettingsButtonContent: examinationSettingsButtonContent,
     checkIfExaminationSettingsContentIsEmpty: checkIfExaminationSettingsContentIsEmpty,
@@ -38,10 +39,11 @@ function turnOnExaminationSettingsButton() {
     examinationSettingsButtonContainer.style.display = 'block';
 }
 let introductoryScreen, introductoryScreenContent, introductoryScreenPanel;
-function createIntroductoryScreen({content, buttons}){
+function createIntroductoryScreen({ content, buttons, start}) {
+    introductoryScreen = this;
     turnOffExaminationSettingsButton();
-    introductoryScreen = document.createElement('div');
-    introductoryScreen.className = 'introductory-screen';
+    introductoryScreenNode = document.createElement('div');
+    introductoryScreenNode.className = 'introductory-screen';
     introductoryScreenContent = document.createElement('div');
     introductoryScreenContent.className = 'introductory-screen-content';
     introductoryScreenContent.appendChild(content);
@@ -50,10 +52,15 @@ function createIntroductoryScreen({content, buttons}){
     for (let button of buttons) {
         introductoryScreenPanel.appendChild(button);
     }
-    introductoryScreen.appendChild(introductoryScreenContent);
-    introductoryScreen.appendChild(introductoryScreenPanel);
+    introductoryScreenNode.appendChild(introductoryScreenContent);
+    introductoryScreenNode.appendChild(introductoryScreenPanel);
     clearExamination();
-    examination.appendChild(introductoryScreen);
+    examination.appendChild(introductoryScreenNode);
+    this.start = start;
+}
+
+function getIntroductoryScreen() {
+    return introductoryScreen;
 }
 
 function resetIntroductoryScreenContent(content) {

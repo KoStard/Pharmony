@@ -11,8 +11,10 @@ const launch = require('./launchFiles');
 const {ipcRenderer} = require('electron');
 const Selector = require('./selector');
 const Examination = require('./Examination/examination');
+const ExaminationUniversals = require('./Examination/examinationUniversals');
 const standardFlashcards = require('./Examination/standardFlashcards');
-const {createButton} = require('./Universals');
+const { createButton } = require('./Universals');
+const Mousetrap = require('./mousetrap.min.js');
 
 let data = {};
 let blocks = {};
@@ -761,41 +763,61 @@ function init() {
             break;
         }
     });
-    
-    document.addEventListener('keyup', (event)=>{ 
-        switch (event.keyCode) {
-            case 32: // Responding to space keyup
-                const flashcard = standardFlashcards.getCurrentFlashcard();
-                if (flashcard) {
-                    flashcard.rotate();
-                }
-                break;
-            case 27: // Responding to Esc button
-                if (removeCollectionsSelector){
-                    stopEditCollectionsListMode();
-                }else if (popup.runningPopup()) {
-                    popup.removeRunningPopup();
-                }
-                else {
-                    switch (container.className){
-                        case 'examination':
-                        if (examination.getElementsByClassName('flashcard').length > 0) {
-                            Examination.toggleToIntroduction();
-                        }
-                        else Examination.toggleToModeSelection();
-                        break;
-                        case 'examination-mode-selection':
-                        Examination.stop();
-                        break;
-                        case 'main':
-                        toggleToMenu();
-                        break;
-                        case 'menu':
-                        break;
-                    }
-                }
+    Mousetrap.bind("space", (e) => { // Responding to space keyup
+        const flashcard = standardFlashcards.getCurrentFlashcard();
+        if (flashcard) {
+            if (flashcard.flashcardNode.className == 'flashcard both') {
+                flashcard.accessories.mainButtonPressed();
+            }else 
+                flashcard.rotate();
+        } else {
+            const introductoryScreen = ExaminationUniversals.getIntroductoryScreen();
+            if (introductoryScreen) {
+                introductoryScreen.start();
+            }
         }
-    });
+    }, 'keyup');
+    Mousetrap.bind("left", (e) => {
+        const flashcard = standardFlashcards.getCurrentFlashcard();
+        if (flashcard && flashcard.flashcardNode.className == 'flashcard both') {
+            flashcard.accessories.press('raw');
+        }
+    }, 'keyup');
+    Mousetrap.bind("right", (e) => {
+        const flashcard = standardFlashcards.getCurrentFlashcard();
+        if (flashcard && flashcard.flashcardNode.className == 'flashcard both') {
+            flashcard.accessories.press('finished');
+        }
+    }, 'keyup');
+    Mousetrap.bind(["down", "up"], (e) => {
+        const flashcard = standardFlashcards.getCurrentFlashcard();
+        if (flashcard && flashcard.flashcardNode.className == 'flashcard both') {
+            flashcard.accessories.press('inProcess');
+        }
+    }, 'keyup');
+    Mousetrap.bind("esc", () => { 
+        if (removeCollectionsSelector) {
+            stopEditCollectionsListMode();
+        } else if (popup.runningPopup()) {
+            popup.removeRunningPopup();
+        } else {
+            switch (container.className) {
+                case 'examination':
+                    if (examination.getElementsByClassName('flashcard').length > 0) {
+                        Examination.toggleToIntroduction();
+                    } else Examination.toggleToModeSelection();
+                    break;
+                case 'examination-mode-selection':
+                    Examination.stop();
+                    break;
+                case 'main':
+                    toggleToMenu();
+                    break;
+                case 'menu':
+                    break;
+            }
+        }
+    }, 'keyup');
 
     ipcRenderer.on('edit-collections-list-clicked', () => { // Will allow to remove collections in the future
         toggleToMenu(); // If you are currently in the viewer, then this will toggle to the menu, to allow you edit collections list
