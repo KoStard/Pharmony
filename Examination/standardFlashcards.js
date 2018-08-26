@@ -16,6 +16,8 @@ const examinationContainer = document.getElementById("examination-container");
 const examination = document.getElementById("examination");
 const backButtons = document.getElementById("backButtons");
 
+let autoRefresh = true;
+
 let data, blocks;
 let currentFlashcard;
 
@@ -71,7 +73,13 @@ function createTable(playlist) {
         for (let blockName of playlist.waiting[groupIndex]) {
             const row = document.createElement('tr');
             let cell = document.createElement('td');
+            cell.className = 'standardFlashcardsIntroduction-front';
             cell.innerText = blockName;
+            cell.ondblclick = ()=>{
+                examinationUniversals.clearExamination();
+                createPlaylist(sequence.slice(sequence.indexOf(blockName), sequence.length));
+                main();
+            };
             row.appendChild(cell);
             table.appendChild(row);
 
@@ -81,20 +89,31 @@ function createTable(playlist) {
                 blocks[blockName].individual.standardFlashcards.status = statusEnum.raw.name; 
                 blocks[blockName].individual.standardFlashcards.realEffort = 0;
             }
+            cell.ondblclick = () => {
+                blocks[blockName].individual.standardFlashcards.status = Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[blockName].individual.standardFlashcards.status)==2?0:2];
+                globals.save();
+                if (autoRefresh) {
+                    createPlaylist(sequence);
+                    examinationUniversals.resetIntroductoryScreenContent(createTable(getPlaylist()));
+                } else {
+                    cell.innerText = statusEnum[blocks[blockName].individual.standardFlashcards.status].text;
+                    cell.style.backgroundColor = statusEnum[blocks[blockName].individual.standardFlashcards.status].color;
+                }
+            };
             cell.innerText = statusEnum[blocks[blockName].individual.standardFlashcards.status].text;
             cell.style.backgroundColor = statusEnum[blocks[blockName].individual.standardFlashcards.status].color;
             row.appendChild(cell);
             table.appendChild(row);
         }
-        // if (groupIndex != playlist.waiting.length - 1) {
-        const row = document.createElement('tr');
-        row.className = 'insulationRow';
-        let cell = document.createElement('td');
-        row.appendChild(cell);
-        cell = document.createElement('td');
-        row.appendChild(cell);
-        table.appendChild(row);
-        // }
+        if (groupIndex != playlist.waiting.length - 1 || playlist.finished.length > 0) {
+            const row = document.createElement('tr');
+            row.className = 'insulationRow';
+            let cell = document.createElement('td');
+            row.appendChild(cell);
+            cell = document.createElement('td');
+            row.appendChild(cell);
+            table.appendChild(row);
+        }
     }
     for (let blockName of playlist.finished) {
         const row = document.createElement('tr');
@@ -105,10 +124,17 @@ function createTable(playlist) {
 
         cell = document.createElement('td');
         cell.className = 'standardFlashcardsIntroduction-status';
-        if (!blocks[blockName].individual.standardFlashcards.status) {
-            blocks[blockName].individual.standardFlashcards.status = statusEnum.raw.name;
-            blocks[blockName].individual.standardFlashcards.realEffort = 0;
-        }
+        cell.ondblclick = () => {
+            blocks[blockName].individual.standardFlashcards.status = Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[blockName].individual.standardFlashcards.status) == 2 ? 0 : 2];
+            globals.save();
+            if (autoRefresh) {
+                createPlaylist(sequence);
+                examinationUniversals.resetIntroductoryScreenContent(createTable(getPlaylist()));
+            } else {
+                cell.innerText = statusEnum[blocks[blockName].individual.standardFlashcards.status].text;
+                cell.style.backgroundColor = statusEnum[blocks[blockName].individual.standardFlashcards.status].color;
+            }
+        };
         cell.innerText = statusEnum[blocks[blockName].individual.standardFlashcards.status].text;
         cell.style.backgroundColor = statusEnum[blocks[blockName].individual.standardFlashcards.status].color;
         row.appendChild(cell);
@@ -116,6 +142,8 @@ function createTable(playlist) {
     }
     return table;
 }
+
+let getPlaylist = ()=>playlist;
 
 const shuffleArray = arr => arr
   .map(a => [Math.random(), a])

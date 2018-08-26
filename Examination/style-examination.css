@@ -120,9 +120,14 @@
     text-align: center;
     width: 100px;
     color: white;
+    user-select: none;
 }
 
 table .insulationRow {
     background: #e1e8ea;
     height: 10px;
+}
+
+.standardFlashcardsIntroduction-front:hover {
+    background-color: #ebebeb;
 }
