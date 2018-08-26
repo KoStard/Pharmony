@@ -84,14 +84,14 @@
     position: fixed;
     top: 0;
     left: 0;
-    bottom: 70%;
+    bottom: 80%;
     right: 0;
     overflow: auto;
     border-bottom: 1px solid gray;
 }
 .flashcard.both .back {
     position: fixed;
-    top: 30%;
+    top: 20%;
     left: 0;
     bottom: 30px;
     right: 0;
