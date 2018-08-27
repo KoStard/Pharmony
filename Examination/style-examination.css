@@ -131,3 +131,17 @@ table .insulationRow {
 .standardFlashcardsIntroduction-front:hover {
     background-color: #ebebeb;
 }
+
+.flashcards-progress-bar {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    padding: 5px;
+    border-top-right-radius: 5px;
+    background: #263238;
+    color: #fafafa;
+    text-align: end;
+}

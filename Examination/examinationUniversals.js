@@ -56,7 +56,7 @@ function createIntroductoryScreen({ content, buttons, start}) {
     introductoryScreenNode.appendChild(introductoryScreenContent);
     introductoryScreenNode.appendChild(introductoryScreenPanel);
     clearExamination();
-    examination.appendChild(introductoryScreenNode);
+    examination.insertBefore(introductoryScreenNode, examination.childNodes[0]);
     this.start = start;
 }
 

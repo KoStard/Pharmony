@@ -15,6 +15,7 @@ const container = document.getElementById('container');
 const examinationContainer = document.getElementById("examination-container");
 const examination = document.getElementById("examination");
 const backButtons = document.getElementById("backButtons");
+const accessoriesNode = examination.getElementsByClassName('accessories')[0];
 
 let autoRefresh = true;
 
@@ -153,6 +154,7 @@ const shuffleArray = arr => arr
 function createIntroductoryScreen(){
     backButtons.style.display = 'none'; 
     currentFlashcard = undefined;
+    accessories.hide();
     createPlaylist(sequence);
     table = createTable(playlist);
     new examinationUniversals.createIntroductoryScreen({
@@ -264,14 +266,24 @@ const maxCycles = 3;
 function* runFlashcard() {
     done = false;
     let cycle = 0;
+    accessories.show();
+    accessories.progressBarData.groupsNum = playlist.waiting.length;
     for (let groupIndex in playlist.waiting){
         cycle = 0;
+        accessories.progressBarData.currentGroupSize = playlist.waiting[groupIndex].length;
+        accessories.progressBarData.progress = 0;
+        accessories.progressBarData.currentGroupIndex = parseInt(groupIndex) + 1;
+        accessories.refreshProgressBar();
         while (!checkGroupStatus(groupIndex)){
             cycle += 1;
             if (cycle > maxCycles) break;
             for (let name of playlist.waiting[groupIndex]){
                 if (blocks[name].individual.standardFlashcards.status != statusEnum.finished.name){
                     yield new Flashcard(name, blocks[name].description);
+                    if (blocks[name].individual.standardFlashcards.status == statusEnum.finished.name) {
+                        accessories.progressBarData.progress += 1;
+                        accessories.refreshProgressBar();
+                    }
                 }
             }
         }
@@ -370,6 +382,67 @@ function createAccessories() {
         if (this.waitingForMainButtonClick)
             this.click(Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[currentFlashcard.front].individual.standardFlashcards.status) == 0 ? 1 : 2]);
     };
+    this.progressBar = (() => {
+                    let el = document.createElement('div');
+                    el.className = 'flashcards-progress-bar';
+                    return el;
+                })();
+    this.progressBarData = {
+        progress: 0,
+        currentGroupSize: 0,
+        currentGroupIndex: 0,
+        groupsNum: 0
+    };
+    accessoriesNode.appendChild(this.progressBar);
+    this.refreshProgressBar = () => {
+        this.progressBar.innerHTML = 
+        `${this.progressBarData.progress}/${this.progressBarData.currentGroupSize}<br>
+        Group ${this.progressBarData.currentGroupIndex}/${this.progressBarData.groupsNum}`;
+    };
+
+    this.show = ()=>{
+        this.progressBar.style.display = 'block';
+    };
+
+    this.hide = ()=>{
+        this.progressBar.style.display = 'none';
+    };
+                
+
+    // this.progressBarNodeComplex = {
+    //     progressBar: (() => {
+    //         let el = document.createElement('div');
+    //         el.className = 'flashcards-progress-bar';
+    //         return el;
+    //     })(),
+    //     currentFlashcardsIndex: (() => {
+    //         let el = document.createElement('div');
+    //         el.className = 'flashcards-progress-bar-currentIndex';
+    //         el.innerText = 0;
+    //         return el;
+    //     })(),
+    //     currentGroupSize: (() => {
+    //         let el = document.createElement('div');
+    //         el.className = 'flashcards-progress-bar-groupSize';
+    //         el.innerText = 0;
+    //         return el;
+    //     })(),
+    //     currentGroupIndex: (() => {
+    //         let el = document.createElement('div');
+    //         el.className = 'flashcards-progress-bar-groupIndex';
+    //         el.innerText = 0;
+    //         return el;
+    //     })(),
+    //     groupsNum: (() => {
+    //         let el = document.createElement('div');
+    //         el.className = 'flashcards-progress-bar-groupsNum';
+    //         el.innerText = 0;
+    //         return el;
+    //     })(),
+    // }
+    // this.progressBar = {
+
+    // };
 }
 function resetAccessoriesSelection() {
     Object.keys(statusEnum).forEach((st) => {
@@ -402,7 +475,7 @@ function Flashcard(front, back) {
     backSide.className = 'back';
     backSide.appendChild(content);
     flashcardNode.appendChild(backSide);
-    examination.appendChild(flashcardNode);
+    examination.insertBefore(flashcardNode, examination.childNodes[examination.childNodes.length-1]);
 
     this.rotate = function(){
         if (flashcardNode.className == 'flashcard front') {
@@ -416,6 +489,7 @@ function Flashcard(front, back) {
 function stop(){
     examinationUniversals.turnOffExaminationSettingsButton();
     examinationUniversals.clearExamination();
+    accessories.hide();
     sequence = undefined;
     console.log("Stopping");
     currentFlashcard = undefined;
