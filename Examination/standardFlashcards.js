@@ -396,8 +396,8 @@ function createAccessories() {
     accessoriesNode.appendChild(this.progressBar);
     this.refreshProgressBar = () => {
         this.progressBar.innerHTML = 
-        `${this.progressBarData.progress}/${this.progressBarData.currentGroupSize}<br>
-        Group ${this.progressBarData.currentGroupIndex}/${this.progressBarData.groupsNum}`;
+        `Finished <span>${this.progressBarData.progress}</span>/<span>${this.progressBarData.currentGroupSize}</span><br>
+        Group <span>${this.progressBarData.currentGroupIndex}</span>/<span>${this.progressBarData.groupsNum}</span>`;
     };
 
     this.show = ()=>{
@@ -407,42 +407,6 @@ function createAccessories() {
     this.hide = ()=>{
         this.progressBar.style.display = 'none';
     };
-                
-
-    // this.progressBarNodeComplex = {
-    //     progressBar: (() => {
-    //         let el = document.createElement('div');
-    //         el.className = 'flashcards-progress-bar';
-    //         return el;
-    //     })(),
-    //     currentFlashcardsIndex: (() => {
-    //         let el = document.createElement('div');
-    //         el.className = 'flashcards-progress-bar-currentIndex';
-    //         el.innerText = 0;
-    //         return el;
-    //     })(),
-    //     currentGroupSize: (() => {
-    //         let el = document.createElement('div');
-    //         el.className = 'flashcards-progress-bar-groupSize';
-    //         el.innerText = 0;
-    //         return el;
-    //     })(),
-    //     currentGroupIndex: (() => {
-    //         let el = document.createElement('div');
-    //         el.className = 'flashcards-progress-bar-groupIndex';
-    //         el.innerText = 0;
-    //         return el;
-    //     })(),
-    //     groupsNum: (() => {
-    //         let el = document.createElement('div');
-    //         el.className = 'flashcards-progress-bar-groupsNum';
-    //         el.innerText = 0;
-    //         return el;
-    //     })(),
-    // }
-    // this.progressBar = {
-
-    // };
 }
 function resetAccessoriesSelection() {
     Object.keys(statusEnum).forEach((st) => {
