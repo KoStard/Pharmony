@@ -5,8 +5,10 @@ module.exports = {
     PopupAlertPanelSmall: PopupAlertPanelSmall,
     PopupInputPanelBigCentral: PopupInputPanelBigCentral,
     runningPopup: () => { return runningPopup; },
-    removeRunningPopup: () => { runningPopup.close(); runningPopup=undefined; }
+    removeRunningPopup: () => { runningPopup.close(); runningPopup=undefined; },
+    init: init
 };
+let globals;
 let runningPopup;
 function createResponsiveFunction({func, popupAlertPanel, startInfo, successInfo, successLogic, errorInfo}) {
     return (attrs)=>{
@@ -127,6 +129,7 @@ openingFunction, buffered = true}) {
     
     if (buffered) {
         this.show = () => {
+            globals && globals.capturingObjects.push(this);
             runningPopup = this;
             this.panelHolder.style.display = "block";
             if (this.openingFunction) this.openingFunction(this);
@@ -137,6 +140,7 @@ openingFunction, buffered = true}) {
         };
     } else {
         if (initialState!="hidden") {
+            globals && globals.capturingObjects.push(this);
             this.focus();
             runningPopup = this;
         }
@@ -154,6 +158,7 @@ openingFunction, buffered = true}) {
     };
 
     this.close = () => {
+        globals && globals.capturingObjects.pop(this);
         if (this.hide) this.hide();
         else this.exit();
     };
@@ -188,4 +193,8 @@ function makePopupElement(elem, mode) {
         if (!elem.classList.contains(curr)) elem.classList.add(curr);
     }
     return elem;
+}
+
+function init(glbs) {
+    globals = glbs;
 }

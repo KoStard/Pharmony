@@ -57,8 +57,23 @@ function refreshScrollLevel(){
 }
 
 
-
+let MultiSelectionButton,
+MultiSelectionButtonEnum = Object.freeze({
+    default: 'MultiSelection',
+    cancel: 'Done'
+});
 function settingsCreator() {
+    MultiSelectionButton = createButton({
+        value: MultiSelectionButtonEnum.default,
+        onclick: function () {
+            if (this.innerText == MultiSelectionButtonEnum.default){
+                switchToMultiSelectionMode();
+            } else if (this.innerText == MultiSelectionButtonEnum.cancel) {
+                switchToNormalViewerMode();
+            }
+        },
+        owner: settingsDropdownContent
+    });
     createButton({
         value: 'Examinate',
         onclick: () => { startExamination(); },
@@ -192,6 +207,7 @@ function loadMenu(){
 let removeCollectionsSelector;
 function editCollectionsList(){
     removeCollectionsSelector = new Selector({elements: menuButtons});
+    removeCollectionsSelector.init(globals);
     removeCollectionsSelector.start();
     newCollectionButton.style.display = 'none';
     removeCollectionsButton.style.display = 'block';
@@ -229,6 +245,49 @@ let createDatabase = popup.createResponsiveFunction({
         text: 'Done.'
     }
 });
+
+// Viewer stuff
+let MultiSelector;
+let MultiSelectorData = {
+    lastKey: '--',
+    lastNewValue: ''
+};
+function switchToMultiSelectionMode(){
+    MultiSelectionButton.innerText = MultiSelectionButtonEnum.cancel;
+    MultiSelector = new Selector({
+        elements: Array.from(table.childNodes).slice(1), // Еxcluding headers from selection
+        selectedColor: '#e0e0e0',
+        unselectedColor: 'none',
+        hoverColor: '#ebebeb'
+    });
+    MultiSelector.init(globals);
+    MultiSelector.start();
+    if (!standardizeText(input.value)) return;
+    let resp = inputSlicer(input.value);
+    let name, key, newValue;
+    if (resp)
+        [, name, key, newValue] = (resp).map(x => standardizeText(x));
+    else{
+        name = input.value;
+    }
+    if (!name) return;
+    if (name.includes(';')) name = name.split(";");
+    else name = [name];
+    for (let curr of Array.from(table.childNodes).filter((el) => name.includes(el.childNodes[1].innerText))) {
+        MultiSelector.selectElement(curr);
+    }
+    MultiSelectorData.lastKey = (key||'--');
+    MultiSelectorData.lastNewValue = newValue;
+}
+
+function switchToNormalViewerMode(){
+    MultiSelectionButton.innerText = MultiSelectionButtonEnum.default;
+    input.value = MultiSelector.selectedElements.map(row=>row.childNodes[1].innerText).join(';')+MultiSelectorData.lastKey+MultiSelectorData.lastNewValue;
+    MultiSelector.stop();
+    MultiSelector = undefined;
+    MultiSelectorData.lastKey = '--';
+    MultiSelectorData.lastNewValue = '';
+}
 
 // Table creation and finding
 function showDB() {
@@ -416,6 +475,7 @@ let responsiveExport = popup.createResponsiveFunction({
     popupAlertPanel: popup.PopupAlertPanelSmall
 });
 
+// Text manipulations
 const specialSymbols = {
     '': ['^\\s+','\\s+$'],
     ';': [';\\n', ';\\r', '\\n', '\\r'],
@@ -423,6 +483,7 @@ const specialSymbols = {
 };
 
 function standardizeText(text) {
+    if (!text) return text;
     for (let symb in specialSymbols) {
         text = text.replace(new RegExp(specialSymbols[symb].map((x) => `(${x})`).join("|"), 'g'), symb);
     }
@@ -695,6 +756,7 @@ function startExamination() {
     show(lastIDnames);
 }
 
+// Data reforms
 function reformBlocks(template) {
     for (let blockName in blocks) {
         for (let currentKey in template) {
@@ -748,6 +810,11 @@ function reformAllCorrespondingToStandards(){ // Is being called from devtools
     });
 }
 
+const globals = {
+    save: save,
+    capturingObjects: []
+};
+// Initialization
 function init() {
     ipcRenderer.send('started');
     input.addEventListener('keydown', (event)=>{ 
@@ -822,10 +889,8 @@ function init() {
 
     document.addEventListener('keyup', (ev)=>{
         if (ev.key == 'Escape') {
-            if (removeCollectionsSelector) {
-                stopEditCollectionsListMode();
-            } else if (popup.runningPopup()) {
-                popup.removeRunningPopup();
+            if (globals.capturingObjects.length > 0) { 
+                globals.capturingObjects[globals.capturingObjects.length-1].close(); // From the last to the first
             } else {
                 switch (container.className) {
                     case 'examination':
@@ -864,9 +929,8 @@ function init() {
     loadMenu(); // Creating menu
     initEditor(); // Initializing editor object once
     // Examination.createAccessories();
-    Examination.init({
-        save: save
-    });
+    Examination.init(globals);
+    popup.init(globals);
 }
 
 window.onload = init; // Starting the program
