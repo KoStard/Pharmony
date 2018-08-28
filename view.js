@@ -247,6 +247,10 @@ let createDatabase = popup.createResponsiveFunction({
 });
 
 // Viewer stuff
+function clearSelection() {
+    if (window.getSelection) { window.getSelection().removeAllRanges(); }
+    else if (document.selection) { document.selection.empty(); }
+}
 let MultiSelector;
 let MultiSelectorData = {
     lastKey: '--',
@@ -393,9 +397,31 @@ function show(IDnames) {
         else
             tempD.innerHTML = `<div class='table-element'>${descrBlocks[0]}</div>`;
         tempRow.appendChild(tempD);
-
+        tempRow.addEventListener('mousedown', (event)=>{
+            clearSelection();
+        });
         tempRow.addEventListener('dblclick', (event) => {
-            input.value = `${name} -- ${blocks[name].description}`;
+            event.preventDefault();
+            if (event.shiftKey){ // Adding to existing one
+                let tempName, key = '--', newValue;
+                if (standardizeText(input.value)) {
+                    let resp = inputSlicer(input.value);
+                    if (resp)
+                        [, tempName, key, newValue] = (resp).map(x => standardizeText(x));
+                    else {
+                        tempName = input.value;
+                    }
+                }
+                if (tempName){
+                    if (tempName.includes(';')) tempName = tempName.split(";");
+                    else tempName = [tempName];
+                    if (!tempName.includes(name))
+                        input.value = `${tempName};${name} ${key} ${newValue}`;
+                } else {
+                    input.value = `${name} ${key} ${blocks[name].description}`;
+                }
+            } else 
+                input.value = `${name} -- ${blocks[name].description}`;
         });
         if (tempRow.innerHTML)
             table.appendChild(tempRow);
