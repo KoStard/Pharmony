@@ -69,7 +69,7 @@ function checkGroupStatus(index) {
 
 let sequence;
 function createTable(playlist) {
-    const table = document.createElement('table');
+    let table = document.createElement('table');
     for (let groupIndex in playlist.waiting){
         for (let blockName of playlist.waiting[groupIndex]) {
             const row = document.createElement('tr');
@@ -156,7 +156,7 @@ function createIntroductoryScreen(){
     currentFlashcard = undefined;
     accessories.hide();
     createPlaylist(sequence);
-    table = createTable(playlist);
+    let table = createTable(playlist);
     new examinationUniversals.createIntroductoryScreen({
         content: table,
         buttons: [

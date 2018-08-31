@@ -53,6 +53,10 @@ table tr {
     width: 30%;
 }
 
+#tableHeader-DBName {
+    width: 20%;
+}
+
 #tableHolder {
     /* padding: 0 0 10px 0; */
     margin: 0;

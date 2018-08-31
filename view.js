@@ -80,6 +80,34 @@ function settingsCreator() {
         owner: settingsDropdownContent
     });
     createButton({
+        value: 'Global',
+        onclick: () => { 
+            if (inputMode == 'global') {
+                toggleToMain();
+                onGlobalModeClosing && onGlobalModeClosing();
+                onGlobalModeClosing = undefined;
+            }else {
+                inputMode = 'global';
+                globalSearch('', false);
+            }
+        },
+        owner: settingsDropdownContent
+    });
+    createButton({
+        value: 'Global with descriptions',
+        onclick: () => {
+            if (inputMode == 'global-with-descriptions') {
+                toggleToMain();
+                onGlobalModeClosing && onGlobalModeClosing();
+                onGlobalModeClosing = undefined;
+            } else {
+                inputMode = 'global-with-descriptions';
+                globalSearch('', true);
+            }
+        },
+        owner: settingsDropdownContent
+    });
+    createButton({
         value: 'Menu',
         onclick: ()=>{toggleToMenu();},
         owner: settingsDropdownContent
@@ -138,8 +166,25 @@ function loadMenuButtons() {
     menuButtons = menuButtons.filter(x=>x);
 }
 
-function toggleToMain(){
+// Marker of being in global search or not
+let inputMode = 'standard';
+
+
+// Toggling to main viewer
+function toggleToMain(inputMode_local = "standard"){
     container.className = 'main';
+    inputMode = inputMode_local;
+    switch (inputMode_local) {
+        case "standard":
+        headersRowColor = '';
+        break;
+        case "global":
+        headersRowColor = '#f44336';
+        break;
+        case "global-with-descriptions":
+        headersRowColor = '#b71c1c';
+        break;
+    }
 }
 
 function toggleToMenu(){
@@ -299,11 +344,11 @@ function showDB() {
     lastFind = undefined;
     let keys = new Set();
     for (let k in blocks) keys.add(k);
-    return show(keys);
+    return show(keys, blocks);
 }
 
 let lastFind;
-function find(rawArg, mark=true, indices = true) {
+function find(rawArg, mark=true, indices = true, withDescription = false) {
     if (mark)
         lastFind = rawArg;
     if (!rawArg) return Object.keys(blocks);
@@ -318,17 +363,17 @@ function find(rawArg, mark=true, indices = true) {
             for (let arg of args) {
                 switch(arg[0]) {
                     case '&':
-                        if (!name.includes(arg.slice(1))){
+                        if (!name.includes(arg.slice(1)) && !(withDescription && blocks[name].description.includes(arg.slice(1)))) {
                             valid = false;
                         }
                         break;
                     case '^':case '!':
-                        if (name.includes(arg.slice(1))) {
+                        if (name.includes(arg.slice(1)) || (withDescription && blocks[name].description.includes(arg.slice(1)))) {
                             valid = false;
                         }
                         break;
                     default:
-                        if (!name.includes(arg)) {
+                        if (!name.includes(arg) && !(withDescription && blocks[name].description.includes(arg))) {
                             valid = false;
                         }
                         break;
@@ -353,10 +398,12 @@ function clearTable() {
 }
 
 let lastIDnames;
-function show(IDnames) {
+let headersRowColor;
+function show(IDnames, blocks) {
     changedBlockNames = [];
     changeFindTo = undefined;
-    lastIDnames = IDnames;
+    if (inputMode == 'standard')
+        lastIDnames = IDnames;
     clearTable();
     let headersRow = document.createElement('tr');
     headersRow.className = "headerRow";
@@ -375,10 +422,27 @@ function show(IDnames) {
     tempH.id = 'tableHeader-Description';
     headersRow.appendChild(tempH);
 
+    if (headersRowColor) {
+        headersRow.style.background = headersRowColor;
+    }
+
+    if (inputMode == 'global' || inputMode == 'global-with-descriptions') {
+        tempH = document.createElement('th');
+        tempH.innerHTML = 'Collection';
+        tempH.id = 'tableHeader-DBName';
+        headersRow.appendChild(tempH);
+    }
+
     let tempIndex = 1;
     for (let IDname of IDnames) {
         if (!IDname) continue;
         let [ID, name] = (typeof IDname == 'string' ? [tempIndex++, IDname] : IDname);
+        let tempName = name;
+        if (inputMode == 'global' || inputMode == 'global-with-descriptions') {
+            name = blocks[name].name;
+        }
+        if (!name || !tempName)
+            return;
         let tempRow = document.createElement('tr');
         let tempD = document.createElement('td');
         tempD.innerHTML = ID;
@@ -391,7 +455,7 @@ function show(IDnames) {
 
         tempD = document.createElement('td');
         tempD.className = 'tableElement-Description';
-        let descrBlocks = blocks[name].description.split(";");
+        let descrBlocks = blocks[tempName].description.split(";");
         if (descrBlocks.length > 1)
             tempD.innerHTML = `<ol class='table-lists'>${descrBlocks.map((elem) => { return elem[0] != '#' ? `<li>${elem}</li>` : `<b>${elem.slice(1)}</b>`; }).join("")}</ol>`;
         else
@@ -400,29 +464,38 @@ function show(IDnames) {
         tempRow.addEventListener('mousedown', (event)=>{
             clearSelection();
         });
-        tempRow.addEventListener('dblclick', (event) => {
-            event.preventDefault();
-            if (event.shiftKey){ // Adding to existing one
-                let tempName, key = '--', newValue;
-                if (standardizeText(input.value)) {
-                    let resp = inputSlicer(input.value);
-                    if (resp)
-                        [, tempName, key, newValue] = (resp).map(x => standardizeText(x));
-                    else {
-                        tempName = input.value;
+
+        if (inputMode == 'global' || inputMode == 'global-with-descriptions') {
+            tempD = document.createElement('td');
+            tempD.className = 'tableElement-DBName';
+            tempD.innerHTML = blocks[tempName].collection;
+            tempRow.appendChild(tempD);
+        }
+
+        if (inputMode == 'standard')
+            tempRow.addEventListener('dblclick', (event) => {
+                event.preventDefault();
+                if (event.shiftKey){ // Adding to existing one
+                    let tempName, key = '--', newValue;
+                    if (standardizeText(input.value)) {
+                        let resp = inputSlicer(input.value);
+                        if (resp)
+                            [, tempName, key, newValue] = (resp).map(x => standardizeText(x));
+                        else {
+                            tempName = input.value;
+                        }
                     }
-                }
-                if (tempName){
-                    if (tempName.includes(';')) tempName = tempName.split(";");
-                    else tempName = [tempName];
-                    if (!tempName.includes(name))
-                        input.value = `${tempName};${name} ${key} ${newValue}`;
-                } else {
-                    input.value = `${name} ${key} ${blocks[name].description}`;
-                }
-            } else 
-                input.value = `${name} -- ${blocks[name].description}`;
-        });
+                    if (tempName){
+                        if (tempName.includes(';')) tempName = tempName.split(";");
+                        else tempName = [tempName];
+                        if (!tempName.includes(name))
+                            input.value = `${tempName};${name} ${key} ${newValue}`;
+                    } else {
+                        input.value = `${name} ${key} ${blocks[tempName].description}`;
+                    }
+                } else 
+                    input.value = `${name} -- ${blocks[tempName].description}`;
+            });
         if (tempRow.innerHTML)
             table.appendChild(tempRow);
     }
@@ -567,7 +640,7 @@ let editBlock = popup.createResponsiveFunction({
         onclick: () => {
             blocks[lastKey].description = lastEdit;
             save();
-            show(find(lastFind));
+            show(find(lastFind), blocks);
         }
     },
     successLogic: ({ key, newValue })=>{return blocks[key] && blocks[key].description != newValue;},
@@ -689,20 +762,20 @@ let process = popup.createResponsiveFunction({ // creating responsive process me
             save();
             if (lastFind){
                 if (changeFindTo) {
-                    show(find(changeFindTo));
+                    show(find(changeFindTo), blocks);
                 } else {
                     let lastFindRes = find(lastFind, false, false);
                     if (lastFindRes.length || !lastIDnames.length){ // Checking if all elements of last scope were deleted
                         let valid = true;
                         for (let chName of changedBlockNames){
                             if (!lastFindRes.includes(chName)) {
-                                show(find(name));
+                                show(find(name), blocks);
                                 valid = false;
                                 break;
                             }
                         }
                         if (valid) {
-                            show(find(lastFind));
+                            show(find(lastFind), blocks);
                         }
                     } else {
                         showDB();
@@ -713,7 +786,7 @@ let process = popup.createResponsiveFunction({ // creating responsive process me
             }
         } else {
             if (command)
-                show(find(command));
+                show(find(command), block, blockss);
             else
                 showDB();
         }
@@ -724,7 +797,7 @@ let process = popup.createResponsiveFunction({ // creating responsive process me
 
 // Editor stuff
 let Editor;
-function initEditor(){ // Will initialize the editor window
+function initEditor(){ // Will initiali, blocksze the editor window
     Editor = new popup.PopupInputPanelBigCentral({ // Creating the editor window
         headerText: 'Editor',
         inputNames: ['Name', '*textDescription'],
@@ -772,18 +845,18 @@ function openEditor() { // Will show the editor
         inputs[0].value = name;
         inputs[1].value = val.split(';').map(x => standardizeText(x)).join(';\n');
     };
-    Editor.show(); // opening the editor
+    Editor.show(); // opening the edit, blocksor
 }
 
 // Examination stuff
 function startExamination() {
     clearTable();
     Examination.start(data);
-    show(lastIDnames);
+    show(lastIDnames, blocks);
 }
 
 // Data reforms
-function reformBlocks(template) {
+function reformBlocks(template, blocks) {
     for (let blockName in blocks) {
         for (let currentKey in template) {
             blocks[blockName][currentKey] = blocks[blockName][currentKey] || template[currentKey];
@@ -840,6 +913,59 @@ const globals = {
     save: save,
     capturingObjects: []
 };
+//---------------------------------------------------------------------------------------------------------
+// Global search
+let onGlobalModeClosing; // function that will be called when toggling to menu
+function globalSearch(query, withDescription){
+    let wasOpened = runningDatabase;
+    let files = fs.readdirSync(databasesFolder);
+    let res = {};
+    if (!query) {
+        toggleToMain(withDescription ? "global-with-descriptions" : "global");
+        show(Object.keys(res), res);
+        if (wasOpened) {
+            onGlobalModeClosing = () => {
+                runningDatabase = wasOpened;
+                toggleToMain("standard");
+                load();
+                showDB();
+            };
+        }
+        return;
+    }
+    files.forEach((filename) => {
+        filename = filename.split('.');
+        if (filename[1] == 'json') {
+            filename = filename[0];
+            runningDatabase = filename;
+            load();
+            let IDNames = find(query, true, true, withDescription);
+            for (let IDName of IDNames) {
+                if (!IDName || !IDName[1]) continue;
+                IDName = IDName[1];
+                res[IDName + '_' + filename] = {
+                    name: IDName,
+                    description: blocks[IDName].description,
+                    collection: filename
+                };
+            }
+        }
+    });
+    toggleToMain(withDescription?"global-with-descriptions":"global");
+    show(Object.keys(res), res);
+    if (wasOpened) {
+        onGlobalModeClosing = ()=>{
+            runningDatabase = wasOpened;
+            toggleToMain("standard");
+            load();
+            showDB();
+        };
+    } else {
+        data = {};
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------
 // Initialization
 function init() {
     ipcRenderer.send('started');
@@ -847,13 +973,26 @@ function init() {
         switch (event.keyCode) {
         case 13: // Responding to enter
             event.preventDefault();
-            if (input.value) process(input.value);
-            else showDB();
-            input.select();
+            switch (inputMode) {
+                case "standard":
+                    if (input.value) process(input.value);
+                    else showDB();
+                    input.select();
+                    break;
+                case "global":
+                    globalSearch(input.value, false);
+                    break;
+                case "global-with-descriptions":
+                    globalSearch(input.value, true);
+                    break;
+            }
+            
             break;
         case 9: // Responding to tab
-            event.preventDefault();
-            openEditor();
+            if (inputMode == 'standard'){
+                event.preventDefault();
+                openEditor();
+            }
             break;
         }
     });
@@ -929,6 +1068,8 @@ function init() {
                         break;
                     case 'main':
                         toggleToMenu();
+                        onGlobalModeClosing && onGlobalModeClosing();
+                        onGlobalModeClosing = undefined;
                         break;
                     case 'menu':
                         break;
@@ -943,6 +1084,7 @@ function init() {
     });
     ipcRenderer.on('add-new-collection-clicked', openNewCollectionAdder);
     ipcRenderer.on('back-to-menu-clicked', stopEditCollectionsListMode);
+    ipcRenderer.on('global-search', globalSearch);
     table.parentElement.addEventListener('scroll', (event)=>{ // Scroll anchors
         if (table.parentElement.scrollTop+table.parentElement.clientHeight == table.parentElement.scrollHeight) tableScrollAnchor = 'bottom';
         else if (table.parentElement.scrollTop == 0) tableScrollAnchor = 'top';
