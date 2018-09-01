@@ -7,7 +7,8 @@ module.exports = {
     getCurrentFlashcard: getCurrentFlashcard
 };
 
-const {createButton, hoverColorMaker} = require('./../Universals');
+const {createButton} = require('./../Universals');
+const {hoverColorMaker} = require('./../Colors/colorFuncs');
 const examinationUniversals = require('./examinationUniversals');
 const examinationController = require('./examination');
 

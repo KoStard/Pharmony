@@ -15,6 +15,9 @@ const ExaminationUniversals = require('./Examination/examinationUniversals');
 const standardFlashcards = require('./Examination/standardFlashcards');
 const { createButton } = require('./Universals');
 const Mousetrap = require('./mousetrap.min.js');
+const LPgen = require('./LanguagePacks/language-pack-generator');
+const textToColor = require('./Colors/text-to-color');
+const colorFuncs = require('./Colors/colorFuncs');
 
 let data = {};
 let blocks = {};
@@ -88,7 +91,8 @@ function settingsCreator() {
                 onGlobalModeClosing = undefined;
             }else {
                 inputMode = 'global';
-                globalSearch('', false);
+                globalSearch(standardizeText(input.value), false);
+                document.title = "Global Search";
             }
         },
         owner: settingsDropdownContent
@@ -102,7 +106,8 @@ function settingsCreator() {
                 onGlobalModeClosing = undefined;
             } else {
                 inputMode = 'global-with-descriptions';
-                globalSearch('', true);
+                globalSearch(standardizeText(input.value), true);
+                document.title = "Global Search With Desciption";
             }
         },
         owner: settingsDropdownContent
@@ -191,6 +196,15 @@ function toggleToMenu(){
     clearTable();
     document.title = 'Pharmony';
     container.className = 'menu';
+}
+
+function toggleToCollection(coll){
+    toggleToMain();
+    document.title = coll;
+    runningDatabase = coll;
+    onGlobalModeClosing = undefined;
+    load();
+    showDB();
 }
 
 function openNewCollectionAdder(){
@@ -469,6 +483,13 @@ function show(IDnames, blocks) {
             tempD = document.createElement('td');
             tempD.className = 'tableElement-DBName';
             tempD.innerHTML = blocks[tempName].collection;
+            tempD.style.background = textToColor(blocks[tempName].collection, LPgen);
+            tempD.style.color = colorFuncs.getWhiteOrBlackMaxContrast(tempD.style.background);
+
+            tempD.addEventListener('dblclick', ()=>{
+                toggleToCollection(blocks[tempName].collection);
+            });
+
             tempRow.appendChild(tempD);
         }
 
@@ -925,10 +946,7 @@ function globalSearch(query, withDescription){
         show(Object.keys(res), res);
         if (wasOpened) {
             onGlobalModeClosing = () => {
-                runningDatabase = wasOpened;
-                toggleToMain("standard");
-                load();
-                showDB();
+                toggleToCollection(wasOpened);
             };
         }
         return;
