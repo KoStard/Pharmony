@@ -120,17 +120,27 @@ function settingsCreator() {
     });
     createButton({
         value: 'Standart Export',
-        onclick: ()=>{responsiveExport({mode:'standart', keys: Object.keys(blocks), blocks: blocks, runningDatabase: runningDatabase});},
+        onclick: ()=>{responsiveExport({format: 'docx', mode:'standart', keys: Object.keys(blocks), blocks: blocks, runningDatabase: runningDatabase});},
         owner: settingsDropdownContent
     });
     createButton({
         value: 'Full Export',
-        onclick: ()=>{responsiveExport({mode:'full', keys: Object.keys(blocks), blocks: blocks, runningDatabase: runningDatabase});},
+        onclick: ()=>{responsiveExport({format: 'docx', mode:'full', keys: Object.keys(blocks), blocks: blocks, runningDatabase: runningDatabase});},
         owner: settingsDropdownContent
     });
     createButton({
         value: 'Selective Export',
-        onclick: ()=>{responsiveExport({mode:'full', keys: Object.keys(blocks).filter(x=>blocks[x].description&&blocks[x].description.length>0), blocks: blocks, runningDatabase: runningDatabase});},
+        onclick: ()=>{responsiveExport({format: 'docx', mode:'full', keys: Object.keys(blocks).filter(x=>blocks[x].description&&blocks[x].description.length>0), blocks: blocks, runningDatabase: runningDatabase});},
+        owner: settingsDropdownContent
+    });
+    createButton({
+        value: 'Full Export to XLSX',
+        onclick: ()=>{responsiveExport({format: 'xlsx', mode:'full', keys: Object.keys(blocks), blocks: blocks, runningDatabase: runningDatabase});},
+        owner: settingsDropdownContent
+    });
+    createButton({
+        value: 'Selective Export To XLSX',
+        onclick: ()=>{responsiveExport({format: 'xlsx', mode:'full', keys: Object.keys(blocks).filter(x=>blocks[x].description&&blocks[x].description.length>0), blocks: blocks, runningDatabase: runningDatabase});},
         owner: settingsDropdownContent
     });
     createButton({
@@ -522,11 +532,11 @@ function show(IDnames, blocks) {
 }
 
 // Exporting content
-let lastCreatedFile;
+let lastCreatedFile; // Has to contain extension too
 let responsiveExport = popup.createResponsiveFunction({
-    func: (args)=>{lastCreatedFile = exporter.getAvailableFormats()['docx'](args);},
+    func: (args)=>{lastCreatedFile = exporter.getAvailableFormats()[args.format](args);},
     startInfo: {text: 'Starting export.'},
-    successInfo: {text: 'Done exporting.', onclick: ()=>{launch.launch(lastCreatedFile+'.docx');}},
+    successInfo: {text: 'Done exporting.', onclick: ()=>{launch.launch(lastCreatedFile);}},
     errorInfo: 'error',
     popupAlertPanel: popup.PopupAlertPanelSmall
 });

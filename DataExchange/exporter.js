@@ -41,7 +41,7 @@ function exportToDocx({mode, keys, blocks, runningDatabase}) {
             extension: '.docx'
         });
         exporter.pack(info.name);
-        lastCreatedFile = info.name;
+        lastCreatedFile = info.name + info.extension;
     } else if (mode == 'full') {
         let table = doc.createTable(keys.length, 2);
         let rowIndex = 0;
@@ -70,7 +70,7 @@ function exportToDocx({mode, keys, blocks, runningDatabase}) {
             extension: '.docx'
         });
         exporter.pack(info.name);
-        lastCreatedFile = info.name;
+        lastCreatedFile = info.name + info.extension;
     } else {
         throw `Invalid mode ${mode}.`;
     }
@@ -103,8 +103,11 @@ function exportToXLSX({mode, keys, blocks, runningDatabase}) {
             }
         }
     }
-    wb.write(getNotExistingName({
-        name: runningDatabase,
-        extension: 'xlsx'
-    }).name + '.xlsx', (err)=>{console.log(err);});
+    let info = getNotExistingName({
+                name: runningDatabase,
+                extension: '.xlsx'
+            });
+    wb.write(info.name + '.xlsx', (err)=>{console.log(err);});
+    lastCreatedFile = info.name + info.extension;
+    return lastCreatedFile;
 }
