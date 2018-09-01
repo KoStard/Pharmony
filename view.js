@@ -141,11 +141,7 @@ function settingsCreator() {
 
 // Menu stuff
 function menuButtonClicked(){
-    runningDatabase = this.innerText;
-    document.title = runningDatabase;
-    toggleToMain();
-    load();
-    showDB();
+    toggleToCollection(this.innerText);
 }
 
 let menuButtons = [];
@@ -915,9 +911,7 @@ function doForAllDBs(f) {
         }
     });
     if (wasOpened) {
-        runningDatabase = wasOpened;
-        load();
-        showDB();
+        toggleToCollection(wasOpened);
     } else {
         data = {};
     }
@@ -973,10 +967,7 @@ function globalSearch(query, withDescription){
     show(Object.keys(res), res);
     if (wasOpened) {
         onGlobalModeClosing = ()=>{
-            runningDatabase = wasOpened;
-            toggleToMain("standard");
-            load();
-            showDB();
+            toggleToCollection(wasOpened);
         };
     } else {
         data = {};
