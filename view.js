@@ -18,6 +18,7 @@ const Mousetrap = require('./mousetrap.min.js');
 const LPgen = require('./LanguagePacks/language-pack-generator');
 const textToColor = require('./Colors/text-to-color');
 const colorFuncs = require('./Colors/colorFuncs');
+const exporter = require('./DataExchange/exporter');
 
 let data = {};
 let blocks = {};
@@ -119,17 +120,17 @@ function settingsCreator() {
     });
     createButton({
         value: 'Standart Export',
-        onclick: ()=>{responsiveExport({mode:'standart', keys: Object.keys(blocks)});},
+        onclick: ()=>{responsiveExport({mode:'standart', keys: Object.keys(blocks), blocks: blocks, runningDatabase: runningDatabase});},
         owner: settingsDropdownContent
     });
     createButton({
         value: 'Full Export',
-        onclick: ()=>{responsiveExport({mode:'full', keys: Object.keys(blocks)});},
+        onclick: ()=>{responsiveExport({mode:'full', keys: Object.keys(blocks), blocks: blocks, runningDatabase: runningDatabase});},
         owner: settingsDropdownContent
     });
     createButton({
         value: 'Selective Export',
-        onclick: ()=>{responsiveExport({mode:'full', keys: Object.keys(blocks).filter(x=>blocks[x].description&&blocks[x].description.length>0)});},
+        onclick: ()=>{responsiveExport({mode:'full', keys: Object.keys(blocks).filter(x=>blocks[x].description&&blocks[x].description.length>0), blocks: blocks, runningDatabase: runningDatabase});},
         owner: settingsDropdownContent
     });
     createButton({
@@ -521,70 +522,9 @@ function show(IDnames, blocks) {
 }
 
 // Exporting content
-function getNotExistingName(info){
-    let name = info.name, extension = info.extension;
-    let tempName = name, index = 1;
-    if (extension.length>0 && extension[0]!='.') extension = '.'+extension;
-    while (fs.existsSync(name+extension)) {
-        name = tempName + ' - ' + index++;
-    }
-    return {name: name, extension: extension};
-}
-
 let lastCreatedFile;
-function exportToDocx (config) {
-    let doc = new docx.Document();
-    if (!config.mode || config.mode == 'standart'){
-        for (let key of config.keys) {
-            let text = new docx.TextRun(key);
-            text.font('Segoe UI');
-            let par = new docx.Paragraph().addRun(text);
-            doc.addParagraph(par);
-        }
-        let exporter = new docx.LocalPacker(doc);
-        let info = getNotExistingName({
-            name: runningDatabase,
-            extension: '.docx'
-        });
-        exporter.pack(info.name);
-        lastCreatedFile = info.name;
-    } else if (config.mode == 'full'){
-        let table = doc.createTable(config.keys.length, 2);
-        let rowIndex = 0;
-        for (let key of config.keys) {
-            let text = new docx.TextRun(key);
-            text.font('Segoe UI');
-            table.getCell(rowIndex, 0).addContent(new docx.Paragraph().addRun(text));
-            if (blocks[key].description.includes(';')) {
-                let lineIndex = 1;
-                for (let line of blocks[key].description.split(';')) {
-                    line = standardizeText(line);
-                    text = new docx.TextRun((line[0]!='#'?`${lineIndex++}. `:'')+`${line}`);
-                    text.font('Segoe UI');
-                    table.getCell(rowIndex, 1).addContent(new docx.Paragraph().addRun(text));
-                }
-            } else {
-                text = new docx.TextRun(blocks[key].description);
-                text.font('Segoe UI');
-                table.getCell(rowIndex, 1).addContent(new docx.Paragraph().addRun(text));
-            }
-            rowIndex++;
-        }
-        let exporter = new docx.LocalPacker(doc);
-        let info = getNotExistingName({
-            name: runningDatabase,
-            extension: '.docx'
-        });
-        exporter.pack(info.name);
-        lastCreatedFile = info.name;
-    } else {
-        throw `Invalid mode ${config.mode}.`;
-    }
-    return true;
-}
-
 let responsiveExport = popup.createResponsiveFunction({
-    func: exportToDocx,
+    func: (args)=>{lastCreatedFile = exporter.getAvailableFormats()['docx'](args);},
     startInfo: {text: 'Starting export.'},
     successInfo: {text: 'Done exporting.', onclick: ()=>{launch.launch(lastCreatedFile+'.docx');}},
     errorInfo: 'error',
