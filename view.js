@@ -994,20 +994,32 @@ function init() {
     });
     Mousetrap.bind("left", (e) => {
         const flashcard = standardFlashcards.getCurrentFlashcard();
-        if (flashcard && flashcard.flashcardNode.className == 'flashcard both') {
-            flashcard.accessories.click('raw');
+        if (flashcard){
+            if (flashcard.flashcardNode.className == 'flashcard both') {
+                flashcard.accessories.click('raw');
+            } else {
+                flashcard.rotate();
+            }
         }
     }, 'keyup');
     Mousetrap.bind("right", (e) => {
         const flashcard = standardFlashcards.getCurrentFlashcard();
-        if (flashcard && flashcard.flashcardNode.className == 'flashcard both') {
-            flashcard.accessories.click('finished');
+        if (flashcard){
+            if (flashcard.flashcardNode.className == 'flashcard both') {
+                flashcard.accessories.click('finished');
+            } else {
+                flashcard.rotate();
+            }
         }
     }, 'keyup');
     Mousetrap.bind(["down", "up"], (e) => {
         const flashcard = standardFlashcards.getCurrentFlashcard();
-        if (flashcard && flashcard.flashcardNode.className == 'flashcard both') {
-            flashcard.accessories.click('inProcess');
+        if (flashcard){
+            if (flashcard.flashcardNode.className == 'flashcard both') {
+                flashcard.accessories.click('inProcess');
+            } else {
+                flashcard.rotate();
+            }
         }
     }, 'keyup');
 
