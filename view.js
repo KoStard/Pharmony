@@ -534,7 +534,7 @@ function show(IDnames, blocks) {
 // Exporting content
 let lastCreatedFile; // Has to contain extension too
 let responsiveExport = popup.createResponsiveFunction({
-    func: (args)=>{lastCreatedFile = exporter.getAvailableFormats()[args.format](args);},
+    func: (args)=>{lastCreatedFile = exporter[args.format](args);},
     startInfo: {text: 'Starting export.'},
     successInfo: {text: 'Done exporting.', onclick: ()=>{launch.launch(lastCreatedFile);}},
     errorInfo: 'error',

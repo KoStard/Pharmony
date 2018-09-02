@@ -3,14 +3,13 @@
 let docx = require('docx');
 let xl = require('excel4node');
 
-module.exports = {
-    getAvailableFormats: () => availableFormats,
-};
-
 const availableFormats = Object.freeze({
     'docx': exportToDocx,
     'xlsx': exportToXLSX
 });
+
+module.exports = availableFormats;
+
 
 function getNotExistingName({name, extension}) {
     let tempName = name,
