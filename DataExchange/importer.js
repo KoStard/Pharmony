@@ -1,7 +1,10 @@
 /* jshint esversion: 6 */
 
 const availableFormats = Object.freeze({
-    'xlsx': exportToXLSX
+    'xlsx': importXLSX
 });
-
 module.exports = availableFormats;
+
+function importXLSX(){
+    
+}

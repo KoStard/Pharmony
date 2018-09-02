@@ -8,6 +8,9 @@ module.exports = {
     removeRunningPopup: () => { runningPopup.close(); runningPopup=undefined; },
     init: init
 };
+
+const cc = require('./contentCreator');
+
 let globals;
 let runningPopup;
 function createResponsiveFunction({func, popupAlertPanel, startInfo, successInfo, successLogic, errorInfo}) {
@@ -85,9 +88,16 @@ function PopupBigPanelCentral({ owner, onclose, buffered }) {
         else this.exit();
     };
 }
-
-function PopupInputPanelBigCentral({ headerText, inputNames, finishFunction, buttons, owner, onclose, initialState,
-openingFunction, buffered = true}) {
+function PopupInputPanelBigCentral({
+        headerText,
+        contentModel,
+        owner,
+        buffered = false,
+        initialState,
+        finishFunction,
+        onclose,
+        openingFunction, 
+    }) {
     this.args = arguments[0];
     this.openingFunction = openingFunction;
 
@@ -101,31 +111,38 @@ openingFunction, buffered = true}) {
     header.innerText = headerText;
     panel.appendChild(header);
 
-    this.inputs = [];
-    for (let inputName of inputNames) {
-        let name = inputName.match(/^\*text([\s\S]+)/);
-        if (name){
-            name = name[1];
-            let textarea = createPopupElement('textarea', ['standart', 'textarea']);
-            textarea.setAttribute('placeholder', name);
-            this.inputs.push(textarea);
-            panel.appendChild(textarea);
-        }else {
-            let inp = createPopupElement('input', ['standart', 'input']);
-            inp.type = 'text';
-            inp.setAttribute('placeholder', inputName);
-            this.inputs.push(inp);
-            panel.appendChild(inp);
+    for (let current of contentModel) {
+        if (current.nodeType){
+            current.classList.add(popupClassNames.standart);
+            if (popupClassNames[current.tagName.toLowerCase()])
+                current.classList.add(popupClassNames[current.tagName.toLowerCase()]);
+        } else {
+            current.args.classList = [popupClassNames.standart];
+            if (popupClassNames[current.type])
+                current.args.classList.push(popupClassNames[current.type]);
         }
     }
 
-    for(let button of buttons) {
-        button = makePopupElement(button, ['standart', 'button']);
+    let content = cc(contentModel, panel);
+    console.log(content);
+    this.inputs = content.filter((el)=>el.tagName == 'INPUT' || el.tagName == 'TEXTAREA');
+    this.buttons = content.filter((el)=>el.tagName == 'BUTTON');
+
+    for(let button of this.buttons) {
         let tempFunc = button.onclick;
         button.onclick = ()=>{tempFunc(this);};
-        panel.appendChild(button);
     }
+
     if (onclose) this.popupBigPanelCentral.onclose = () => { onclose(this); };
+
+    this.focus = () => {
+        console.log(this.inputs);
+        if (this.inputs.length > 0) {
+            this.inputs[0].focus();
+        } else if (this.buttons.length > 0) {
+            this.buttons[0].focus();
+        }
+    };
     
     if (buffered) {
         this.show = () => {
@@ -140,18 +157,12 @@ openingFunction, buffered = true}) {
         };
     } else {
         if (initialState!="hidden") {
+            this.panelHolder.style.display = "block";
             globals && globals.capturingObjects.push(this);
             this.focus();
             runningPopup = this;
         }
     }
-    this.focus = () => {
-        if (this.inputs.length > 0) {
-            this.inputs[0].focus();
-        } else if (buttons.length > 0) {
-            buttons[0].focus();
-        }
-    };
 
     this.exit = () => {
         this.popupBigPanelCentral.close();
@@ -176,7 +187,8 @@ let popupClassNames = {
     input: 'popup-input',
     button: 'popup-button',
     header: 'popup-header',
-    text: 'popup-text'
+    text: 'popup-text',
+    inputFile: 'popup-inputFile'
 };
 function createPopupElement(name, mode) {
     let tempElem = document.createElement(name);

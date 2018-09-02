@@ -6,7 +6,7 @@ module.exports = {
 
 const fs = require('fs');
 const docx = require('docx');
-const popup = require('./popup');
+const popup = require('./popup/popup');
 const launch = require('./launchFiles');
 const {ipcRenderer} = require('electron');
 const Selector = require('./selector');
@@ -19,6 +19,9 @@ const LPgen = require('./LanguagePacks/language-pack-generator');
 const textToColor = require('./Colors/text-to-color');
 const colorFuncs = require('./Colors/colorFuncs');
 const exporter = require('./DataExchange/exporter');
+
+// temp
+const cc = require('./popup/contentCreator');
 
 let data = {};
 let blocks = {};
@@ -144,6 +147,18 @@ function settingsCreator() {
         owner: settingsDropdownContent
     });
     createButton({
+        value: 'Import',
+        onclick: ()=>{
+            // new popup.PopupInputPanelBigCentral({
+            //     headerText: "Select the file",
+            //     additionalContent: [],
+            //     buffered: false,
+            //     owner: container,
+            // });
+        },
+        owner: settingsDropdownContent
+    });
+    createButton({
         value: 'Exit',
         onclick: ()=>{close();},
         owner: settingsDropdownContent
@@ -217,8 +232,14 @@ function toggleToCollection(coll){
 function openNewCollectionAdder(){
     new popup.PopupInputPanelBigCentral({
         headerText: 'Enter the new collection name',
-        inputNames: ['Collection name'],
-        buttons: [
+        contentModel: [
+            {
+                type: 'input',
+                args: {
+                    placeholder: 'Collection name',
+                    type: 'text'
+                }
+            },
             createButton({
                 value: 'Done',
                 onclick: function (panelObject) {
@@ -541,6 +562,17 @@ let responsiveExport = popup.createResponsiveFunction({
     popupAlertPanel: popup.PopupAlertPanelSmall
 });
 
+// Importing
+let responsiveimport = popup.createResponsiveFunction({
+    func: (args)=>{
+        console.log(args);
+    },
+    startInfo: {text: 'Starting import.'},
+    successInfo: {text: 'Done importing.', onclick: ()=>{launch.launch(lastCreatedFile);}},
+    errorInfo: 'error',
+    popupAlertPanel: popup.PopupAlertPanelSmall
+});
+
 // Text manipulations
 const specialSymbols = {
     '': ['^\\s+','\\s+$'],
@@ -767,8 +799,20 @@ let Editor;
 function initEditor(){ // Will initiali, blocksze the editor window
     Editor = new popup.PopupInputPanelBigCentral({ // Creating the editor window
         headerText: 'Editor',
-        inputNames: ['Name', '*textDescription'],
-        buttons: [
+        contentModel: [
+            {
+                type: 'input',
+                args: {
+                    type: 'text',
+                    placeholder: 'Name'
+                }
+            },
+            {
+                type: 'textarea',
+                args: {
+                    placeholder: 'Description'
+                }
+            },
             createButton({
                 value: 'Done',
                 onclick: (panel) => {
@@ -798,7 +842,8 @@ function initEditor(){ // Will initiali, blocksze the editor window
             if (panel.inputs[0].value || standardizeText(panel.inputs[1].value))
                 input.value = `${panel.inputs[0].value} -- ${standardizeText(panel.inputs[1].value)}`;
         },
-        initialState: "hidden"
+        initialState: "hidden",
+        buffered: true
     });
 }
 
