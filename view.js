@@ -544,7 +544,7 @@ let responsiveExport = popup.createResponsiveFunction({
 // Text manipulations
 const specialSymbols = {
     '': ['^\\s+','\\s+$'],
-    ';': [';\\n', ';\\r', '\\n', '\\r'],
+    ';': [';\\n', ';\\r', '\\n', '\\r', ';{2,}'],
     ' ': ['\\s+']
 };
 
