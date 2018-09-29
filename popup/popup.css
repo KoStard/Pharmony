@@ -1,7 +1,7 @@
 .popupAlertPanelSmall {
     /* display: inline-block; */
     padding: 15px 10px;
-    background: #166088;
+    background: #424242; /*166088*/ 
     color: #fafafa;
     border: none;
     border-radius: 1px;

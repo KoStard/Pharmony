@@ -5,7 +5,7 @@ module.exports = {
 };
 
 const fs = require('fs');
-const docx = require('docx');
+// const docx = require('docx');
 const popup = require('./popup/popup');
 const launch = require('./launchFiles');
 const {ipcRenderer} = require('electron');
