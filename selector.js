@@ -3,7 +3,7 @@
 module.exports = Selector;
 
 function Selector({elements, selectedColor = '#D62839', unselectedColor = 'rgb(178, 192, 199)',
-hoverColor, }) {
+hoverColor, onclose, }) {
     this.elements = elements;
     this.selectedColor = selectedColor;
     this.hoverColor = hoverColor;
@@ -78,10 +78,38 @@ hoverColor, }) {
         element.onmouseenter = this.tempElementsInfo[elementID].onmouseenter;
         element.onmouseleave = this.tempElementsInfo[elementID].onmouseleave;
     }
-    this.stop = () => {
-        this.globals && this.globals.capturingObjects.pop(this);
-        for (let elementID in elements) {
-            this.pop(elementID);
+    this.stop = (callDefaultOnClose=-1) => {
+        /**
+         * -1 - If available onclose else default
+         * 0 - Default
+         * 1 - Call both
+         * 2 - Only onclose
+         */
+        let defaultOnClose;
+        defaultOnClose = () => {
+            this.globals && this.globals.capturingObjects.pop(this);
+            for (let elementID in elements) {
+                this.pop(elementID);
+            }
+        };
+        switch (callDefaultOnClose) {
+            case -1: // If available onclose else default
+            if (onclose) {
+                onclose();
+            } else {
+                defaultOnClose();
+            }
+            break;
+            case 0: // Default
+            defaultOnClose();
+            break;
+            case 1: // Call both
+            defaultOnClose();
+            onclose();
+            break;
+            case 2: // Only onclose
+            onclose();
+            break;
         }
     };
     this.close = this.stop;

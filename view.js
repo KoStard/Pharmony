@@ -363,7 +363,8 @@ function switchToMultiSelectionMode(){
         elements: Array.from(table.childNodes).slice(1), // Еxcluding headers from selection
         selectedColor: '#e0e0e0',
         unselectedColor: 'none',
-        hoverColor: '#ebebeb'
+        hoverColor: '#ebebeb',
+        onclose:switchToNormalViewerMode
     });
     MultiSelector.init(globals);
     MultiSelector.start();
@@ -387,8 +388,9 @@ function switchToMultiSelectionMode(){
 
 function switchToNormalViewerMode(){
     MultiSelectionButton.innerText = MultiSelectionButtonEnum.default;
-    input.value = MultiSelector.selectedElements.map(row=>row.childNodes[1].innerText).join(';')+MultiSelectorData.lastKey+MultiSelectorData.lastNewValue;
-    MultiSelector.stop();
+    if (MultiSelector.selectedElements.length > 0)
+        input.value = MultiSelector.selectedElements.map(row => row.childNodes[1].innerText).join(';') + MultiSelectorData.lastKey + MultiSelectorData.lastNewValue;
+    MultiSelector.stop(0);
     MultiSelector = undefined;
     MultiSelectorData.lastKey = '--';
     MultiSelectorData.lastNewValue = '';
@@ -465,7 +467,6 @@ function resetMultiSelection(){
 
 function show(IDnames, blocks) {
     tableDic = {};
-    console.log(IDnames, blocks);
 
     changedBlockNames = [];
     changeFindTo = undefined;
@@ -549,6 +550,7 @@ function show(IDnames, blocks) {
 
         if (inputMode == 'standard')
             tempRow.addEventListener('dblclick', (event) => {
+                if (MultiSelector) return;
                 event.preventDefault();
                 if (event.shiftKey){ // Adding to existing one
                     let tempName, key = '--', newValue;
@@ -1052,6 +1054,16 @@ function init() {
             break;
         }
     });
+    Mousetrap.bind(['command+f', 'ctrl+f'], () => {
+        if (container.className == 'main') {
+            globalSearch(input.value, false);
+        }
+    });
+    Mousetrap.bind(['command+shift+f', 'ctrl+shift+f'], () => {
+        if (container.className == 'main') {
+            globalSearch(input.value, true);
+        }
+    });
     Mousetrap.bind('space', ()=> {
         const flashcard = standardFlashcards.getCurrentFlashcard();
         if (flashcard && flashcard.flashcardNode.className == 'flashcard both')
@@ -1123,7 +1135,7 @@ function init() {
     document.addEventListener('keyup', (ev)=>{
         if (ev.key == 'Escape') {
             if (globals.capturingObjects.length > 0) { 
-                globals.capturingObjects[globals.capturingObjects.length-1].close(); // From the last to the first
+                globals.capturingObjects[globals.capturingObjects.length-1].close(-1); // From the last to the first
             } else {
                 switch (container.className) {
                     case 'examination':

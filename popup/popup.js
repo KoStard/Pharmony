@@ -124,7 +124,6 @@ function PopupInputPanelBigCentral({
     }
 
     let content = cc(contentModel, panel);
-    console.log(content);
     this.inputs = content.filter((el)=>el.tagName == 'INPUT' || el.tagName == 'TEXTAREA');
     this.buttons = content.filter((el)=>el.tagName == 'BUTTON');
 
