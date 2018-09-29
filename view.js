@@ -597,7 +597,7 @@ let responsiveimport = popup.createResponsiveFunction({
 // Text manipulations
 const specialSymbols = {
     '': ['^\\s+','\\s+$'],
-    ';': [';\\n', ';\\r', '\\n', '\\r', ';{2,}'],
+    ';': ['\\s*;\\s*', ';\\n', ';\\r', '\\n', '\\r', ';{2,}'],
     ' ': ['\\s+']
 };
 
@@ -671,7 +671,7 @@ let changedBlockNames = [];
 let changeFindTo;
 function createOrEditBlocks(name, newValue){
     if (!name) throw 'Invalid name';
-    if (name.endsWith('*')) {
+    if (name.endsWith('*')) { // To change all blocks whose names contain the keyword
         name = name.slice(0,name.length-1);
         find(name, false, false).forEach((value, index, array)=>{
             editBlock({key: value, newValue: newValue});
@@ -679,7 +679,9 @@ function createOrEditBlocks(name, newValue){
     } else {
         if (blocks[name]) editBlock({key: name, newValue: newValue});
         else {
-            blocks[name] = copy(standardBlockTemplate); blocks[name].description = newValue; changedBlockNames.push(name);
+            blocks[name] = copy(standardBlockTemplate);
+            blocks[name].description = newValue;
+            changedBlockNames.push(name);
         }
     }
 }
@@ -778,7 +780,7 @@ let process = popup.createResponsiveFunction({ // creating responsive process me
                 name = name.split(';');
                 for (let curr of name) {
                     if (curr)
-                        keys[key](curr, newValue);
+                        keys[key](standardizeText(curr), newValue);
                 }
             }else 
                 keys[key](name, newValue);
