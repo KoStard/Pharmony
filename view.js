@@ -883,6 +883,12 @@ function initEditor(){ // Will initiali, blocksze the editor window
         initialState: "hidden",
         buffered: true
     });
+    Mousetrap(Editor.panel).bind(['command+enter', 'ctrl+enter'], ()=>{
+        if (Editor.inputs[0].value || standardizeText(Editor.inputs[1].value)) {
+            input.value = `${Editor.inputs[0].value} -- ${standardizeText(Editor.inputs[1].value)}`;
+            process(input.value);
+        }
+    });
 }
 
 function openEditor() { // Will show the editor
