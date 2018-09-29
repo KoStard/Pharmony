@@ -466,6 +466,7 @@ function resetMultiSelection(){
 }
 
 function autoHighlight(raw) {
+    if (!raw) return;
     let matching = [];
     raw = standardizeText(raw.split('--')[0]);
     if (raw.includes(';')){
@@ -604,6 +605,7 @@ function show(IDnames, blocks) {
         }
     }
     refreshScrollLevel();
+    autoHighlight(input.value);
     return true;
 }
 
@@ -809,7 +811,6 @@ let process = popup.createResponsiveFunction({ // creating responsive process me
         let resp = inputSlicer(command);
         if (resp) {
             let [, name, key, newValue] = resp.map(x => standardizeText(x));
-            console.log(resp);
             if (name.includes(';')){
                 name = name.split(';');
                 for (let curr of name) {
