@@ -563,13 +563,14 @@ function show(IDnames, blocks) {
                         }
                     }
                     if (tempName) {
-                        console.log(tempName);
                         if (tempName.includes(';')) tempName = tempName.split(";");
                         else tempName = [tempName];
                         if (!tempName.includes(name)) {
                             tempName.push(name);
-                            input.value = `${tempName.join(';')} ${key} ${newValue}`;
+                        } else {
+                            tempName.pop(name);
                         }
+                        input.value = `${tempName.join(';')} ${key} ${newValue}`;
                     } else {
                         input.value = `${name} ${key} ${blocks[tempName].description}`;
                     }
