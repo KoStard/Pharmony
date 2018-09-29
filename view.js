@@ -55,6 +55,20 @@ const standardDataTemplate = {
         }
     };
 
+function copy(mainObj) {
+    let objCopy = {}; // objCopy will store a copy of the mainObj
+    let key;
+
+    for (key in mainObj) {
+        if (typeof (mainObj[key]) == 'object') {
+            objCopy[key] = copy(mainObj[key]);
+        } else {
+            objCopy[key] = mainObj[key]; // copies each property to the objCopy object
+        }
+    }
+    return objCopy;
+}
+
 function refreshScrollLevel(){
     if (tableScrollAnchor == 'top') {
         table.parentElement.scrollTo(0,0);
@@ -534,11 +548,14 @@ function show(IDnames, blocks) {
                             tempName = input.value;
                         }
                     }
-                    if (tempName){
+                    if (tempName) {
+                        console.log(tempName);
                         if (tempName.includes(';')) tempName = tempName.split(";");
                         else tempName = [tempName];
-                        if (!tempName.includes(name))
-                            input.value = `${tempName};${name} ${key} ${newValue}`;
+                        if (!tempName.includes(name)) {
+                            tempName.push(name);
+                            input.value = `${tempName.join(';')} ${key} ${newValue}`;
+                        }
                     } else {
                         input.value = `${name} ${key} ${blocks[tempName].description}`;
                     }
@@ -657,7 +674,9 @@ function createOrEditBlocks(name, newValue){
         });
     } else {
         if (blocks[name]) editBlock({key: name, newValue: newValue});
-        else {blocks[name] = Object(standardBlockTemplate); blocks[name].description = newValue; changedBlockNames.push(name);}
+        else {
+            blocks[name] = copy(standardBlockTemplate); blocks[name].description = newValue; changedBlockNames.push(name);
+        }
     }
 }
 
@@ -749,7 +768,8 @@ let process = popup.createResponsiveFunction({ // creating responsive process me
     func: (command)=>{
         let resp = inputSlicer(command);
         if (resp) {
-            let [, name, key, newValue] = resp.map(x=>standardizeText(x));
+            let [, name, key, newValue] = resp.map(x => standardizeText(x));
+            console.log(resp);
             if (name.includes(';')){
                 name = name.split(';');
                 for (let curr of name) {
@@ -785,7 +805,7 @@ let process = popup.createResponsiveFunction({ // creating responsive process me
             }
         } else {
             if (command)
-                show(find(command), block, blockss);
+                show(find(command), blocks);
             else
                 showDB();
         }

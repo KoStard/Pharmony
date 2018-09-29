@@ -40,7 +40,7 @@ body {
 }
 
 #menu .menu-databases-button, #examination-modes .examination-mode-button{
-    background: #166088;
+    background: #424242;
     border: none;
     box-shadow: 0px 3px 10px -4px black;
     color: white;
@@ -53,19 +53,19 @@ body {
 }
 
 #menu .menu-databases-button:hover , #examination-modes .examination-mode-button:hover{
-    background: hsla(201, 72%, 19%, 1);
+    background: #292929;
     box-shadow: 0px 5px 15px -3px black;
     width: 205px;
     position: relative;
 }
 
 #menu .menu-databases-button:active , #examination-modes .examination-mode-button:active{
-    background: hsla(201, 72%, 13%, 1);
+    background: #1b1b1b;
 }
 
 .menu-generalButton, .examination-mode-close-button{
     background: #ecebf0;
-    color: #4D5382;
+    color: #212121;
     display: block;
     position: absolute;
     bottom: 0;
@@ -86,7 +86,7 @@ body {
 }
 
 .menu-newCollectionButton:hover, .examination-mode-close-button:hover{
-    background: #3772FF;
+    background: #424242;
     color: azure;
 }
 

@@ -1,7 +1,7 @@
 html, body {
     background: #FAFAFA;
     font-family: Arial, Helvetica, sans-serif;
-    color: #252529;
+    color: #212121;
     font-size: 13px;
 }
 button {
@@ -36,8 +36,8 @@ table {
 }
 
 table .headerRow {
-    background: #0075A2;
-    color: #EDF2F4;
+    background: #424242;
+    color: #fafafa;
 }
 
 table tr {

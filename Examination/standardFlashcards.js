@@ -417,6 +417,9 @@ function resetAccessoriesSelection() {
 }
 function getCurrentFlashcard(){return currentFlashcard;}
 function Flashcard(front, back) {
+
+    back = back.split(";");
+
     backButtons.style.display = 'none';
     currentFlashcard = this;
     this.front = front;
@@ -436,7 +439,18 @@ function Flashcard(front, back) {
 
     const backSide = document.createElement('div');
     content = document.createElement('div');
-    content.innerText = back;
+
+    backText = "";
+    for (let i = 0; i < back.length; i++){
+        if (back.length > 1) {
+            if (back[i])
+                backText += `${i + 1}. ${back[i]}\n`;
+        } else {
+            backText += back[i];
+        }
+    }
+
+    content.innerText = backText;
     backSide.className = 'back';
     backSide.appendChild(content);
     flashcardNode.appendChild(backSide);
