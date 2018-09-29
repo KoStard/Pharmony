@@ -465,6 +465,25 @@ function resetMultiSelection(){
     }
 }
 
+function autoHighlight(raw) {
+    let matching = [];
+    raw = standardizeText(raw.split('--')[0]);
+    if (raw.includes(';')){
+        for (let blName of raw.split(';')){
+            blName = standardizeText(blName);
+            if (blocks[blName]){
+                matching.push(blName);
+            }
+        }
+    } else {
+        matching.push(...find(standardizeText(raw), false, false, false));
+    }
+    resetMultiSelection();
+    for (let name of matching) {
+        tableDic[name].classList.add('selected');
+    }
+}
+
 function show(IDnames, blocks) {
     tableDic = {};
 
@@ -576,6 +595,8 @@ function show(IDnames, blocks) {
                     }
                 } else 
                     input.value = `${name} -- ${blocks[tempName].description}`;
+                
+                autoHighlight(input.value)
             });
         tableDic[name] = tempRow;
         if (tempRow.innerHTML){
@@ -1021,11 +1042,7 @@ function init() {
     input.oninput = (event) => {
         if (inputMode == 'standard') {
             if (input.value) { // Searching with input
-                matching = find(standardizeText(input.value.split('--')[0]), false, false, false);
-                resetMultiSelection();
-                for (let name of matching) {
-                    tableDic[name].classList.add('selected');
-                }
+                autoHighlight(input.value);
             } else {
                 resetMultiSelection();
             }
