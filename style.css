@@ -88,6 +88,10 @@ table tr {
     text-align: center;
 }
 
+table .selected {
+    background-color: #e0e0e0;
+}
+
 #input {
     outline: none;
 	font-family: inherit;

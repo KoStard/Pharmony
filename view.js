@@ -455,8 +455,16 @@ function clearTable() {
 
 let lastIDnames;
 let headersRowColor;
-function show(IDnames, blocks) {
+let tableDic = {};
 
+function resetMultiSelection(){
+    for (let row of Object.values(tableDic)){
+        row.classList.remove('selected');
+    }
+}
+
+function show(IDnames, blocks) {
+    tableDic = {};
     console.log(IDnames, blocks);
 
     changedBlockNames = [];
@@ -566,8 +574,10 @@ function show(IDnames, blocks) {
                 } else 
                     input.value = `${name} -- ${blocks[tempName].description}`;
             });
-        if (tempRow.innerHTML)
+        tableDic[name] = tempRow;
+        if (tempRow.innerHTML){
             table.appendChild(tempRow);
+        }
     }
     refreshScrollLevel();
     return true;
@@ -999,6 +1009,22 @@ function globalSearch(query, withDescription){
 // Initialization
 function init() {
     ipcRenderer.send('started');
+    input.oninput = (event) => {
+        if (inputMode == 'standard') {
+            if (input.value) { // Searching with input
+                matching = find(standardizeText(input.value.split('--')[0]), false, false, false);
+                resetMultiSelection();
+                for (let name of matching) {
+                    console.log(tableDic);
+                    console.log(name);
+                    console.log(tableDic[name]);
+                    tableDic[name].classList.add('selected');
+                }
+            } else {
+                resetMultiSelection();
+            }
+        }
+    };
     input.addEventListener('keydown', (event)=>{ 
         switch (event.keyCode) {
         case 13: // Responding to enter
