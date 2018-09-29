@@ -1086,6 +1086,11 @@ function init() {
             globalSearch(input.value, true);
         }
     });
+    Mousetrap.bind(['command+e', 'ctrl+e'], ()=>{
+        if (container.className == 'main' && inputMode == 'standard') {
+            Editor.show();
+        }
+    });
     Mousetrap.bind('space', ()=> {
         const flashcard = standardFlashcards.getCurrentFlashcard();
         if (flashcard && flashcard.flashcardNode.className == 'flashcard both')
