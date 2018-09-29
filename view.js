@@ -456,6 +456,9 @@ function clearTable() {
 let lastIDnames;
 let headersRowColor;
 function show(IDnames, blocks) {
+
+    console.log(IDnames, blocks);
+
     changedBlockNames = [];
     changeFindTo = undefined;
     if (inputMode == 'standard')
@@ -495,6 +498,7 @@ function show(IDnames, blocks) {
         let [ID, name] = (typeof IDname == 'string' ? [tempIndex++, IDname] : IDname);
         let tempName = name;
         if (inputMode == 'global' || inputMode == 'global-with-descriptions') {
+            ID = blocks[name].ID; // Run before the name changes
             name = blocks[name].name;
         }
         if (!name || !tempName)
@@ -969,10 +973,10 @@ function globalSearch(query, withDescription){
             let IDNames = find(query, true, true, withDescription);
             for (let IDName of IDNames) {
                 if (!IDName || !IDName[1]) continue;
-                IDName = IDName[1];
-                res[IDName + '_' + filename] = {
-                    name: IDName,
-                    description: blocks[IDName].description,
+                res[IDName[1] + '_' + filename] = {
+                    ID: IDName[0],
+                    name: IDName[1],
+                    description: blocks[IDName[1]].description,
                     collection: filename
                 };
             }
