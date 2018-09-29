@@ -15,7 +15,7 @@
     max-width: 400px;
     max-height: 200px;
     /* border-radius: 15px;
-    border: 0.1px solid gray; */
+    border: 1px solid gray; */
     font-weight: bold;
     z-index: 1;
 }
@@ -72,7 +72,7 @@
     display: block;
     width: 100%;
     padding: 5px;
-    border: 0.1px solid #1b1b1b;
+    border: 1px solid #bdbdbd;
 }
 
 .popup-text {
@@ -80,7 +80,7 @@
 }
 
 .popup-header {
-    font-size: 20px;
+    font-size: 19px;
 }
 
 .popup-standart.popup-button {
@@ -112,7 +112,7 @@
 .popup-standart {
     color: #212121;
     margin-right: 3px;
-    border: 0.1px solid #212121;
+    border: 1px solid #bdbdbd;
     border-radius: 1px;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
