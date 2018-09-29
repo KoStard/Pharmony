@@ -1017,9 +1017,6 @@ function init() {
                 matching = find(standardizeText(input.value.split('--')[0]), false, false, false);
                 resetMultiSelection();
                 for (let name of matching) {
-                    console.log(tableDic);
-                    console.log(name);
-                    console.log(tableDic[name]);
                     tableDic[name].classList.add('selected');
                 }
             } else {
