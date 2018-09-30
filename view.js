@@ -465,22 +465,29 @@ function resetMultiSelection(){
     }
 }
 
-function autoHighlight(raw) {
-    if (!raw) return;
+function autoHighlight(raw, affectInputPanel = true) {
+    resetMultiSelection();
+    if (affectInputPanel) input.classList.remove('alreadyExists');
+
     let matching = [];
     let final = raw.includes('--');
     raw = standardizeText(raw.split('--')[0]);
+    if (!raw) return;
     if (raw.includes(';') || final){
         for (let blName of raw.split(';')){
             blName = standardizeText(blName);
             if (blocks[blName]){
+                if (final && affectInputPanel) {
+                    if (!input.classList.contains('alreadyExists')) {
+                        input.classList.add('alreadyExists');
+                    }
+                }
                 matching.push(blName);
             }
         }
     } else {
         matching.push(...find(standardizeText(raw), false, false, false));
     }
-    resetMultiSelection();
     for (let name of matching) {
         tableDic[name].classList.add('selected');
     }
@@ -1043,11 +1050,7 @@ function init() {
     ipcRenderer.send('started');
     input.oninput = (event) => {
         if (inputMode == 'standard') {
-            if (input.value) { // Searching with input
-                autoHighlight(input.value);
-            } else {
-                resetMultiSelection();
-            }
+            autoHighlight(input.value);
         }
     };
     input.addEventListener('keydown', (event)=>{ 
