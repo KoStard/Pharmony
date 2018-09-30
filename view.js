@@ -8,12 +8,16 @@ const fs = require('fs');
 // const docx = require('docx');
 const popup = require('./popup/popup');
 const launch = require('./launchFiles');
-const {ipcRenderer} = require('electron');
+const {
+    ipcRenderer
+} = require('electron');
 const Selector = require('./selector');
 const Examination = require('./Examination/examination');
 const ExaminationUniversals = require('./Examination/examinationUniversals');
 const standardFlashcards = require('./Examination/standardFlashcards');
-const { createButton } = require('./Universals');
+const {
+    createButton
+} = require('./Universals');
 const Mousetrap = require('./mousetrap.min.js');
 const LPgen = require('./LanguagePacks/language-pack-generator');
 const textToColor = require('./Colors/text-to-color');
@@ -40,11 +44,11 @@ const examination = document.getElementById('examination');
 let tableScrollAnchor = 'bottom';
 
 const standardDataTemplate = {
-    blocks: {},
-    global: {
-        standardFlashcards: {},
-    }
-},
+        blocks: {},
+        global: {
+            standardFlashcards: {},
+        }
+    },
     standardBlockTemplate = {
         description: '',
         individual: {
@@ -69,25 +73,26 @@ function copy(mainObj) {
     return objCopy;
 }
 
-function refreshScrollLevel(){
+function refreshScrollLevel() {
     if (tableScrollAnchor == 'top') {
-        table.parentElement.scrollTo(0,0);
+        table.parentElement.scrollTo(0, 0);
     } else if (tableScrollAnchor == 'bottom') {
-        table.parentElement.scrollTo(0,table.parentElement.scrollHeight-table.parentElement.clientHeight);
+        table.parentElement.scrollTo(0, table.parentElement.scrollHeight - table.parentElement.clientHeight);
     }
 }
 
 
 let MultiSelectionButton,
-MultiSelectionButtonEnum = Object.freeze({
-    default: 'MultiSelection',
-    cancel: 'Done'
-});
+    MultiSelectionButtonEnum = Object.freeze({
+        default: 'MultiSelection',
+        cancel: 'Done'
+    });
+
 function settingsCreator() {
     MultiSelectionButton = createButton({
         value: MultiSelectionButtonEnum.default,
         onclick: function () {
-            if (this.innerText == MultiSelectionButtonEnum.default){
+            if (this.innerText == MultiSelectionButtonEnum.default) {
                 switchToMultiSelectionMode();
             } else if (this.innerText == MultiSelectionButtonEnum.cancel) {
                 switchToNormalViewerMode();
@@ -97,17 +102,19 @@ function settingsCreator() {
     });
     createButton({
         value: 'Examinate',
-        onclick: () => { startExamination(); },
+        onclick: () => {
+            startExamination();
+        },
         owner: settingsDropdownContent
     });
     createButton({
         value: 'Global',
-        onclick: () => { 
+        onclick: () => {
             if (inputMode == 'global') {
                 toggleToMain();
                 onGlobalModeClosing && onGlobalModeClosing();
                 onGlobalModeClosing = undefined;
-            }else {
+            } else {
                 inputMode = 'global';
                 globalSearch(standardizeText(input.value), false);
                 document.title = "Global Search";
@@ -132,37 +139,79 @@ function settingsCreator() {
     });
     createButton({
         value: 'Menu',
-        onclick: ()=>{toggleToMenu();},
+        onclick: () => {
+            toggleToMenu();
+        },
         owner: settingsDropdownContent
     });
     createButton({
         value: 'Standart Export',
-        onclick: ()=>{responsiveExport({format: 'docx', mode:'standart', keys: Object.keys(blocks), blocks: blocks, runningDatabase: runningDatabase});},
+        onclick: () => {
+            responsiveExport({
+                format: 'docx',
+                mode: 'standart',
+                keys: Object.keys(blocks),
+                blocks: blocks,
+                runningDatabase: runningDatabase
+            });
+        },
         owner: settingsDropdownContent
     });
     createButton({
         value: 'Full Export',
-        onclick: ()=>{responsiveExport({format: 'docx', mode:'full', keys: Object.keys(blocks), blocks: blocks, runningDatabase: runningDatabase});},
+        onclick: () => {
+            responsiveExport({
+                format: 'docx',
+                mode: 'full',
+                keys: Object.keys(blocks),
+                blocks: blocks,
+                runningDatabase: runningDatabase
+            });
+        },
         owner: settingsDropdownContent
     });
     createButton({
         value: 'Selective Export',
-        onclick: ()=>{responsiveExport({format: 'docx', mode:'full', keys: Object.keys(blocks).filter(x=>blocks[x].description&&blocks[x].description.length>0), blocks: blocks, runningDatabase: runningDatabase});},
+        onclick: () => {
+            responsiveExport({
+                format: 'docx',
+                mode: 'full',
+                keys: Object.keys(blocks).filter(x => blocks[x].description && blocks[x].description.length > 0),
+                blocks: blocks,
+                runningDatabase: runningDatabase
+            });
+        },
         owner: settingsDropdownContent
     });
     createButton({
         value: 'Full Export to XLSX',
-        onclick: ()=>{responsiveExport({format: 'xlsx', mode:'full', keys: Object.keys(blocks), blocks: blocks, runningDatabase: runningDatabase});},
+        onclick: () => {
+            responsiveExport({
+                format: 'xlsx',
+                mode: 'full',
+                keys: Object.keys(blocks),
+                blocks: blocks,
+                runningDatabase: runningDatabase
+            });
+        },
         owner: settingsDropdownContent
     });
     createButton({
         value: 'Selective Export To XLSX',
-        onclick: ()=>{responsiveExport({format: 'xlsx', mode:'full', keys: Object.keys(blocks).filter(x=>blocks[x].description&&blocks[x].description.length>0), blocks: blocks, runningDatabase: runningDatabase});},
+        onclick: () => {
+            responsiveExport({
+                format: 'xlsx',
+                mode: 'full',
+                keys: Object.keys(blocks).filter(x => blocks[x].description && blocks[x].description.length > 0),
+                blocks: blocks,
+                runningDatabase: runningDatabase
+            });
+        },
         owner: settingsDropdownContent
     });
     createButton({
         value: 'Import',
-        onclick: ()=>{
+        onclick: () => {
             // new popup.PopupInputPanelBigCentral({
             //     headerText: "Select the file",
             //     additionalContent: [],
@@ -174,17 +223,20 @@ function settingsCreator() {
     });
     createButton({
         value: 'Exit',
-        onclick: ()=>{close();},
+        onclick: () => {
+            close();
+        },
         owner: settingsDropdownContent
     });
 }
 
 // Menu stuff
-function menuButtonClicked(){
+function menuButtonClicked() {
     toggleToCollection(this.innerText);
 }
 
 let menuButtons = [];
+
 function loadMenuButtons() {
     stopEditCollectionsListMode();
 
@@ -193,9 +245,9 @@ function loadMenuButtons() {
     let files = fs.readdirSync(databasesFolder);
     files.forEach((file) => {
         let name = file.split('.');
-        let extension = name[name.length-1];
+        let extension = name[name.length - 1];
         name = name.slice(0, name.length - 1).join('.');
-        if (name && extension == 'json'){
+        if (name && extension == 'json') {
             menuButtons.push(createButton({
                 value: name,
                 buttonClass: 'menu-databases-button',
@@ -204,7 +256,7 @@ function loadMenuButtons() {
             }));
         }
     });
-    menuButtons = menuButtons.filter(x=>x);
+    menuButtons = menuButtons.filter(x => x);
 }
 
 // Marker of being in global search or not
@@ -212,29 +264,29 @@ let inputMode = 'standard';
 
 
 // Toggling to main viewer
-function toggleToMain(inputMode_local = "standard"){
+function toggleToMain(inputMode_local = "standard") {
     container.className = 'main';
     inputMode = inputMode_local;
     switch (inputMode_local) {
         case "standard":
-        headersRowColor = '';
-        break;
+            headersRowColor = '';
+            break;
         case "global":
-        headersRowColor = '#f44336';
-        break;
+            headersRowColor = '#f44336';
+            break;
         case "global-with-descriptions":
-        headersRowColor = '#b71c1c';
-        break;
+            headersRowColor = '#b71c1c';
+            break;
     }
 }
 
-function toggleToMenu(){
+function toggleToMenu() {
     clearTable();
     document.title = 'Pharmony';
     container.className = 'menu';
 }
 
-function toggleToCollection(coll){
+function toggleToCollection(coll) {
     toggleToMain();
     document.title = coll;
     runningDatabase = coll;
@@ -243,11 +295,10 @@ function toggleToCollection(coll){
     showDB();
 }
 
-function openNewCollectionAdder(){
+function openNewCollectionAdder() {
     new popup.PopupInputPanelBigCentral({
         headerText: 'Enter the new collection name',
-        contentModel: [
-            {
+        contentModel: [{
                 type: 'input',
                 args: {
                     placeholder: 'Collection name',
@@ -274,12 +325,12 @@ function openNewCollectionAdder(){
 
 function removeCollections(names) {
     for (let name of names) {
-        fs.unlinkSync(databasesFolder+name+'.json');
+        fs.unlinkSync(databasesFolder + name + '.json');
     }
     loadMenuButtons();
 }
 
-function loadMenu(){
+function loadMenu() {
     for (let node of menu.childNodes) {
         if (node !== menuButtonContainer) {
             node.remove();
@@ -290,7 +341,7 @@ function loadMenu(){
         value: 'New Collection',
         buttonClass: 'menu-generalButton menu-newCollectionButton',
         owner: menu,
-        onclick: ()=>{
+        onclick: () => {
             openNewCollectionAdder();
         }
     });
@@ -298,23 +349,28 @@ function loadMenu(){
         value: 'Remove Selected Collections',
         buttonClass: 'menu-generalButton menu-removeCollectionsButton',
         owner: menu,
-        onclick: ()=>{
-            removeCollections(removeCollectionsSelector.selectedElements.map((x)=>{return x.innerText;}));
+        onclick: () => {
+            removeCollections(removeCollectionsSelector.selectedElements.map((x) => {
+                return x.innerText;
+            }));
         }
     });
     removeCollectionsButton.style.display = 'none';
 }
 
 let removeCollectionsSelector;
-function editCollectionsList(){
-    removeCollectionsSelector = new Selector({elements: menuButtons});
+
+function editCollectionsList() {
+    removeCollectionsSelector = new Selector({
+        elements: menuButtons
+    });
     removeCollectionsSelector.init(globals);
     removeCollectionsSelector.start();
     newCollectionButton.style.display = 'none';
     removeCollectionsButton.style.display = 'block';
 }
 
-function stopEditCollectionsListMode(){
+function stopEditCollectionsListMode() {
     if (!removeCollectionsSelector) return;
     ipcRenderer.send('stopEditCollectionsListMode');
     removeCollectionsSelector.stop();
@@ -324,13 +380,13 @@ function stopEditCollectionsListMode(){
 }
 
 // Data manipulations
-function load(){
-    data = JSON.parse(fs.readFileSync(databasesFolder+runningDatabase+'.json').toString());
+function load() {
+    data = JSON.parse(fs.readFileSync(databasesFolder + runningDatabase + '.json').toString());
     blocks = data.blocks;
 }
 
-function save(){
-    fs.writeFileSync(databasesFolder+runningDatabase+'.json', JSON.stringify(data), function(){});
+function save() {
+    fs.writeFileSync(databasesFolder + runningDatabase + '.json', JSON.stringify(data), function () {});
 }
 
 let createDatabase = popup.createResponsiveFunction({
@@ -349,22 +405,26 @@ let createDatabase = popup.createResponsiveFunction({
 
 // Viewer stuff
 function clearSelection() {
-    if (window.getSelection) { window.getSelection().removeAllRanges(); }
-    else if (document.selection) { document.selection.empty(); }
+    if (window.getSelection) {
+        window.getSelection().removeAllRanges();
+    } else if (document.selection) {
+        document.selection.empty();
+    }
 }
 let MultiSelector;
 let MultiSelectorData = {
     lastKey: '--',
     lastNewValue: ''
 };
-function switchToMultiSelectionMode(){
+
+function switchToMultiSelectionMode() {
     MultiSelectionButton.innerText = MultiSelectionButtonEnum.cancel;
     MultiSelector = new Selector({
         elements: Array.from(table.childNodes).slice(1), // Еxcluding headers from selection
         selectedColor: '#e0e0e0',
         unselectedColor: 'none',
         hoverColor: '#ebebeb',
-        onclose:switchToNormalViewerMode
+        onclose: switchToNormalViewerMode
     });
     MultiSelector.init(globals);
     MultiSelector.start();
@@ -373,7 +433,7 @@ function switchToMultiSelectionMode(){
     let name, key, newValue;
     if (resp)
         [, name, key, newValue] = (resp).map(x => standardizeText(x));
-    else{
+    else {
         name = input.value;
     }
     if (!name) return;
@@ -382,11 +442,11 @@ function switchToMultiSelectionMode(){
     for (let curr of Array.from(table.childNodes).filter((el) => name.includes(el.childNodes[1].innerText))) {
         MultiSelector.selectElement(curr);
     }
-    MultiSelectorData.lastKey = (key||'--');
+    MultiSelectorData.lastKey = (key || '--');
     MultiSelectorData.lastNewValue = newValue;
 }
 
-function switchToNormalViewerMode(){
+function switchToNormalViewerMode() {
     MultiSelectionButton.innerText = MultiSelectionButtonEnum.default;
     if (MultiSelector.selectedElements.length > 0)
         input.value = MultiSelector.selectedElements.map(row => row.childNodes[1].innerText).join(';') + MultiSelectorData.lastKey + MultiSelectorData.lastNewValue;
@@ -406,26 +466,28 @@ function showDB() {
 }
 
 let lastFind;
-function find(rawArg, mark=true, indices = true, withDescription = false) {
+
+function find(rawArg, mark = true, indices = true, withDescription = false) {
     if (mark)
         lastFind = rawArg;
     if (!rawArg) return Object.keys(blocks);
-    let argGroups = rawArg.split('|').map(x=>x.match(/(?:^|[&^!])[^!&^]+/g));
+    let argGroups = rawArg.split('|').map(x => x.match(/(?:^|[&^!])[^!&^]+/g));
     let res = [];
     let index = 0;
     for (let name in blocks) {
         index++;
         let valid;
-        for (let args of argGroups){
+        for (let args of argGroups) {
             valid = true;
             for (let arg of args) {
-                switch(arg[0]) {
+                switch (arg[0]) {
                     case '&':
                         if (!name.includes(arg.slice(1)) && !(withDescription && blocks[name].description.includes(arg.slice(1)))) {
                             valid = false;
                         }
                         break;
-                    case '^':case '!':
+                    case '^':
+                    case '!':
                         if (name.includes(arg.slice(1)) || (withDescription && blocks[name].description.includes(arg.slice(1)))) {
                             valid = false;
                         }
@@ -436,14 +498,14 @@ function find(rawArg, mark=true, indices = true, withDescription = false) {
                         }
                         break;
                 }
-                if (!valid){
+                if (!valid) {
                     break;
                 }
             }
             if (valid) break;
         }
         if (!valid) continue;
-        if(indices)
+        if (indices)
             res.push([index, name]);
         else
             res.push(name);
@@ -459,8 +521,8 @@ let lastIDnames;
 let headersRowColor;
 let tableDic = {};
 
-function resetMultiSelection(){
-    for (let row of Object.values(tableDic)){
+function resetMultiSelection() {
+    for (let row of Object.values(tableDic)) {
         row.classList.remove('selected');
     }
 }
@@ -480,10 +542,10 @@ function autoHighlight(raw, affectInputPanel = true) {
     }
     raw = standardizeText(raw.split('--')[0]);
     if (!raw) return;
-    if (raw.includes(';') || final){
-        for (let blName of raw.split(';')){
+    if (raw.includes(';') || final) {
+        for (let blName of raw.split(';')) {
             blName = standardizeText(blName);
-            if (blocks[blName]){
+            if (blocks[blName]) {
                 if (final && affectInputPanel) {
                     if (!input.classList.contains('alreadyExists')) {
                         input.classList.add('alreadyExists');
@@ -498,6 +560,7 @@ function autoHighlight(raw, affectInputPanel = true) {
     for (let name of matching) {
         tableDic[name].classList.add('selected');
     }
+    return matching;
 }
 
 function show(IDnames, blocks) {
@@ -565,7 +628,7 @@ function show(IDnames, blocks) {
         else
             tempD.innerHTML = `<div class='table-element'>${descrBlocks[0]}</div>`;
         tempRow.appendChild(tempD);
-        tempRow.addEventListener('mousedown', (event)=>{
+        tempRow.addEventListener('mousedown', (event) => {
             clearSelection();
         });
 
@@ -576,7 +639,7 @@ function show(IDnames, blocks) {
             tempD.style.background = textToColor(blocks[tempName].collection, LPgen);
             tempD.style.color = colorFuncs.getWhiteOrBlackMaxContrast(tempD.style.background);
 
-            tempD.addEventListener('dblclick', ()=>{
+            tempD.addEventListener('dblclick', () => {
                 toggleToCollection(blocks[tempName].collection);
             });
 
@@ -587,8 +650,9 @@ function show(IDnames, blocks) {
             tempRow.addEventListener('dblclick', (event) => {
                 if (MultiSelector) return;
                 event.preventDefault();
-                if (event.shiftKey){ // Adding to existing one
-                    let tempName, key = '--', newValue;
+                if (event.shiftKey) { // Adding to existing one
+                    let tempName, key = '--',
+                        newValue;
                     if (standardizeText(input.value)) {
                         let resp = inputSlicer(input.value);
                         if (resp)
@@ -609,13 +673,13 @@ function show(IDnames, blocks) {
                     } else {
                         input.value = `${name} ${key} ${blocks[tempName].description}`;
                     }
-                } else 
+                } else
                     input.value = `${name} -- ${blocks[tempName].description}`;
-                
+
                 autoHighlight(input.value)
             });
         tableDic[name] = tempRow;
-        if (tempRow.innerHTML){
+        if (tempRow.innerHTML) {
             table.appendChild(tempRow);
         }
     }
@@ -627,27 +691,43 @@ function show(IDnames, blocks) {
 // Exporting content
 let lastCreatedFile; // Has to contain extension too
 let responsiveExport = popup.createResponsiveFunction({
-    func: (args)=>{lastCreatedFile = exporter[args.format](args);},
-    startInfo: {text: 'Starting export.'},
-    successInfo: {text: 'Done exporting.', onclick: ()=>{launch.launch(lastCreatedFile);}},
+    func: (args) => {
+        lastCreatedFile = exporter[args.format](args);
+    },
+    startInfo: {
+        text: 'Starting export.'
+    },
+    successInfo: {
+        text: 'Done exporting.',
+        onclick: () => {
+            launch.launch(lastCreatedFile);
+        }
+    },
     errorInfo: 'error',
     popupAlertPanel: popup.PopupAlertPanelSmall
 });
 
 // Importing
 let responsiveimport = popup.createResponsiveFunction({
-    func: (args)=>{
+    func: (args) => {
         console.log(args);
     },
-    startInfo: {text: 'Starting import.'},
-    successInfo: {text: 'Done importing.', onclick: ()=>{launch.launch(lastCreatedFile);}},
+    startInfo: {
+        text: 'Starting import.'
+    },
+    successInfo: {
+        text: 'Done importing.',
+        onclick: () => {
+            launch.launch(lastCreatedFile);
+        }
+    },
     errorInfo: 'error',
     popupAlertPanel: popup.PopupAlertPanelSmall
 });
 
 // Text manipulations
 const specialSymbols = {
-    '': ['^\\s+','\\s+$'],
+    '': ['^\\s+', '\\s+$'],
     ';': ['\\s*;\\s*', ';\\n', ';\\r', '\\n', '\\r', ';{2,}'],
     ' ': ['\\s+']
 };
@@ -696,8 +776,11 @@ let specialKeyWordBlockNames = {
 let lastKey;
 let lastEdit;
 let editBlock = popup.createResponsiveFunction({
-    func: function ({ key, newValue }) {
-        if (blocks[key].description == newValue){
+    func: function ({
+        key,
+        newValue
+    }) {
+        if (blocks[key].description == newValue) {
             return;
         }
         lastKey = key;
@@ -714,21 +797,33 @@ let editBlock = popup.createResponsiveFunction({
             show(find(lastFind), blocks);
         }
     },
-    successLogic: ({ key, newValue })=>{return blocks[key] && blocks[key].description != newValue;},
+    successLogic: ({
+        key,
+        newValue
+    }) => {
+        return blocks[key] && blocks[key].description != newValue;
+    },
     errorInfo: 'error'
 });
 
 let changedBlockNames = [];
 let changeFindTo;
-function createOrEditBlocks(name, newValue){
+
+function createOrEditBlocks(name, newValue) {
     if (!name) throw 'Invalid name';
     if (name.endsWith('*')) { // To change all blocks whose names contain the keyword
-        name = name.slice(0,name.length-1);
-        find(name, false, false).forEach((value, index, array)=>{
-            editBlock({key: value, newValue: newValue});
+        name = name.slice(0, name.length - 1);
+        find(name, false, false).forEach((value, index, array) => {
+            editBlock({
+                key: value,
+                newValue: newValue
+            });
         });
     } else {
-        if (blocks[name]) editBlock({key: name, newValue: newValue});
+        if (blocks[name]) editBlock({
+            key: name,
+            newValue: newValue
+        });
         else {
             blocks[name] = copy(standardBlockTemplate);
             blocks[name].description = newValue;
@@ -737,11 +832,11 @@ function createOrEditBlocks(name, newValue){
     }
 }
 
-function removeBlocks(name, newValue){
+function removeBlocks(name, newValue) {
     if (!name) throw 'Invalid name';
     if (name.endsWith('*')) {
-        name = name.slice(0,name.length-1);
-        find(name, false, false).forEach((value, index, array)=>{
+        name = name.slice(0, name.length - 1);
+        find(name, false, false).forEach((value, index, array) => {
             delete blocks[value];
         });
     } else {
@@ -749,49 +844,55 @@ function removeBlocks(name, newValue){
     }
 }
 
-function addToBlocks(name, newValue){
+function addToBlocks(name, newValue) {
     if (!name) throw 'Invalid name';
     if (name.endsWith('*')) {
-        name = name.slice(0,name.length-1);
-        find(name, false, false).forEach((value, index, array)=>{
-            if (!blocks[value].description.match(new RegExp(`(;|^)${newValue}(;|$)`))) {blocks[value].description += (blocks[value].description?';':'')+newValue;changedBlockNames.push(value);}
+        name = name.slice(0, name.length - 1);
+        find(name, false, false).forEach((value, index, array) => {
+            if (!blocks[value].description.match(new RegExp(`(;|^)${newValue}(;|$)`))) {
+                blocks[value].description += (blocks[value].description ? ';' : '') + newValue;
+                changedBlockNames.push(value);
+            }
         });
     } else {
-        if (blocks[name] && !blocks[name].description.match(new RegExp(`(;|^)${newValue}(;|$)`))) {blocks[name].description += (blocks[name].description?';':'')+newValue;changedBlockNames.push(name);}
+        if (blocks[name] && !blocks[name].description.match(new RegExp(`(;|^)${newValue}(;|$)`))) {
+            blocks[name].description += (blocks[name].description ? ';' : '') + newValue;
+            changedBlockNames.push(name);
+        }
     }
 }
 
-function removeFromBlocks(name, newValue){
+function removeFromBlocks(name, newValue) {
     if (!name) throw 'Invalid name';
     if (name.endsWith('*')) {
-        name = name.slice(0,name.length-1);
-        find(name, false, false).forEach((value, index, array)=>{
-            if (blocks[value].description.includes(newValue)){
-                if (blocks[value].description.includes(';'+newValue+';')){ // Check the memory to be without spaces after ;
+        name = name.slice(0, name.length - 1);
+        find(name, false, false).forEach((value, index, array) => {
+            if (blocks[value].description.includes(newValue)) {
+                if (blocks[value].description.includes(';' + newValue + ';')) { // Check the memory to be without spaces after ;
                     blocks[value].description = blocks[value].description.replace(`;${newValue};`, ';');
                     changedBlockNames.push(value);
                 } else {
                     let temp = blocks[value].description;
-                    blocks[value].description = blocks[value].description.replace(new RegExp(';'+newValue+'$'), '').replace(new RegExp('^'+newValue+';'), '').replace(new RegExp('^'+newValue+'$'), '');
-                    if (temp!=blocks[value].description) changedBlockNames.push(value);
+                    blocks[value].description = blocks[value].description.replace(new RegExp(';' + newValue + '$'), '').replace(new RegExp('^' + newValue + ';'), '').replace(new RegExp('^' + newValue + '$'), '');
+                    if (temp != blocks[value].description) changedBlockNames.push(value);
                 }
             }
         });
     } else {
-        if (blocks[name].description.includes(newValue)){
-            if (blocks[name].description.includes(';'+newValue+';')){ // Check the memory to be without spaces after ;
+        if (blocks[name].description.includes(newValue)) {
+            if (blocks[name].description.includes(';' + newValue + ';')) { // Check the memory to be without spaces after ;
                 blocks[name].description = blocks[name].description.replace(`;${newValue};`, ';');
                 changedBlockNames.push(name);
             } else {
                 let temp = blocks[name].description;
-                blocks[name].description = blocks[name].description.replace(new RegExp(';'+newValue+'$'), '').replace(new RegExp('^'+newValue+';'), '').replace(new RegExp('^'+newValue+'$'), '');
+                blocks[name].description = blocks[name].description.replace(new RegExp(';' + newValue + '$'), '').replace(new RegExp('^' + newValue + ';'), '').replace(new RegExp('^' + newValue + '$'), '');
                 if (temp != blocks[name].description) changedBlockNames.push(name);
             }
         }
     }
 }
 
-function renameBlocks(name, newValue){
+function renameBlocks(name, newValue) {
     if (!name) throw 'Invalid name';
     if (name.endsWith('*')) throw "You can't use * in rename function";
     if (!newValue) throw 'Invalid newName';
@@ -801,7 +902,7 @@ function renameBlocks(name, newValue){
     for (let key of keys) {
         if (key == name) { // Doing this to avoid rearrangement of elements
             newBlocks[newValue] = blocks[name];
-        }else 
+        } else
             newBlocks[key] = blocks[key];
     }
     data.blocks = newBlocks;
@@ -817,33 +918,33 @@ const keys = {
     '-->': renameBlocks // Renames the block
 };
 
-function inputSlicer(command){ // Will give you content from the input panel
+function inputSlicer(command) { // Will give you content from the input panel
     return command.match(/^((?:[^\n]+)(?:[^-]))(--(?:(?:\/)|(?:\+)|(?:-)|(?:\>)|(?:)))([^\n]*)$/);
 }
 
 let process = popup.createResponsiveFunction({ // creating responsive process method
-    func: (command)=>{
-        if ((command.match(/--/g)||[]).length > 1) return;
+    func: (command) => {
+        if ((command.match(/--/g) || []).length > 1) return;
         let resp = inputSlicer(command);
         if (resp) {
             let [, name, key, newValue] = resp.map(x => standardizeText(x));
-            if (name.includes(';')){
+            if (name.includes(';')) {
                 name = name.split(';');
                 for (let curr of name) {
                     if (curr)
                         keys[key](standardizeText(curr), newValue);
                 }
-            }else 
+            } else
                 keys[key](name, newValue);
             save();
-            if (lastFind){
+            if (lastFind) {
                 if (changeFindTo) {
                     show(find(changeFindTo), blocks);
                 } else {
                     let lastFindRes = find(lastFind, false, false);
-                    if (lastFindRes.length || !lastIDnames.length){ // Checking if all elements of last scope were deleted
+                    if (lastFindRes.length || !lastIDnames.length) { // Checking if all elements of last scope were deleted
                         let valid = true;
-                        for (let chName of changedBlockNames){
+                        for (let chName of changedBlockNames) {
                             if (!lastFindRes.includes(chName)) {
                                 show(find(name), blocks);
                                 valid = false;
@@ -873,11 +974,11 @@ let process = popup.createResponsiveFunction({ // creating responsive process me
 
 // Editor stuff
 let Editor;
-function initEditor(){ // Will initiali, blocksze the editor window
+
+function initEditor() { // Will initiali, blocksze the editor window
     Editor = new popup.PopupInputPanelBigCentral({ // Creating the editor window
         headerText: 'Editor',
-        contentModel: [
-            {
+        contentModel: [{
                 type: 'input',
                 args: {
                     type: 'text',
@@ -918,7 +1019,7 @@ function initEditor(){ // Will initiali, blocksze the editor window
         ],
         owner: container,
         onclose: (panel) => {
-            if (panel.inputs[0].value || standardizeText(panel.inputs[1].value)){
+            if (panel.inputs[0].value || standardizeText(panel.inputs[1].value)) {
                 input.value = `${panel.inputs[0].value} -- ${standardizeText(panel.inputs[1].value)}`;
                 autoHighlight(input.value);
             }
@@ -926,7 +1027,7 @@ function initEditor(){ // Will initiali, blocksze the editor window
         initialState: "hidden",
         buffered: true
     });
-    let EditorOnInput = ()=>{
+    let EditorOnInput = () => {
         let query = standardizeText(`${Editor.inputs[0].value} -- ${standardizeText(Editor.inputs[1].value)}`);
         if (query.match(/--/g).length > 1) {
             Editor.buttons[0].classList.remove('alreadyExists');
@@ -940,7 +1041,7 @@ function initEditor(){ // Will initiali, blocksze the editor window
     };
     Editor.inputs[0].oninput = EditorOnInput;
     Editor.inputs[1].oninput = EditorOnInput;
-    Mousetrap(Editor.panel).bind(['command+enter', 'ctrl+enter'], ()=>{
+    Mousetrap(Editor.panel).bind(['command+enter', 'ctrl+enter'], () => {
         if (Editor.inputs[0].value || standardizeText(Editor.inputs[1].value)) {
             input.value = `${Editor.inputs[0].value} -- ${standardizeText(Editor.inputs[1].value)}`;
             autoHighlight(input.value);
@@ -999,7 +1100,7 @@ function doForAllDBs(f) {
     let files = fs.readdirSync(databasesFolder);
     files.forEach((filename) => {
         filename = filename.split('.')
-        if (filename[1] == 'json'){
+        if (filename[1] == 'json') {
             filename = filename[0];
             runningDatabase = filename;
             load();
@@ -1014,7 +1115,7 @@ function doForAllDBs(f) {
     }
 }
 
-function reformAllCorrespondingToStandards(){ // Is being called from devtools
+function reformAllCorrespondingToStandards() { // Is being called from devtools
     doForAllDBs(() => {
         reformBlocks(standardBlockTemplate);
         reformData(standardDataTemplate);
@@ -1028,7 +1129,7 @@ const globals = {
 //---------------------------------------------------------------------------------------------------------
 // Global search
 let onGlobalModeClosing; // function that will be called when toggling to menu
-function globalSearch(query, withDescription){
+function globalSearch(query, withDescription) {
     let wasOpened = runningDatabase;
     let files = fs.readdirSync(databasesFolder);
     let res = {};
@@ -1060,10 +1161,10 @@ function globalSearch(query, withDescription){
             }
         }
     });
-    toggleToMain(withDescription?"global-with-descriptions":"global");
+    toggleToMain(withDescription ? "global-with-descriptions" : "global");
     show(Object.keys(res), res);
     if (wasOpened) {
-        onGlobalModeClosing = ()=>{
+        onGlobalModeClosing = () => {
             toggleToCollection(wasOpened);
         };
     } else {
@@ -1075,36 +1176,71 @@ function globalSearch(query, withDescription){
 // Initialization
 function init() {
     ipcRenderer.send('started');
+    let inputMatches = null;
+    let inputMatchesCurrentPosition = null;
+    let inputInitial = null;
     input.oninput = (event) => {
         if (inputMode == 'standard') {
-            autoHighlight(input.value);
+            inputMatches = autoHighlight(input.value);
+            inputInitial = input.value;
+            inputMatchesCurrentPosition = null;
         }
     };
-    input.addEventListener('keydown', (event)=>{ 
+    input.addEventListener('keydown', (event) => {
         switch (event.keyCode) {
-        case 13: // Responding to enter
-            event.preventDefault();
-            switch (inputMode) {
-                case "standard":
-                    if (input.value) process(input.value);
-                    else showDB();
-                    input.select();
-                    break;
-                case "global":
-                    globalSearch(input.value, false);
-                    break;
-                case "global-with-descriptions":
-                    globalSearch(input.value, true);
-                    break;
-            }
-            
-            break;
-        case 9: // Responding to tab
-            if (inputMode == 'standard'){
+            case 13: // Responding to enter
                 event.preventDefault();
-                openEditor();
-            }
-            break;
+                switch (inputMode) {
+                    case "standard":
+                        if (input.value) process(input.value);
+                        else showDB();
+                        input.select();
+                        inputMatches = autoHighlight(input.value);
+                        inputInitial = input.value;
+                        inputMatchesCurrentPosition = null;
+                        break;
+                    case "global":
+                        globalSearch(input.value, false);
+                        break;
+                    case "global-with-descriptions":
+                        globalSearch(input.value, true);
+                        break;
+                }
+                break;
+            case 9: // Responding to tab
+                if (inputMode == 'standard') {
+                    event.preventDefault();
+                    openEditor();
+                }
+                break;
+            case 40: // down arrow
+                event.preventDefault();
+                if (!inputMatches || inputMatches.length == 1) break;
+                if (inputMatchesCurrentPosition == null) {
+                    inputMatchesCurrentPosition = 0;
+                } else if (inputMatchesCurrentPosition >= inputMatches.length - 1) {
+                    inputMatchesCurrentPosition = 0;
+                } else inputMatchesCurrentPosition++;
+                input.value = `${inputMatches[inputMatchesCurrentPosition]} -- ${blocks[inputMatches[inputMatchesCurrentPosition]].description}`;
+                input.classList.add('alreadyExists');
+                break;
+            case 38: // up arrow
+                event.preventDefault();
+                if (!inputMatches || inputMatches.length == 1) break;
+                if (inputMatchesCurrentPosition == null) {
+                    inputMatchesCurrentPosition = inputMatches.length - 1;
+                    input.value = `${inputMatches[inputMatchesCurrentPosition]} -- ${blocks[inputMatches[inputMatchesCurrentPosition]].description}`;
+                    input.classList.add('alreadyExists');
+                } else if (inputMatchesCurrentPosition <= 0) { // escaping from the cycle
+                    inputMatchesCurrentPosition = null;
+                    input.value = inputInitial;
+                    input.classList.remove('alreadyExists');
+                } else {
+                    inputMatchesCurrentPosition--;
+                    input.value = `${inputMatches[inputMatchesCurrentPosition]} -- ${blocks[inputMatches[inputMatchesCurrentPosition]].description}`;
+                    input.classList.add('alreadyExists');
+                }
+                break;
         }
     });
     Mousetrap.bind(['command+f', 'ctrl+f'], () => {
@@ -1117,12 +1253,12 @@ function init() {
             globalSearch(input.value, true);
         }
     });
-    Mousetrap.bind(['command+e', 'ctrl+e'], ()=>{
+    Mousetrap.bind(['command+e', 'ctrl+e'], () => {
         if (container.className == 'main' && inputMode == 'standard') {
             Editor.show();
         }
     });
-    Mousetrap.bind('space', ()=> {
+    Mousetrap.bind('space', () => {
         const flashcard = standardFlashcards.getCurrentFlashcard();
         if (flashcard && flashcard.flashcardNode.className == 'flashcard both')
             flashcard.accessories.mainButtonPressed();
@@ -1132,7 +1268,7 @@ function init() {
         if (flashcard) {
             if (flashcard.flashcardNode.className == 'flashcard both') {
                 flashcard.accessories.mainButtonClicked();
-            }else
+            } else
                 flashcard.rotate();
         } else {
             const introductoryScreen = ExaminationUniversals.getIntroductoryScreen();
@@ -1161,7 +1297,7 @@ function init() {
     });
     Mousetrap.bind("left", (e) => {
         const flashcard = standardFlashcards.getCurrentFlashcard();
-        if (flashcard){
+        if (flashcard) {
             if (flashcard.flashcardNode.className == 'flashcard both') {
                 flashcard.accessories.click('raw');
             } else {
@@ -1171,7 +1307,7 @@ function init() {
     }, 'keyup');
     Mousetrap.bind("right", (e) => {
         const flashcard = standardFlashcards.getCurrentFlashcard();
-        if (flashcard){
+        if (flashcard) {
             if (flashcard.flashcardNode.className == 'flashcard both') {
                 flashcard.accessories.click('finished');
             } else {
@@ -1181,7 +1317,7 @@ function init() {
     }, 'keyup');
     Mousetrap.bind(["down", "up"], (e) => {
         const flashcard = standardFlashcards.getCurrentFlashcard();
-        if (flashcard){
+        if (flashcard) {
             if (flashcard.flashcardNode.className == 'flashcard both') {
                 flashcard.accessories.click('inProcess');
             } else {
@@ -1190,10 +1326,10 @@ function init() {
         }
     }, 'keyup');
 
-    document.addEventListener('keyup', (ev)=>{
+    document.addEventListener('keyup', (ev) => {
         if (ev.key == 'Escape') {
-            if (globals.capturingObjects.length > 0) { 
-                globals.capturingObjects[globals.capturingObjects.length-1].close(-1); // From the last to the first
+            if (globals.capturingObjects.length > 0) {
+                globals.capturingObjects[globals.capturingObjects.length - 1].close(-1); // From the last to the first
             } else {
                 switch (container.className) {
                     case 'examination':
@@ -1223,8 +1359,8 @@ function init() {
     ipcRenderer.on('add-new-collection-clicked', openNewCollectionAdder);
     ipcRenderer.on('back-to-menu-clicked', stopEditCollectionsListMode);
     ipcRenderer.on('global-search', globalSearch);
-    table.parentElement.addEventListener('scroll', (event)=>{ // Scroll anchors
-        if (table.parentElement.scrollTop+table.parentElement.clientHeight == table.parentElement.scrollHeight) tableScrollAnchor = 'bottom';
+    table.parentElement.addEventListener('scroll', (event) => { // Scroll anchors
+        if (table.parentElement.scrollTop + table.parentElement.clientHeight == table.parentElement.scrollHeight) tableScrollAnchor = 'bottom';
         else if (table.parentElement.scrollTop == 0) tableScrollAnchor = 'top';
         else tableScrollAnchor = undefined;
     });
@@ -1240,4 +1376,3 @@ function init() {
 }
 
 window.onload = init; // Starting the program
-
