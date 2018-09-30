@@ -470,7 +470,11 @@ function autoHighlight(raw, affectInputPanel = true) {
     if (affectInputPanel) input.classList.remove('alreadyExists');
 
     let matching = [];
-    let final = raw.includes('--');
+    let final = (raw.match(/--/g) || []).length;
+    if (final > 1) {
+        input.classList.add('invalid');
+        return;
+    }
     raw = standardizeText(raw.split('--')[0]);
     if (!raw) return;
     if (raw.includes(';') || final){
@@ -816,6 +820,7 @@ function inputSlicer(command){ // Will give you content from the input panel
 
 let process = popup.createResponsiveFunction({ // creating responsive process method
     func: (command)=>{
+        if ((command.match(/--/g)||[]).length > 1) return;
         let resp = inputSlicer(command);
         if (resp) {
             let [, name, key, newValue] = resp.map(x => standardizeText(x));
