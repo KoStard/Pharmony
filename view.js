@@ -878,8 +878,7 @@ function initEditor(){ // Will initiali, blocksze the editor window
                 type: 'input',
                 args: {
                     type: 'text',
-                    placeholder: 'Name',
-                    classList: ['test']
+                    placeholder: 'Name'
                 }
             },
             {
