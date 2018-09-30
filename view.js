@@ -467,7 +467,10 @@ function resetMultiSelection(){
 
 function autoHighlight(raw, affectInputPanel = true) {
     resetMultiSelection();
-    if (affectInputPanel) input.classList.remove('alreadyExists');
+    if (affectInputPanel) {
+        input.classList.remove('alreadyExists');
+        input.classList.remove('invalid');
+    }
 
     let matching = [];
     let final = (raw.match(/--/g) || []).length;
@@ -892,9 +895,11 @@ function initEditor(){ // Will initiali, blocksze the editor window
                 onclick: (panel) => {
                     if (panel.inputs[0].value || standardizeText(panel.inputs[1].value)) {
                         input.value = `${panel.inputs[0].value} -- ${standardizeText(panel.inputs[1].value)}`;
+                        autoHighlight(input.value);
                         process(input.value);
                     }
-                }
+                },
+                buttonID: 'Editor-Done-Button'
             }),
             createButton({
                 value: 'Erase',
@@ -913,15 +918,32 @@ function initEditor(){ // Will initiali, blocksze the editor window
         ],
         owner: container,
         onclose: (panel) => {
-            if (panel.inputs[0].value || standardizeText(panel.inputs[1].value))
+            if (panel.inputs[0].value || standardizeText(panel.inputs[1].value)){
                 input.value = `${panel.inputs[0].value} -- ${standardizeText(panel.inputs[1].value)}`;
+                autoHighlight(input.value);
+            }
         },
         initialState: "hidden",
         buffered: true
     });
+    let EditorOnInput = ()=>{
+        let query = standardizeText(`${Editor.inputs[0].value} -- ${standardizeText(Editor.inputs[1].value)}`);
+        if (query.match(/--/g).length > 1) {
+            Editor.buttons[0].classList.remove('alreadyExists');
+            Editor.buttons[0].classList.add('invalid');
+        } else {
+            Editor.buttons[0].classList.remove('invalid');
+            if (blocks[standardizeText(Editor.inputs[0].value)])
+                Editor.buttons[0].classList.add('alreadyExists');
+            else Editor.buttons[0].classList.remove('alreadyExists');
+        }
+    };
+    Editor.inputs[0].oninput = EditorOnInput;
+    Editor.inputs[1].oninput = EditorOnInput;
     Mousetrap(Editor.panel).bind(['command+enter', 'ctrl+enter'], ()=>{
         if (Editor.inputs[0].value || standardizeText(Editor.inputs[1].value)) {
             input.value = `${Editor.inputs[0].value} -- ${standardizeText(Editor.inputs[1].value)}`;
+            autoHighlight(input.value);
             process(input.value);
         }
     });
