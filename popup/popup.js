@@ -117,7 +117,8 @@ function PopupInputPanelBigCentral({
             if (popupClassNames[current.tagName.toLowerCase()])
                 current.classList.add(popupClassNames[current.tagName.toLowerCase()]);
         } else {
-            current.args.classList = [popupClassNames.standart];
+            if (!current.args.classList) current.args.classList = [];
+            current.args.classList.push(popupClassNames.standart); // Adding ability to give initial classList from the view.js
             if (popupClassNames[current.type])
                 current.args.classList.push(popupClassNames[current.type]);
         }
