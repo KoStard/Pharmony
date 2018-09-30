@@ -468,8 +468,9 @@ function resetMultiSelection(){
 function autoHighlight(raw) {
     if (!raw) return;
     let matching = [];
+    let final = raw.includes('--');
     raw = standardizeText(raw.split('--')[0]);
-    if (raw.includes(';')){
+    if (raw.includes(';') || final){
         for (let blName of raw.split(';')){
             blName = standardizeText(blName);
             if (blocks[blName]){
