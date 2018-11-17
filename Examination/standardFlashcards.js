@@ -111,6 +111,7 @@ function createTable(playlist) {
                     cell.innerText = statusEnum[blocks[blockName].individual.standardFlashcards.status].text;
                     cell.style.backgroundColor = statusEnum[blocks[blockName].individual.standardFlashcards.status].color;
                 }
+                refreshContinueButtonVisibility();
             };
             cell.innerText = statusEnum[blocks[blockName].individual.standardFlashcards.status].text;
             cell.style.backgroundColor = statusEnum[blocks[blockName].individual.standardFlashcards.status].color;
@@ -146,6 +147,7 @@ function createTable(playlist) {
                 cell.innerText = statusEnum[blocks[blockName].individual.standardFlashcards.status].text;
                 cell.style.backgroundColor = statusEnum[blocks[blockName].individual.standardFlashcards.status].color;
             }
+            refreshContinueButtonVisibility();
         };
         cell.innerText = statusEnum[blocks[blockName].individual.standardFlashcards.status].text;
         cell.style.backgroundColor = statusEnum[blocks[blockName].individual.standardFlashcards.status].color;
@@ -165,14 +167,19 @@ const shuffleArray = arr => arr
 let continueButton;
 let continueButtonVisibility = false;
 
+function refreshContinueButtonVisibility(manual) {
+    if (!manual) {
+        continueButtonVisibility = (playlist.waiting.length && Object.keys(data.global.standardFlashcards).includes('last') && blocks[data.global.standardFlashcards.last].individual.standardFlashcards.status != statusEnum.finished.name);
+    }
+    continueButton.style.display = continueButtonVisibility ? 'block' : 'none';
+}
+
 function createIntroductoryScreen() {
     backButtons.style.display = 'none';
     currentFlashcard = undefined;
     accessories.hide();
     createPlaylist(sequence);
-    if (playlist.waiting.length && Object.keys(data.global.standardFlashcards).includes('last') && blocks[data.global.standardFlashcards.last].individual.standardFlashcards.status != statusEnum.finished.name) {
-        continueButtonVisibility = true;
-    }
+    continueButtonVisibility = (playlist.waiting.length && Object.keys(data.global.standardFlashcards).includes('last') && blocks[data.global.standardFlashcards.last].individual.standardFlashcards.status != statusEnum.finished.name);
     let table = createTable(playlist);
     continueButton = {};
     new examinationUniversals.createIntroductoryScreen({
@@ -496,19 +503,26 @@ function Flashcard(front, back) {
     flashcardNode.appendChild(frontSide);
 
     const backSide = document.createElement('div');
-    content = document.createElement('div');
+    content = document.createElement('ol');
 
-    backText = "";
-    for (let i = 0; i < back.length; i++) {
-        if (back.length > 1) {
-            if (back[i])
-                backText += `${i + 1}. ${back[i]}\n`;
-        } else {
-            backText += back[i];
-        }
+    // backText = "";
+    // for (let i = 0; i < back.length; i++) {
+    //     if (back.length > 1) {
+    //         if (back[i])
+    //             backText += `${i + 1}. ${back[i]}\n`;
+    //     } else {
+    //         backText += back[i];
+    //     }
+    // }
+
+    let index = 0;
+    let innerHTML = '';
+    for (let sep of back) {
+        innerHTML += sep[0] != '#' ? `<li>${sep}</li>` : `<div><b>${sep.slice(1)}</b></div>`;
     }
 
-    content.innerText = backText;
+    content.innerHTML = innerHTML;
+    // content.innerText = backText;
     backSide.className = 'back';
     backSide.appendChild(content);
     flashcardNode.appendChild(backSide);

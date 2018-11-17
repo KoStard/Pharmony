@@ -53,8 +53,8 @@
     align-items: center;
 }
 
-.flashcard div>div {
-    padding: 50px;
+.flashcard .front>div {
+    padding: 0 50px;
 }
 
 .flashcard .front {
@@ -63,6 +63,17 @@
 
 .flashcard .back {
     font-size: 1.5em;
+}
+
+.flashcard .back ol {
+    list-style-position: inside;
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0 50px;
+    width: 100%;
 }
 
 .flashcard.front .front {
@@ -74,8 +85,11 @@
     overflow: auto;
 }
 
-.flashcard * div {
+.flashcard * {
     word-wrap: break-word;
+}
+
+.flashcard>*>div {
     position: absolute;
     text-align: center;
     top: 50%;
