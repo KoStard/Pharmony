@@ -62,7 +62,7 @@ function createPlaylist(sequence) {
             playlist.waiting[playlist.waiting.length - 1].push(name);
         else
             playlist.finished.push(name);
-        if (playlist.waiting[playlist.waiting.length - 1].length > playlistGroupSize) {
+        if (playlist.waiting[playlist.waiting.length - 1].length >= playlistGroupSize) {
             playlist.waiting.push([]); // Creating new group
         }
     }
@@ -162,12 +162,19 @@ const shuffleArray = arr => arr
     .sort((a, b) => a[0] - b[0])
     .map(a => a[1]);
 
+let continueButton;
+let continueButtonVisibility = false;
+
 function createIntroductoryScreen() {
     backButtons.style.display = 'none';
     currentFlashcard = undefined;
     accessories.hide();
     createPlaylist(sequence);
+    if (playlist.waiting.length && Object.keys(data.global.standardFlashcards).includes('last') && blocks[data.global.standardFlashcards.last].individual.standardFlashcards.status != statusEnum.finished.name) {
+        continueButtonVisibility = true;
+    }
     let table = createTable(playlist);
+    continueButton = {};
     new examinationUniversals.createIntroductoryScreen({
         content: table,
         buttons: [
@@ -234,7 +241,20 @@ function createIntroductoryScreen() {
                         main();
                     }
                 }
-            })
+            }),
+            createButton({
+                value: 'Continue',
+                buttonClass: 'popup-standart popup-button',
+                onclick: () => {
+                    if (playlist.waiting[0].length > 0) {
+                        main(data.global.standardFlashcards.last); // Last will be name
+                    }
+                },
+                style: {
+                    display: continueButtonVisibility ? 'block' : 'none'
+                },
+                saveIn: continueButton
+            }),
         ],
         start: () => {
             if (playlist.waiting[0].length > 0) {
@@ -243,6 +263,7 @@ function createIntroductoryScreen() {
             }
         }
     });
+    continueButton = continueButton.button;
 }
 
 let globals;
@@ -259,9 +280,9 @@ function start(dataInput, args) {
 
 let flashcard;
 
-function main() {
+function main(name) {
     examinationUniversals.turnOnExaminationSettingsButton();
-    flashcard = runFlashcard();
+    flashcard = runFlashcard(name);
     flashcard.next();
 }
 
@@ -281,7 +302,8 @@ function finish() {
 
 const maxCycles = 3;
 
-function* runFlashcard() {
+function* runFlashcard(last_name) {
+    let found_last_name = false;
     done = false;
     let cycle = 0;
     accessories.show();
@@ -300,10 +322,17 @@ function* runFlashcard() {
             for (let name of playlist.waiting[groupIndex]) {
                 if (blocks[name].individual.standardFlashcards.status != statusEnum.finished.name) {
                     accessories.progressBarData.currentIndex += 1;
-                    accessories.refreshProgressBar();
-                    yield new Flashcard(name, blocks[name].description);
-                    if (blocks[name].individual.standardFlashcards.status == statusEnum.finished.name) {
-                        accessories.progressBarData.progress += 1;
+                    if (last_name == name) {
+                        found_last_name = true;
+                    }
+                    if (!last_name || (last_name && found_last_name)) {
+                        accessories.refreshProgressBar();
+                        data.global.standardFlashcards.last = name;
+                        globals.save();
+                        yield new Flashcard(name, blocks[name].description);
+                        if (blocks[name].individual.standardFlashcards.status == statusEnum.finished.name) {
+                            accessories.progressBarData.progress += 1;
+                        }
                     }
                 }
             }
@@ -499,7 +528,6 @@ function stop() {
     examinationUniversals.clearExamination();
     accessories.hide();
     sequence = undefined;
-    console.log("Stopping");
     currentFlashcard = undefined;
     backButtons.style.display = 'none';
 }

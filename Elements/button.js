@@ -9,7 +9,8 @@ module.exports = {
         owner,
         style,
         darken = true,
-        darkening = 0.4
+        darkening = 0.4,
+        saveIn,
     }) {
         let self = this;
         if (!value) {
@@ -21,7 +22,7 @@ module.exports = {
         if (buttonID) newButton.id = buttonID;
         if (onclick) newButton.onclick = onclick;
         if (style) {
-            for (let key in Object.keys(style)) {
+            for (let key of Object.keys(style)) {
                 newButton.style[key] = style[key];
             }
         }
@@ -40,6 +41,9 @@ module.exports = {
         }
         if (owner) {
             owner.appendChild(newButton);
+        }
+        if (saveIn) {
+            saveIn.button = newButton;
         }
         return newButton;
     }
