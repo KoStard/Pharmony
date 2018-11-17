@@ -4,8 +4,13 @@ module.exports = {
     createResponsiveFunction: createResponsiveFunction,
     PopupAlertPanelSmall: PopupAlertPanelSmall,
     PopupInputPanelBigCentral: PopupInputPanelBigCentral,
-    runningPopup: () => { return runningPopup; },
-    removeRunningPopup: () => { runningPopup.close(); runningPopup=undefined; },
+    runningPopup: () => {
+        return runningPopup;
+    },
+    removeRunningPopup: () => {
+        runningPopup.close();
+        runningPopup = undefined;
+    },
     init: init
 };
 
@@ -13,26 +18,43 @@ const cc = require('./contentCreator');
 
 let globals;
 let runningPopup;
-function createResponsiveFunction({func, popupAlertPanel, startInfo, successInfo, successLogic, errorInfo}) {
-    return (attrs)=>{
+
+function createResponsiveFunction({
+    func,
+    popupAlertPanel,
+    startInfo,
+    successInfo,
+    successLogic,
+    errorInfo
+}) {
+    return (attrs) => {
         if (startInfo) {
             new popupAlertPanel(startInfo);
         }
-        try{
-            let successLogicResp = (successLogic?successLogic(attrs):true);
+        try {
+            let successLogicResp = (successLogic ? successLogic(attrs) : true);
             if (func(attrs) === false) throw false;
             if (successInfo && successLogicResp) new popupAlertPanel(successInfo);
         } catch (err) {
             if (errorInfo == 'error') {
-                new popupAlertPanel({text:err});
-            }else if (errorInfo) {
+                new popupAlertPanel({
+                    text: err
+                });
+            } else if (errorInfo) {
                 new popupAlertPanel(errorInfo);
             }
         }
     };
 }
 
-function PopupAlertPanelSmall({ text, color, icon, parent, delay, onclick }) {
+function PopupAlertPanelSmall({
+    text,
+    color,
+    icon,
+    parent,
+    delay,
+    onclick
+}) {
     if (!parent) parent = document.body;
     if (!delay) delay = 2000;
     let oldPanels = document.getElementsByClassName('popupAlertPanelSmall');
@@ -43,15 +65,23 @@ function PopupAlertPanelSmall({ text, color, icon, parent, delay, onclick }) {
     panel.className = 'popupAlertPanelSmall';
     panel.innerHTML = `<p>${text}</p>`;
     if (color) panel.style.backgroundColor = color;
-    if (onclick) {panel.onclick = onclick; panel.style.cursor = 'pointer';}
+    if (onclick) {
+        panel.onclick = onclick;
+        panel.style.cursor = 'pointer';
+    }
     parent.appendChild(panel);
     this.panel = panel;
-    setTimeout(()=>{
+    setTimeout(() => {
         panel.remove();
     }, delay);
 }
 
-function PopupBigPanelCentral({ owner, onclose, buffered }) {
+function PopupBigPanelCentral({
+    owner,
+    onclose,
+    buffered,
+    element,
+}) {
     this.onclose = onclose;
     let panelHolder = document.createElement('div');
     panelHolder.className = 'popupBigPanelCentralHolder';
@@ -68,51 +98,54 @@ function PopupBigPanelCentral({ owner, onclose, buffered }) {
 
     this.panelHolder = panelHolder;
     this.panel = panel;
-    if (buffered){
+    if (buffered) {
         this.hide = () => {
             if (this.onclose) this.onclose();
             runningPopup = undefined;
             this.panelHolder.style.display = "none";
         };
         this.panelHolder.style.display = 'block';
-    }
-    else {
+    } else {
         this.exit = () => {
-            this.onclose && this.onclose();
+            if (this.onclose) this.onclose();
             runningPopup = undefined;
             this.panelHolder.remove();
         };
     }
     backgroundCover.onclick = () => {
-        if (this.hide) this.hide();
-        else this.exit();
+        element.close();
     };
 }
+
 function PopupInputPanelBigCentral({
-        headerText,
-        contentModel,
-        owner,
-        buffered = false,
-        initialState,
-        finishFunction,
-        onclose,
-        openingFunction, 
-    }) {
+    headerText,
+    contentModel,
+    owner,
+    buffered = false,
+    initialState,
+    finishFunction,
+    onclose,
+    openingFunction,
+}) {
     this.args = arguments[0];
     this.openingFunction = openingFunction;
 
-    this.popupBigPanelCentral = new PopupBigPanelCentral({ owner: owner, buffered: buffered });
+    this.popupBigPanelCentral = new PopupBigPanelCentral({
+        owner: owner,
+        buffered: buffered,
+        element: this,
+    });
     this.panelHolder = this.popupBigPanelCentral.panelHolder;
     this.panelHolder.classList.add('popupInputPanelBigCentral');
     let panel = this.popupBigPanelCentral.panel;
     this.panel = panel;
-    
+
     let header = createPopupElement('div', ['text', 'header']);
     header.innerText = headerText;
     panel.appendChild(header);
 
     for (let current of contentModel) {
-        if (current.nodeType){
+        if (current.nodeType) {
             current.classList.add(popupClassNames.standart);
             if (popupClassNames[current.tagName.toLowerCase()])
                 current.classList.add(popupClassNames[current.tagName.toLowerCase()]);
@@ -125,15 +158,19 @@ function PopupInputPanelBigCentral({
     }
 
     let content = cc(contentModel, panel);
-    this.inputs = content.filter((el)=>el.tagName == 'INPUT' || el.tagName == 'TEXTAREA');
-    this.buttons = content.filter((el)=>el.tagName == 'BUTTON');
+    this.inputs = content.filter((el) => el.tagName == 'INPUT' || el.tagName == 'TEXTAREA');
+    this.buttons = content.filter((el) => el.tagName == 'BUTTON');
 
-    for(let button of this.buttons) {
+    for (let button of this.buttons) {
         let tempFunc = button.onclick;
-        button.onclick = ()=>{tempFunc(this);};
+        button.onclick = () => {
+            tempFunc(this);
+        };
     }
 
-    if (onclose) this.popupBigPanelCentral.onclose = () => { onclose(this); };
+    if (onclose) this.popupBigPanelCentral.onclose = () => {
+        onclose(this);
+    };
 
     this.focus = () => {
         console.log(this.inputs);
@@ -143,7 +180,7 @@ function PopupInputPanelBigCentral({
             this.buttons[0].focus();
         }
     };
-    
+
     if (buffered) {
         this.show = () => {
             globals && globals.capturingObjects.push(this);
@@ -156,7 +193,7 @@ function PopupInputPanelBigCentral({
             this.popupBigPanelCentral.hide();
         };
     } else {
-        if (initialState!="hidden") {
+        if (initialState != "hidden") {
             this.panelHolder.style.display = "block";
             globals && globals.capturingObjects.push(this);
             this.focus();
@@ -165,7 +202,7 @@ function PopupInputPanelBigCentral({
     }
 
     this.exit = () => {
-        this.popupBigPanelCentral.close();
+        this.popupBigPanelCentral.exit();
     };
 
     this.close = () => {
@@ -190,10 +227,13 @@ let popupClassNames = {
     text: 'popup-text',
     inputFile: 'popup-inputFile'
 };
+
 function createPopupElement(name, mode) {
     let tempElem = document.createElement(name);
     if (!mode) mode = [popupClassNames.standart];
-    tempElem.classList.add(...mode.map((x)=>{if (popupClassNames[x]) return popupClassNames[x];}));
+    tempElem.classList.add(...mode.map((x) => {
+        if (popupClassNames[x]) return popupClassNames[x];
+    }));
     return tempElem;
 }
 

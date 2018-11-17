@@ -677,7 +677,7 @@ function show(IDnames, blocks) {
                 } else
                     input.value = `${name} -- ${blocks[tempName].description}`;
 
-                autoHighlight(input.value)
+                autoHighlight(input.value);
             });
         tableDic[name] = tempRow;
         if (tempRow.innerHTML) {
@@ -1100,7 +1100,7 @@ function doForAllDBs(f) {
     let wasOpened = runningDatabase;
     let files = fs.readdirSync(databasesFolder);
     files.forEach((filename) => {
-        filename = filename.split('.')
+        filename = filename.split('.');
         if (filename[1] == 'json') {
             filename = filename[0];
             runningDatabase = filename;
@@ -1329,6 +1329,7 @@ function init() {
 
     document.addEventListener('keyup', (ev) => {
         if (ev.key == 'Escape') {
+            console.log(globals.capturingObjects);
             if (globals.capturingObjects.length > 0) {
                 globals.capturingObjects[globals.capturingObjects.length - 1].close(-1); // From the last to the first
             } else {
