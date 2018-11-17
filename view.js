@@ -558,7 +558,8 @@ function autoHighlight(raw, affectInputPanel = true) {
         matching.push(...find(standardizeText(raw), false, false, false));
     }
     for (let name of matching) {
-        tableDic[name].classList.add('selected');
+        if (tableDic[name])
+            tableDic[name].classList.add('selected');
     }
     return matching;
 }
