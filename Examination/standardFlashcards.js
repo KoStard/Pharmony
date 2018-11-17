@@ -7,8 +7,12 @@ module.exports = {
     getCurrentFlashcard: getCurrentFlashcard
 };
 
-const {createButton} = require('./../Universals');
-const {hoverColorMaker} = require('./../Colors/colorFuncs');
+const {
+    createButton
+} = require('./../Elements/button');
+const {
+    hoverColorMaker
+} = require('./../Colors/colorFuncs');
 const examinationUniversals = require('./examinationUniversals');
 const examinationController = require('./examination');
 
@@ -39,21 +43,26 @@ const statusEnum = Object.freeze({
 });
 
 let playlist = {
-    waiting: [[]],
+    waiting: [
+        []
+    ],
     finished: []
 }; // playlist - groups - names x 20
 let playlistGroupSize = 20;
-function createPlaylist(sequence){
+
+function createPlaylist(sequence) {
     playlist = {
-        waiting: [[]],
+        waiting: [
+            []
+        ],
         finished: []
     };
     for (let name of sequence) {
         if (blocks[name].individual.standardFlashcards.status != statusEnum.finished.name)
-            playlist.waiting[playlist.waiting.length-1].push(name);
+            playlist.waiting[playlist.waiting.length - 1].push(name);
         else
             playlist.finished.push(name);
-        if (playlist.waiting[playlist.waiting.length-1].length > playlistGroupSize) {
+        if (playlist.waiting[playlist.waiting.length - 1].length > playlistGroupSize) {
             playlist.waiting.push([]); // Creating new group
         }
     }
@@ -69,15 +78,16 @@ function checkGroupStatus(index) {
 }
 
 let sequence;
+
 function createTable(playlist) {
     let table = document.createElement('table');
-    for (let groupIndex in playlist.waiting){
+    for (let groupIndex in playlist.waiting) {
         for (let blockName of playlist.waiting[groupIndex]) {
             const row = document.createElement('tr');
             let cell = document.createElement('td');
             cell.className = 'standardFlashcardsIntroduction-front';
             cell.innerText = blockName;
-            cell.ondblclick = ()=>{
+            cell.ondblclick = () => {
                 examinationUniversals.clearExamination();
                 createPlaylist(sequence.slice(sequence.indexOf(blockName), sequence.length));
                 main();
@@ -87,12 +97,12 @@ function createTable(playlist) {
 
             cell = document.createElement('td');
             cell.className = 'standardFlashcardsIntroduction-status';
-            if (!blocks[blockName].individual.standardFlashcards.status) { 
-                blocks[blockName].individual.standardFlashcards.status = statusEnum.raw.name; 
+            if (!blocks[blockName].individual.standardFlashcards.status) {
+                blocks[blockName].individual.standardFlashcards.status = statusEnum.raw.name;
                 blocks[blockName].individual.standardFlashcards.realEffort = 0;
             }
             cell.ondblclick = () => {
-                blocks[blockName].individual.standardFlashcards.status = Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[blockName].individual.standardFlashcards.status)==2?0:2];
+                blocks[blockName].individual.standardFlashcards.status = Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[blockName].individual.standardFlashcards.status) == 2 ? 0 : 2];
                 globals.save();
                 if (autoRefresh) {
                     createPlaylist(sequence);
@@ -145,15 +155,15 @@ function createTable(playlist) {
     return table;
 }
 
-let getPlaylist = ()=>playlist;
+let getPlaylist = () => playlist;
 
 const shuffleArray = arr => arr
-  .map(a => [Math.random(), a])
-  .sort((a, b) => a[0] - b[0])
-  .map(a => a[1]);
+    .map(a => [Math.random(), a])
+    .sort((a, b) => a[0] - b[0])
+    .map(a => a[1]);
 
-function createIntroductoryScreen(){
-    backButtons.style.display = 'none'; 
+function createIntroductoryScreen() {
+    backButtons.style.display = 'none';
     currentFlashcard = undefined;
     accessories.hide();
     createPlaylist(sequence);
@@ -164,7 +174,10 @@ function createIntroductoryScreen(){
             createButton({
                 value: 'Close',
                 buttonClass: 'popup-standart popup-button',
-                onclick: ()=>{examinationUniversals.clearExamination(); examinationController.toggleToModeSelection();},
+                onclick: () => {
+                    examinationUniversals.clearExamination();
+                    examinationController.toggleToModeSelection();
+                },
             }),
             createButton({
                 value: 'Initial',
@@ -179,7 +192,7 @@ function createIntroductoryScreen(){
             createButton({
                 value: 'Shuffle',
                 buttonClass: 'popup-standart popup-button',
-                onclick: ()=>{
+                onclick: () => {
                     sequence = shuffleArray(sequence);
                     createPlaylist(sequence);
                     table = createTable(playlist);
@@ -216,7 +229,7 @@ function createIntroductoryScreen(){
                 value: 'Start',
                 buttonClass: 'popup-standart popup-button',
                 onclick: () => {
-                    if (playlist.waiting[0].length > 0){
+                    if (playlist.waiting[0].length > 0) {
                         examinationUniversals.clearExamination();
                         main();
                     }
@@ -233,7 +246,8 @@ function createIntroductoryScreen(){
 }
 
 let globals;
-function start(dataInput, args){
+
+function start(dataInput, args) {
     globals = args;
     examinationUniversals.clearExamination();
     data = dataInput;
@@ -244,6 +258,7 @@ function start(dataInput, args){
 }
 
 let flashcard;
+
 function main() {
     examinationUniversals.turnOnExaminationSettingsButton();
     flashcard = runFlashcard();
@@ -251,35 +266,37 @@ function main() {
 }
 
 let done = false;
+
 function next() {
-    if(!done && flashcard.next().done){
+    if (!done && flashcard.next().done) {
         finish();
     }
 }
 
-function finish(){
+function finish() {
     done = true;
     examinationUniversals.clearExamination();
     createIntroductoryScreen();
 }
 
 const maxCycles = 3;
+
 function* runFlashcard() {
     done = false;
     let cycle = 0;
     accessories.show();
     accessories.progressBarData.groupsNum = playlist.waiting.length;
-    for (let groupIndex in playlist.waiting){
+    for (let groupIndex in playlist.waiting) {
         cycle = 0;
         accessories.progressBarData.currentGroupSize = playlist.waiting[groupIndex].length;
         accessories.progressBarData.progress = 0;
         accessories.progressBarData.currentGroupIndex = parseInt(groupIndex) + 1;
         accessories.refreshProgressBar();
-        while (!checkGroupStatus(groupIndex)){
+        while (!checkGroupStatus(groupIndex)) {
             cycle += 1;
             if (cycle > maxCycles) break;
-            for (let name of playlist.waiting[groupIndex]){
-                if (blocks[name].individual.standardFlashcards.status != statusEnum.finished.name){
+            for (let name of playlist.waiting[groupIndex]) {
+                if (blocks[name].individual.standardFlashcards.status != statusEnum.finished.name) {
                     yield new Flashcard(name, blocks[name].description);
                     if (blocks[name].individual.standardFlashcards.status == statusEnum.finished.name) {
                         accessories.progressBarData.progress += 1;
@@ -291,11 +308,12 @@ function* runFlashcard() {
     }
 }
 let accessories;
+
 function createAccessories() {
     accessories = this;
     backButtons.style.justifyContent = 'center';
 
-    let f = function(b, statusName) {
+    let f = function (b, statusName) {
         b.style.backgroundColor = statusEnum[statusName].color;
         b.onmouseenter = function () {
             this.style.backgroundColor = statusEnum[statusName].hoverColor;
@@ -384,10 +402,10 @@ function createAccessories() {
             this.click(Object.keys(statusEnum)[Object.keys(statusEnum).indexOf(blocks[currentFlashcard.front].individual.standardFlashcards.status) == 0 ? 1 : 2]);
     };
     this.progressBar = (() => {
-                    let el = document.createElement('div');
-                    el.className = 'flashcards-progress-bar';
-                    return el;
-                })();
+        let el = document.createElement('div');
+        el.className = 'flashcards-progress-bar';
+        return el;
+    })();
     this.progressBarData = {
         progress: 0,
         currentGroupSize: 0,
@@ -396,26 +414,31 @@ function createAccessories() {
     };
     accessoriesNode.appendChild(this.progressBar);
     this.refreshProgressBar = () => {
-        this.progressBar.innerHTML = 
-        `Finished <span>${this.progressBarData.progress}</span>/<span>${this.progressBarData.currentGroupSize}</span><br>
+        this.progressBar.innerHTML =
+            `Finished <span>${this.progressBarData.progress}</span>/<span>${this.progressBarData.currentGroupSize}</span><br>
         Group <span>${this.progressBarData.currentGroupIndex}</span>/<span>${this.progressBarData.groupsNum}</span>`;
     };
 
-    this.show = ()=>{
+    this.show = () => {
         this.progressBar.style.display = 'block';
     };
 
-    this.hide = ()=>{
+    this.hide = () => {
         this.progressBar.style.display = 'none';
     };
 }
+
 function resetAccessoriesSelection() {
     Object.keys(statusEnum).forEach((st) => {
         accessories[st].className = 'popup-standart popup-button';
     });
     accessories[blocks[currentFlashcard.front].individual.standardFlashcards.status].className += ' selected';
 }
-function getCurrentFlashcard(){return currentFlashcard;}
+
+function getCurrentFlashcard() {
+    return currentFlashcard;
+}
+
 function Flashcard(front, back) {
 
     back = back.split(";");
@@ -441,7 +464,7 @@ function Flashcard(front, back) {
     content = document.createElement('div');
 
     backText = "";
-    for (let i = 0; i < back.length; i++){
+    for (let i = 0; i < back.length; i++) {
         if (back.length > 1) {
             if (back[i])
                 backText += `${i + 1}. ${back[i]}\n`;
@@ -454,9 +477,9 @@ function Flashcard(front, back) {
     backSide.className = 'back';
     backSide.appendChild(content);
     flashcardNode.appendChild(backSide);
-    examination.insertBefore(flashcardNode, examination.childNodes[examination.childNodes.length-1]);
+    examination.insertBefore(flashcardNode, examination.childNodes[examination.childNodes.length - 1]);
 
-    this.rotate = function(){
+    this.rotate = function () {
         if (flashcardNode.className == 'flashcard front') {
             backButtons.style.display = 'flex';
             flashcardNode.className = 'flashcard both';
@@ -465,7 +488,7 @@ function Flashcard(front, back) {
     resetAccessoriesSelection();
 }
 
-function stop(){
+function stop() {
     examinationUniversals.turnOffExaminationSettingsButton();
     examinationUniversals.clearExamination();
     accessories.hide();

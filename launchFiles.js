@@ -6,15 +6,19 @@ module.exports = {
 };
 
 function getCommandLine() {
-    switch (process.platform) { 
-       case 'darwin' : return 'open';
-       case 'win32' : return '';
-       case 'win64' : return '';
-       default : return 'xdg-open';
+    switch (process.platform) {
+        case 'darwin':
+            return 'open';
+        case 'win32':
+            return '';
+        case 'win64':
+            return '';
+        default:
+            return 'xdg-open';
     }
 }
 
-function launch(filePath='') {
+function launch(filePath = '') {
     filePath = `"${filePath}"`;
-    console.log(exec(getCommandLine()+' '+filePath));
+    console.log(exec(getCommandLine() + ' ' + filePath));
 }

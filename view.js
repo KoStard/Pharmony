@@ -17,7 +17,7 @@ const ExaminationUniversals = require('./Examination/examinationUniversals');
 const standardFlashcards = require('./Examination/standardFlashcards');
 const {
     createButton
-} = require('./Universals');
+} = require('./Elements/button');
 const Mousetrap = require('./mousetrap.min.js');
 const LPgen = require('./LanguagePacks/language-pack-generator');
 const textToColor = require('./Colors/text-to-color');
@@ -98,14 +98,16 @@ function settingsCreator() {
                 switchToNormalViewerMode();
             }
         },
-        owner: settingsDropdownContent
+        owner: settingsDropdownContent,
+        darkening: 0.1,
     });
     createButton({
         value: 'Examinate',
         onclick: () => {
             startExamination();
         },
-        owner: settingsDropdownContent
+        owner: settingsDropdownContent,
+        darkening: 0.1,
     });
     createButton({
         value: 'Global',
@@ -120,7 +122,8 @@ function settingsCreator() {
                 document.title = "Global Search";
             }
         },
-        owner: settingsDropdownContent
+        owner: settingsDropdownContent,
+        darkening: 0.1,
     });
     createButton({
         value: 'Global with descriptions',
@@ -135,14 +138,16 @@ function settingsCreator() {
                 document.title = "Global Search With Desciption";
             }
         },
-        owner: settingsDropdownContent
+        owner: settingsDropdownContent,
+        darkening: 0.1,
     });
     createButton({
         value: 'Menu',
         onclick: () => {
             toggleToMenu();
         },
-        owner: settingsDropdownContent
+        owner: settingsDropdownContent,
+        darkening: 0.1,
     });
     createButton({
         value: 'Standart Export',
@@ -155,7 +160,8 @@ function settingsCreator() {
                 runningDatabase: runningDatabase
             });
         },
-        owner: settingsDropdownContent
+        owner: settingsDropdownContent,
+        darkening: 0.1,
     });
     createButton({
         value: 'Full Export',
@@ -168,7 +174,8 @@ function settingsCreator() {
                 runningDatabase: runningDatabase
             });
         },
-        owner: settingsDropdownContent
+        owner: settingsDropdownContent,
+        darkening: 0.1,
     });
     createButton({
         value: 'Selective Export',
@@ -181,7 +188,8 @@ function settingsCreator() {
                 runningDatabase: runningDatabase
             });
         },
-        owner: settingsDropdownContent
+        owner: settingsDropdownContent,
+        darkening: 0.1,
     });
     createButton({
         value: 'Full Export to XLSX',
@@ -194,7 +202,8 @@ function settingsCreator() {
                 runningDatabase: runningDatabase
             });
         },
-        owner: settingsDropdownContent
+        owner: settingsDropdownContent,
+        darkening: 0.1,
     });
     createButton({
         value: 'Selective Export To XLSX',
@@ -207,26 +216,22 @@ function settingsCreator() {
                 runningDatabase: runningDatabase
             });
         },
-        owner: settingsDropdownContent
+        owner: settingsDropdownContent,
+        darkening: 0.1,
     });
     createButton({
         value: 'Import',
-        onclick: () => {
-            // new popup.PopupInputPanelBigCentral({
-            //     headerText: "Select the file",
-            //     additionalContent: [],
-            //     buffered: false,
-            //     owner: container,
-            // });
-        },
-        owner: settingsDropdownContent
+        onclick: () => {},
+        owner: settingsDropdownContent,
+        darkening: 0.1,
     });
     createButton({
         value: 'Exit',
         onclick: () => {
             close();
         },
-        owner: settingsDropdownContent
+        owner: settingsDropdownContent,
+        darkening: 0.1,
     });
 }
 
@@ -343,7 +348,8 @@ function loadMenu() {
         owner: menu,
         onclick: () => {
             openNewCollectionAdder();
-        }
+        },
+        darken: false,
     });
     removeCollectionsButton = createButton({
         value: 'Remove Selected Collections',
@@ -1329,7 +1335,6 @@ function init() {
 
     document.addEventListener('keyup', (ev) => {
         if (ev.key == 'Escape') {
-            console.log(globals.capturingObjects);
             if (globals.capturingObjects.length > 0) {
                 globals.capturingObjects[globals.capturingObjects.length - 1].close(-1); // From the last to the first
             } else {

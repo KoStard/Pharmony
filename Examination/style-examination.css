@@ -22,7 +22,7 @@
     background: none;
 }
 
-#examination-settings-button:hover svg .st0{
+#examination-settings-button:hover svg .st0 {
     stroke-width: 2.3px;
 }
 
@@ -56,6 +56,7 @@
 .flashcard .front {
     font-size: 2em;
 }
+
 .flashcard .back {
     font-size: 1.5em;
 }
@@ -69,16 +70,22 @@
     overflow: auto;
 }
 
-.flashcard * div{
+.flashcard * div {
     word-wrap: break-word;
     position: absolute;
     text-align: center;
     top: 50%;
-    transform: translateY(-50%); 
+    transform: translateY(-50%);
     width: 100%;
 }
-.flashcard.front .back {display: none;}
-.flashcard.front #backButtons {display: none;}
+
+.flashcard.front .back {
+    display: none;
+}
+
+.flashcard.front #backButtons {
+    display: none;
+}
 
 .flashcard.both .front {
     position: fixed;
@@ -89,6 +96,7 @@
     overflow: auto;
     border-bottom: 1px solid gray;
 }
+
 .flashcard.both .back {
     position: fixed;
     top: 20%;

@@ -23,38 +23,51 @@ let runningMode = '';
 const modes = {
     'Standard Flashcards': require('./standardFlashcards')
 };
-const {createButton} = require('./../Universals');
+const {
+    createButton
+} = require('./../Elements/button');
 const examinationUniversals = require('./examinationUniversals');
 
 const defaultExaminationSettingsButtonContent = [
     createButton({
         value: 'Viewer',
-        onclick: ()=>{modes[runningMode].createIntroductoryScreen();}
+        onclick: () => {
+            modes[runningMode].createIntroductoryScreen();
+        }
     }),
     createButton({
         value: 'Main',
-        onclick: ()=>{stop();}
+        onclick: () => {
+            stop();
+        }
     }),
     createButton({
         value: 'Menu',
-        onclick: ()=>{toggleToModeSelection(); container.className = 'menu';}
+        onclick: () => {
+            toggleToModeSelection();
+            container.className = 'menu';
+        }
     })
 ];
 
 examinationUniversals.setExaminationSettingsContent(defaultExaminationSettingsButtonContent);
 
 function loadModeButtons() {
-    for (let element of examinationModes.childNodes){
+    for (let element of examinationModes.childNodes) {
         if (element != examinationModeButtons) {
             element.remove();
         }
     }
     examinationModeButtons.innerHTML = '';
-    for (let key in modes){
+    for (let key in modes) {
         createButton({
             value: key,
             buttonClass: 'examination-mode-button',
-            onclick: ()=>{container.className = 'examination';modes[key].start(data, globals); runningMode = key;},
+            onclick: () => {
+                container.className = 'examination';
+                modes[key].start(data, globals);
+                runningMode = key;
+            },
             owner: examinationModeButtons
         });
     }
@@ -66,13 +79,13 @@ function loadModeButtons() {
     });
 }
 
-function start(dataInput){
+function start(dataInput) {
     container.className = 'examination-mode-selection';
     data = dataInput;
     loadModeButtons();
 }
 
-function toggleToModeSelection(){
+function toggleToModeSelection() {
     if (runningMode) {
         examinationUniversals.stop();
         modes[runningMode].stop();
@@ -82,7 +95,7 @@ function toggleToModeSelection(){
     }
 }
 
-function toggleToIntroduction(){
+function toggleToIntroduction() {
     if (runningMode) {
         modes[runningMode].createIntroductoryScreen();
     }
@@ -101,6 +114,7 @@ function createAccessories() {
 }
 
 let globals;
+
 function init(args) {
     createAccessories();
     globals = args;
