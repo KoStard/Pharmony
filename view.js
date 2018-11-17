@@ -733,16 +733,16 @@ let responsiveimport = popup.createResponsiveFunction({
 });
 
 // Text manipulations
-const specialSymbols = {
+const standardizationReplacements = {
     '': ['^\\s+', '\\s+$'],
-    ';': ['\\s*;\\s*', ';\\n', ';\\r', '\\n', '\\r', ';{2,}'],
+    ';': ['(?:;\\s*){2,}', '\\s*;\\s*', ';\\n', ';\\r', '\\n', '\\r'],
     ' ': ['\\s+']
 };
 
 function standardizeText(text) {
     if (!text) return text;
-    for (let symb in specialSymbols) {
-        text = text.replace(new RegExp(specialSymbols[symb].map((x) => `(${x})`).join("|"), 'g'), symb);
+    for (let symb in standardizationReplacements) {
+        text = text.replace(new RegExp(standardizationReplacements[symb].map((x) => `(${x})`).join("|"), 'g'), symb);
     }
     return text;
 }
