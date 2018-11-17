@@ -53,6 +53,10 @@
     align-items: center;
 }
 
+.flashcard div>div {
+    padding: 50px;
+}
+
 .flashcard .front {
     font-size: 2em;
 }
@@ -143,13 +147,14 @@ table .insulationRow {
 .flashcards-progress-bar {
     display: none;
     position: fixed;
-    bottom: 0;
-    left: 0;
+    bottom: 3px;
+    left: 3px;
     width: auto;
     height: auto;
     padding: 5px;
-    border-top-right-radius: 5px;
-    background: #263238;
-    color: #fafafa;
+    border-radius: 3px;
+    background: rgba(139, 195, 74, 0.08);
+    color: #263238;
+    border: 1px solid #263238;
     text-align: end;
 }

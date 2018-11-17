@@ -15,6 +15,10 @@ input {
     font-size: 1.15em;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 #container>* {
     display: none;
 }
