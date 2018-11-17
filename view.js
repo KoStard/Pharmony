@@ -631,7 +631,7 @@ function show(IDnames, blocks) {
         tempD.className = 'tableElement-Description';
         let descrBlocks = blocks[tempName].description.split(";");
         if (descrBlocks.length > 1)
-            tempD.innerHTML = `<ol class='table-lists'>${descrBlocks.map((elem) => { return elem[0] != '#' ? `<li>${elem}</li>` : `<b>${elem.slice(1)}</b>`; }).join("")}</ol>`;
+            tempD.innerHTML = `<ol class='table-lists'>${descrBlocks.map((elem) => { return elem[0] != '#' ? `<li>${elem}</li>` : `<div><b>${elem.slice(1)}</b></div>`; }).join("")}</ol>`;
         else
             tempD.innerHTML = `<div class='table-element'>${descrBlocks[0]}</div>`;
         tempRow.appendChild(tempD);
