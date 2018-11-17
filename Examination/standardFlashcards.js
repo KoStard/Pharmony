@@ -291,16 +291,19 @@ function* runFlashcard() {
         accessories.progressBarData.currentGroupSize = playlist.waiting[groupIndex].length;
         accessories.progressBarData.progress = 0;
         accessories.progressBarData.currentGroupIndex = parseInt(groupIndex) + 1;
-        accessories.refreshProgressBar();
+        accessories.progressBarData.runSize = playlist.waiting[groupIndex].length;
         while (!checkGroupStatus(groupIndex)) {
             cycle += 1;
             if (cycle > maxCycles) break;
+            accessories.progressBarData.currentIndex = 0;
+            accessories.progressBarData.runSize = playlist.waiting[groupIndex].length;
             for (let name of playlist.waiting[groupIndex]) {
                 if (blocks[name].individual.standardFlashcards.status != statusEnum.finished.name) {
+                    accessories.progressBarData.currentIndex += 1;
+                    accessories.refreshProgressBar();
                     yield new Flashcard(name, blocks[name].description);
                     if (blocks[name].individual.standardFlashcards.status == statusEnum.finished.name) {
                         accessories.progressBarData.progress += 1;
-                        accessories.refreshProgressBar();
                     }
                 }
             }
@@ -407,6 +410,8 @@ function createAccessories() {
         return el;
     })();
     this.progressBarData = {
+        currentIndex: 0,
+        runSize: 0,
         progress: 0,
         currentGroupSize: 0,
         currentGroupIndex: 0,
@@ -415,7 +420,8 @@ function createAccessories() {
     accessoriesNode.appendChild(this.progressBar);
     this.refreshProgressBar = () => {
         this.progressBar.innerHTML =
-            `Finished <span>${this.progressBarData.progress}</span>/<span>${this.progressBarData.currentGroupSize}</span><br>
+            `Current <span>${this.progressBarData.currentIndex}</span>/<span>${this.progressBarData.runSize}</span><br>
+        Finished <span>${this.progressBarData.progress}</span>/<span>${this.progressBarData.currentGroupSize}</span><br>
         Group <span>${this.progressBarData.currentGroupIndex}</span>/<span>${this.progressBarData.groupsNum}</span>`;
     };
 
