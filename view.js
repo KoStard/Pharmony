@@ -1255,7 +1255,7 @@ function init() {
                 break;
             case 40: // down arrow
                 event.preventDefault();
-                if (!inputMatches || inputMatches.length == 1) break;
+                if (!inputMatches) break;
                 if (inputMatchesCurrentPosition == null) {
                     inputMatchesCurrentPosition = 0;
                 } else if (inputMatchesCurrentPosition >= inputMatches.length - 1) {
@@ -1266,7 +1266,7 @@ function init() {
                 break;
             case 38: // up arrow
                 event.preventDefault();
-                if (!inputMatches || inputMatches.length == 1) break;
+                if (!inputMatches) break;
                 if (inputMatchesCurrentPosition == null) {
                     inputMatchesCurrentPosition = inputMatches.length - 1;
                     input.value = `${inputMatches[inputMatchesCurrentPosition]} -- ${blocks[inputMatches[inputMatchesCurrentPosition]].description}`;
