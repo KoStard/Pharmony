@@ -126,10 +126,9 @@ function settingsCreator() {
                 onGlobalModeClosing = undefined;
             } else {
                 inputMode = 'global';
-                console.log("Here");
                 globalSearch(standardizeText(input.value), false);
-                console.log("And here");
                 document.title = "Global Search";
+                input.focus();
             }
         },
         owner: settingsDropdownContent,
@@ -147,6 +146,7 @@ function settingsCreator() {
                 inputMode = 'global-with-descriptions';
                 globalSearch(standardizeText(input.value), true);
                 document.title = "Global Search With Desciption";
+                input.focus();
             }
         },
         owner: settingsDropdownContent,
