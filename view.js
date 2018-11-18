@@ -942,7 +942,7 @@ const keys = {
 };
 
 function inputSlicer(command) { // Will give you content from the input panel
-    return command.match(/^((?:[^\n]+)(?:[^-]))(--(?:(?:\/)|(?:\+)|(?:-)|(?:\>)|(?:)))([^\n]*)$/);
+    return command.match(/^((?:[^\n]+)(?:[^-]))?(--(?:(?:\/)|(?:\+)|(?:-)|(?:\>)|(?:)))([^\n]*)$/);
 }
 
 let process = popup.createResponsiveFunction({ // creating responsive process method
@@ -951,6 +951,9 @@ let process = popup.createResponsiveFunction({ // creating responsive process me
         let resp = inputSlicer(command);
         if (resp) {
             let [, name, key, newValue] = resp.map(x => standardizeText(x));
+            if (!name) {
+                return;
+            }
             if (name.includes(';')) {
                 name = name.split(';');
                 for (let curr of name) {
