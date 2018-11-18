@@ -1018,19 +1018,24 @@ function initEditor() { // Will initiali, blocksze the editor window
                 value: 'Done',
                 onclick: (panel) => {
                     if (panel.inputs[0].value || standardizeText(panel.inputs[1].value)) {
-                        input.value = `${panel.inputs[0].value} -- ${standardizeText(panel.inputs[1].value)}`;
+                        input.value = standardizeText(`${Editor.inputs[0].value} -- ${standardizeText(Editor.inputs[1].value)}`);
                         autoHighlight(input.value);
                         process(input.value);
                     }
+                    Editor.inputs[0].focus();
                 },
                 buttonID: 'Editor-Done-Button'
             }),
             createButton({
                 value: 'Erase',
                 onclick: (panel) => {
+                    if (standardizeText(Editor.inputs[0].value) || standardizeText(Editor.inputs[1].value)) {
+                        input.value = standardizeText(`${Editor.inputs[0].value} -- ${standardizeText(Editor.inputs[1].value)}`);
+                    }
                     for (let i = 0; i < panel.inputs.length; i++) {
                         panel.inputs[i].value = "";
                     }
+                    Editor.inputs[0].focus();
                 }
             }),
             createButton({
@@ -1065,11 +1070,10 @@ function initEditor() { // Will initiali, blocksze the editor window
     Editor.inputs[0].oninput = EditorOnInput;
     Editor.inputs[1].oninput = EditorOnInput;
     Mousetrap(Editor.panel).bind(['command+enter', 'ctrl+enter'], () => {
-        if (Editor.inputs[0].value || standardizeText(Editor.inputs[1].value)) {
-            input.value = `${Editor.inputs[0].value} -- ${standardizeText(Editor.inputs[1].value)}`;
-            autoHighlight(input.value);
-            process(input.value);
-        }
+        Editor.buttons[0].click();
+    });
+    Mousetrap(Editor.panel).bind(['command+e', 'ctrl+e'], () => {
+        Editor.buttons[1].click();
     });
 }
 

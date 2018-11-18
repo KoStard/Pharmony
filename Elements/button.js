@@ -46,7 +46,6 @@ module.exports = {
                     backgroundHoverColor = colorFuncs.hoverColorMaker(backgroundColor, darkening);
                     backgroundActiveColor = colorFuncs.hoverColorMaker(backgroundColor, Math.min(1, darkening + 0.09));
                 }
-                console.log(darkening, backgroundColor, backgroundHoverColor, backgroundActiveColor);
                 this.style.backgroundColor = backgroundActiveColor;
             };
             newButton.onmouseup = function (e) {
