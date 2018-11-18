@@ -29,12 +29,27 @@ module.exports = {
         if (darken) {
             let backgroundColor;
             let backgroundHoverColor;
+            let backgroundActiveColor;
             newButton.onmouseenter = function (e) {
                 if (!backgroundColor) {
                     let real_style = window.getComputedStyle(newButton);
                     backgroundColor = real_style.backgroundColor;
                     backgroundHoverColor = colorFuncs.hoverColorMaker(backgroundColor, darkening);
+                    backgroundActiveColor = colorFuncs.hoverColorMaker(backgroundColor, Math.min(1, darkening + 0.09));
                 }
+                this.style.backgroundColor = backgroundHoverColor;
+            };
+            newButton.onmousedown = function (e) {
+                if (!backgroundColor) {
+                    let real_style = window.getComputedStyle(newButton);
+                    backgroundColor = real_style.backgroundColor;
+                    backgroundHoverColor = colorFuncs.hoverColorMaker(backgroundColor, darkening);
+                    backgroundActiveColor = colorFuncs.hoverColorMaker(backgroundColor, Math.min(1, darkening + 0.09));
+                }
+                console.log(darkening, backgroundColor, backgroundHoverColor, backgroundActiveColor);
+                this.style.backgroundColor = backgroundActiveColor;
+            };
+            newButton.onmouseup = function (e) {
                 this.style.backgroundColor = backgroundHoverColor;
             };
             newButton.onmouseleave = function () {
