@@ -88,6 +88,9 @@ let MultiSelectionButton,
         cancel: 'Done'
     });
 
+let GlobalSearchButton,
+    GlobalSearchWithDescriptionButton;
+
 function settingsCreator() {
     let style = {
         background: 'transparent'
@@ -114,7 +117,7 @@ function settingsCreator() {
         darkening: 0.1,
         style: style,
     });
-    createButton({
+    GlobalSearchButton = createButton({
         value: 'Global',
         onclick: () => {
             if (inputMode == 'global') {
@@ -123,7 +126,9 @@ function settingsCreator() {
                 onGlobalModeClosing = undefined;
             } else {
                 inputMode = 'global';
+                console.log("Here");
                 globalSearch(standardizeText(input.value), false);
+                console.log("And here");
                 document.title = "Global Search";
             }
         },
@@ -131,7 +136,7 @@ function settingsCreator() {
         darkening: 0.1,
         style: style,
     });
-    createButton({
+    GlobalSearchWithDescriptionButton = createButton({
         value: 'Global with descriptions',
         onclick: () => {
             if (inputMode == 'global-with-descriptions') {
@@ -1280,12 +1285,12 @@ function init() {
     });
     Mousetrap.bind(['command+f', 'ctrl+f'], () => {
         if (container.className == 'main') {
-            globalSearch(input.value, false);
+            GlobalSearchButton.click();
         }
     });
     Mousetrap.bind(['command+shift+f', 'ctrl+shift+f'], () => {
         if (container.className == 'main') {
-            globalSearch(input.value, true);
+            GlobalSearchWithDescriptionButton.click();
         }
     });
     Mousetrap.bind(['command+e', 'ctrl+e'], () => {
