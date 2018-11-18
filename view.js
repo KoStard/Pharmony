@@ -1121,7 +1121,7 @@ function openEditor() { // Will show the editor
         let [, name, key, val] = resp;
         let inputs = panel.inputs;
         inputs[0].value = name;
-        Editor.setInputValue(1, val.split(';').map(x => standardizeText(x)).join(';\n'));
+        Editor.setInputValue(1, val.split(';').map(x => standardizeText(x)).join('\n'));
     };
     Editor.show(); // opening the edit, blocksor
 }
