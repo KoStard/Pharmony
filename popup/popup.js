@@ -158,8 +158,28 @@ function PopupInputPanelBigCentral({
     }
 
     let content = cc(contentModel, panel);
-    this.inputs = content.filter((el) => el.tagName == 'INPUT' || el.tagName == 'TEXTAREA');
+    this.inputs = content.filter((el) => el.tagName == 'INPUT' || el.tagName == 'TEXTAREA' || (el.tagName == 'DIV' && el.getAttribute('contenteditable')));
     this.buttons = content.filter((el) => el.tagName == 'BUTTON');
+
+    this.getInputValue = (index) => {
+        let input = this.inputs[index];
+        if (input.tagName == 'DIV' && input.getAttribute('contenteditable')) {
+            return input.innerText;
+        } else {
+            return input.value;
+        }
+    };
+
+    this.setInputValue = (index, value) => {
+        let input = this.inputs[index];
+        if (input.tagName == 'DIV' && input.getAttribute('contenteditable')) {
+            input.focus();
+            document.execCommand('selectAll', false);
+            document.execCommand('insertText', false, value);
+        } else {
+            input.value = value;
+        }
+    };
 
     for (let button of this.buttons) {
         let tempFunc = button.onclick;
@@ -224,7 +244,8 @@ let popupClassNames = {
     button: 'popup-button',
     header: 'popup-header',
     text: 'popup-text',
-    inputFile: 'popup-inputFile'
+    inputFile: 'popup-inputFile',
+    editable_div: 'popup-editable_div',
 };
 
 function createPopupElement(name, mode) {

@@ -27,16 +27,16 @@ module.exports = {
             }
         }
         if (darken) {
-            let backgroundColor;
+            let backgroundColor = style ? style.backgroundColor : null;
             let backgroundHoverColor;
             let backgroundActiveColor;
             newButton.onmouseenter = function (e) {
-                if (!backgroundColor) {
-                    let real_style = window.getComputedStyle(newButton);
-                    backgroundColor = real_style.backgroundColor;
-                    backgroundHoverColor = colorFuncs.hoverColorMaker(backgroundColor, darkening);
-                    backgroundActiveColor = colorFuncs.hoverColorMaker(backgroundColor, Math.min(1, darkening + 0.09));
-                }
+                // if (!backgroundColor) {
+                let real_style = window.getComputedStyle(newButton);
+                backgroundColor = real_style.backgroundColor;
+                backgroundHoverColor = colorFuncs.hoverColorMaker(backgroundColor, darkening);
+                backgroundActiveColor = colorFuncs.hoverColorMaker(backgroundColor, Math.min(1, darkening + 0.09));
+                // }
                 this.style.backgroundColor = backgroundHoverColor;
             };
             newButton.onmousedown = function (e) {
@@ -52,7 +52,8 @@ module.exports = {
                 this.style.backgroundColor = backgroundHoverColor;
             };
             newButton.onmouseleave = function () {
-                this.style.backgroundColor = backgroundColor;
+                this.style.backgroundColor =
+                    style && (style.background || style.backgroundColor) ? backgroundColor : null;
             };
         }
         if (owner) {

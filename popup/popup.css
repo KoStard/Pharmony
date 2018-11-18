@@ -46,7 +46,8 @@
 
 .popupBigPanelCentral {
     position: absolute;
-    width: fit-content;
+    width: 60%;
+    max-width: 650px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -102,12 +103,23 @@
     background: #1b1b1b;
 }
 
+.popup-editable_div,
 .popup-textarea {
     width: 100%;
     min-width: 400px;
     min-height: 300px;
+    max-height: 300px;
     overflow: auto;
     resize: none;
+}
+
+.popup-editable_div {
+    font-size: 15px;
+}
+
+.popup-editable_div div {
+    /* font-size: 1.15em; */
+    border-bottom: 1px solid #e5e6e6;
 }
 
 .popup-standart {

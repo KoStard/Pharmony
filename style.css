@@ -10,6 +10,7 @@ button {
     font-size: inherit;
 }
 
+/* .editable_div, */
 textarea,
 input {
     font-size: 1.15em;
@@ -18,6 +19,11 @@ input {
 * {
     box-sizing: border-box;
     transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+[contenteditable=true].empty:before {
+    content: attr(data-placeholder);
+    display: block;
 }
 
 #container>* {

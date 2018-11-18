@@ -4,12 +4,12 @@ module.exports = processContentCreator;
 
 const available = Object.freeze({
     __default__: {
-        classList: function(cl){
-            for (let className of cl){
+        classList: function (cl) {
+            for (let className of cl) {
                 this.classList.add(className);
             }
         },
-        create: function (owner, tp){
+        create: function (owner, tp) {
             let el = document.createElement(tp);
             if (owner)
                 owner.appendChild(el);
@@ -17,18 +17,18 @@ const available = Object.freeze({
         },
     },
     label: {
-        text: function(text){
+        text: function (text) {
             this.innerText = text;
         },
     },
     input: {
-        type: function(tp){
+        type: function (tp) {
             this.setAttribute('type', tp);
         },
-        placeholder: function(placeholder){
+        placeholder: function (placeholder) {
             this.setAttribute('placeholder', placeholder);
         },
-        value: function(val){
+        value: function (val) {
             this.setAttribute('value', val);
         }
     },
@@ -41,36 +41,55 @@ const available = Object.freeze({
         text: function (text) {
             this.innerText = text;
         },
+    },
+    editable_div: {
+        create: (owner, tp) => {
+            let el = document.createElement('div');
+            el.setAttribute('contenteditable', true);
+            let content = document.createElement('div');
+            content.innerHTML = '<br>';
+            el.appendChild(content);
+            if (owner)
+                owner.appendChild(el);
+            return el;
+        },
+        placeholder: function (placeholder) {
+            this.setAttribute('data-placeholder', placeholder);
+        },
     }
 });
 
-function processContentCreator(ContentModel, owner){ // do not use one big object! Use array
-/**
- * 
- * [
- *  {
- *      type: 'input',
- *      args: {
- *          name: value
- *      }
- *  }
- * ]
- * 
- */
+function processContentCreator(ContentModel, owner) { // do not use one big object! Use array
+    /**
+     * 
+     * [
+     *  {
+     *      type: 'input',
+     *      args: {
+     *          name: value
+     *      }
+     *  }
+     * ]
+     * 
+     */
     let res = [];
     for (let current of ContentModel) {
-        if (current.nodeType){
+        if (current.nodeType) {
             res.push(current);
             owner.appendChild(current);
             continue;
         }
-        let el = available.__default__.create(owner, current.type);
+        let el;
+        if (available[current.type].create)
+            el = available[current.type].create(owner, current.type);
+        else
+            el = available.__default__.create(owner, current.type);
         res.push(el);
-        for (let arg in current.args){
-            if (available.__default__[arg])
-                available.__default__[arg].call(el, current.args[arg]);
-            else if (available[current.type][arg])
+        for (let arg in current.args) {
+            if (available[current.type][arg])
                 available[current.type][arg].call(el, current.args[arg]);
+            else if (available.__default__[arg])
+                available.__default__[arg].call(el, current.args[arg]);
             else console.log(`Invalid arg ${arg} for element ${current.type}`);
         }
     }

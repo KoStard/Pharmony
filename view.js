@@ -1021,16 +1021,17 @@ function initEditor() { // Will initiali, blocksze the editor window
                 }
             },
             {
-                type: 'textarea',
+                type: 'editable_div',
                 args: {
-                    placeholder: 'Description'
+                    placeholder: 'Description',
+                    classList: ['editable_div'],
                 }
             },
             createButton({
                 value: 'Done',
                 onclick: (panel) => {
-                    if (panel.inputs[0].value || standardizeText(panel.inputs[1].value)) {
-                        input.value = standardizeText(`${Editor.inputs[0].value} -- ${standardizeText(Editor.inputs[1].value)}`);
+                    if (panel.inputs[0].value || standardizeText(panel.getInputValue(1))) {
+                        input.value = standardizeText(`${Editor.inputs[0].value} -- ${standardizeText(Editor.getInputValue(1))}`);
                         autoHighlight(input.value);
                         process(input.value);
                     }
@@ -1041,8 +1042,8 @@ function initEditor() { // Will initiali, blocksze the editor window
             createButton({
                 value: 'Erase',
                 onclick: (panel) => {
-                    if (standardizeText(Editor.inputs[0].value) || standardizeText(Editor.inputs[1].value)) {
-                        input.value = standardizeText(`${Editor.inputs[0].value} -- ${standardizeText(Editor.inputs[1].value)}`);
+                    if (standardizeText(Editor.inputs[0].value) || standardizeText(Editor.getInputValue(1))) {
+                        input.value = standardizeText(`${Editor.inputs[0].value} -- ${standardizeText(Editor.getInputValue(1))}`);
                     }
                     for (let i = 0; i < panel.inputs.length; i++) {
                         panel.inputs[i].value = "";
@@ -1059,16 +1060,32 @@ function initEditor() { // Will initiali, blocksze the editor window
         ],
         owner: container,
         onclose: (panel) => {
-            if (panel.inputs[0].value || standardizeText(panel.inputs[1].value)) {
-                input.value = `${panel.inputs[0].value} -- ${standardizeText(panel.inputs[1].value)}`;
+            if (panel.inputs[0].value || standardizeText(panel.getInputValue(1))) {
+                input.value = `${panel.inputs[0].value} -- ${standardizeText(panel.getInputValue(1))}`;
                 autoHighlight(input.value);
             }
         },
         initialState: "hidden",
         buffered: true
     });
-    let EditorOnInput = () => {
-        let query = standardizeText(`${Editor.inputs[0].value} -- ${standardizeText(Editor.inputs[1].value)}`);
+    let EditorOnInput = (event) => {
+        let query = standardizeText(`${Editor.inputs[0].value} -- ${standardizeText(Editor.getInputValue(1))}`);
+        if (!Editor.getInputValue(1) || Editor.inputs[1].innerHTML == '<br>') {
+            if (event.inputType == 'historyUndo') {
+                Editor.input[1].innerHTML = '';
+            } else {
+                event.stopPropagation();
+                event.preventDefault();
+                Editor.inputs[1].innerHTML = '<div><br></div>';
+                if (event.data)
+                    Editor.setInputValue(1, event.data);
+            }
+        }
+        if (Editor.getInputValue(1) == '') {
+            Editor.inputs[1].classList.add('empty');
+        } else {
+            Editor.inputs[1].classList.remove('empty');
+        }
         if (query.match(/--/g).length > 1) {
             Editor.buttons[0].classList.remove('alreadyExists');
             Editor.buttons[0].classList.add('invalid');
@@ -1081,6 +1098,13 @@ function initEditor() { // Will initiali, blocksze the editor window
     };
     Editor.inputs[0].oninput = EditorOnInput;
     Editor.inputs[1].oninput = EditorOnInput;
+    Editor.inputs[1].onpaste = (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        let clipboardData = event.clipboardData || window.clipboardData;
+        let pastedData = clipboardData.getData('Text');
+        Editor.setInputValue(1, pastedData);
+    };
     Mousetrap(Editor.panel).bind(['command+enter', 'ctrl+enter'], () => {
         Editor.buttons[0].click();
     });
@@ -1097,7 +1121,7 @@ function openEditor() { // Will show the editor
         let [, name, key, val] = resp;
         let inputs = panel.inputs;
         inputs[0].value = name;
-        inputs[1].value = val.split(';').map(x => standardizeText(x)).join(';\n');
+        Editor.setInputValue(1, val.split(';').map(x => standardizeText(x)).join(';\n'));
     };
     Editor.show(); // opening the edit, blocksor
 }
@@ -1295,7 +1319,8 @@ function init() {
     });
     Mousetrap.bind(['command+e', 'ctrl+e'], () => {
         if (container.className == 'main' && inputMode == 'standard') {
-            Editor.show();
+            // Editor.show();
+            openEditor();
         }
     });
     Mousetrap.bind('space', () => {
