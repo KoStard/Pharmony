@@ -46,7 +46,7 @@
 
 .popupBigPanelCentral {
     position: absolute;
-    width: 60%;
+    width: 70%;
     max-width: 650px;
     top: 50%;
     left: 50%;
@@ -71,6 +71,7 @@
 
 .popup-input {
     box-sizing: border-box;
+    font-family: inherit;
     display: block;
     width: 100%;
     padding: 5px;
@@ -112,7 +113,7 @@
 .popup-editable_div,
 .popup-textarea {
     width: 100%;
-    min-width: 400px;
+    /* min-width: 400px; */
     min-height: 300px;
     max-height: 300px;
     overflow: auto;
