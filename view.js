@@ -1103,7 +1103,7 @@ function initEditor() { // Will initiali, blocksze the editor window
         event.preventDefault();
         let clipboardData = event.clipboardData || window.clipboardData;
         let pastedData = clipboardData.getData('Text');
-        Editor.setInputValue(1, pastedData);
+        Editor.insertInputValue(1, pastedData);
     };
     Mousetrap(Editor.panel).bind(['command+enter', 'ctrl+enter'], () => {
         Editor.buttons[0].click();

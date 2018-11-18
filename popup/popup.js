@@ -181,6 +181,16 @@ function PopupInputPanelBigCentral({
         }
     };
 
+    this.insertInputValue = (index, value) => {
+        let input = this.inputs[index];
+        if (input.tagName == 'DIV' && input.getAttribute('contenteditable')) {
+            input.focus();
+            document.execCommand('insertText', false, value);
+        } else {
+            input.value += value;
+        }
+    };
+
     for (let button of this.buttons) {
         let tempFunc = button.onclick;
         button.onclick = () => {
