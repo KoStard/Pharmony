@@ -75,7 +75,8 @@ function loadModeButtons() {
         value: "Close examination",
         buttonClass: 'examination-mode-close-button',
         onclick: stop,
-        owner: examinationModes
+        owner: examinationModes,
+        darken: false,
     });
 }
 

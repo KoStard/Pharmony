@@ -87,10 +87,10 @@
 .popup-standart.popup-button {
     display: inline-block;
     padding: 5px 10px;
-    background: #424242;
-    color: #fafafa;
-    border: none;
-    border-radius: 0;
+    background: transparent;
+    color: black;
+    border: 1px solid #424242;
+    border-radius: 2px;
     height: 25px;
 }
 

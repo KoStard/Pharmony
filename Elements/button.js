@@ -9,7 +9,7 @@ module.exports = {
         owner,
         style,
         darken = true,
-        darkening = 0.4,
+        darkening = 0.2,
         saveIn,
     }) {
         let self = this;
