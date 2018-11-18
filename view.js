@@ -1035,7 +1035,7 @@ function initEditor() { // Will initiali, blocksze the editor window
                         autoHighlight(input.value);
                         process(input.value);
                     }
-                    Editor.inputs[0].focus();
+                    // Editor.inputs[0].focus();
                 },
                 buttonID: 'Editor-Done-Button'
             }),
@@ -1046,7 +1046,7 @@ function initEditor() { // Will initiali, blocksze the editor window
                         input.value = standardizeText(`${Editor.inputs[0].value} -- ${standardizeText(Editor.getInputValue(1))}`);
                     }
                     for (let i = 0; i < panel.inputs.length; i++) {
-                        panel.inputs[i].value = "";
+                        panel.setInputValue(i, '');
                     }
                     Editor.inputs[0].focus();
                 }

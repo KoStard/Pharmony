@@ -93,6 +93,12 @@
     border: 1px solid #424242;
     border-radius: 2px;
     height: 25px;
+    font-family: 'Trebuchet MS',
+        'Lucida Sans Unicode',
+        'Lucida Grande',
+        'Lucida Sans',
+        Arial,
+        sans-serif;
 }
 
 /* .popup-standart.popup-button:hover {
@@ -120,6 +126,8 @@
 .popup-editable_div div {
     /* font-size: 1.15em; */
     border-bottom: 1px solid #e5e6e6;
+    padding: 1px 2px;
+    vertical-align: middle;
 }
 
 .popup-standart {
@@ -127,7 +135,6 @@
     margin-right: 3px;
     border: 1px solid #bdbdbd;
     border-radius: 1px;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .popup-standart::placeholder {
