@@ -850,8 +850,8 @@ function createOrEditBlocks(name, newValue) {
         else {
             blocks[name] = copy(standardBlockTemplate);
             blocks[name].description = newValue;
-            changedBlockNames.push(name);
         }
+        changedBlockNames.push(name);
     }
 }
 
@@ -972,7 +972,11 @@ let process = popup.createResponsiveFunction({ // creating responsive process me
                         let valid = true;
                         for (let chName of changedBlockNames) {
                             if (!lastFindRes.includes(chName)) {
-                                show(find(name), blocks);
+                                let f = find(name);
+                                if (f.length > 1)
+                                    show(find(name), blocks);
+                                else
+                                    showDB();
                                 valid = false;
                                 break;
                             }
