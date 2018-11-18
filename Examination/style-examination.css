@@ -22,7 +22,7 @@
     background: none;
 }
 
-#examination-settings-button:hover svg .st0 {
+#examination-settings-button-container:hover #examination-settings-button svg .st0 {
     stroke-width: 2.3px;
 }
 
