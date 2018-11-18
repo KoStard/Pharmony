@@ -1193,6 +1193,7 @@ function globalSearch(query, withDescription) {
                     collection: filename
                 };
             }
+            runningDatabase = wasOpened;
         }
     });
     toggleToMain(withDescription ? "global-with-descriptions" : "global");
@@ -1375,9 +1376,12 @@ function init() {
                         Examination.stop();
                         break;
                     case 'main':
-                        toggleToMenu();
-                        onGlobalModeClosing && onGlobalModeClosing();
-                        onGlobalModeClosing = undefined;
+                        if (onGlobalModeClosing) {
+                            onGlobalModeClosing();
+                            onGlobalModeClosing = undefined;
+                        } else {
+                            toggleToMenu();
+                        }
                         break;
                     case 'menu':
                         break;
