@@ -263,11 +263,11 @@ function createIntroductoryScreen() {
                 saveIn: continueButton
             }),
         ],
-        start: () => {
-            if (playlist.waiting[0].length > 0) {
-                examinationUniversals.clearExamination();
-                main();
-            }
+        start: function () {
+            if (this.buttons[6].style.display != 'none')
+                this.buttons[6].click();
+            else
+                this.buttons[5].click();
         }
     });
     continueButton = continueButton.button;

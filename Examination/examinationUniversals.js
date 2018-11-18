@@ -30,17 +30,24 @@ function setExaminationSettingsContent(buttons) {
     for (let button of buttons) examinationSettingsButtonContent.appendChild(button);
 }
 
-function checkIfExaminationSettingsContentIsEmpty(){
+function checkIfExaminationSettingsContentIsEmpty() {
     return !!examinationSettingsButtonContent.children.length;
 }
+
 function turnOffExaminationSettingsButton() {
     examinationSettingsButtonContainer.style.display = 'none';
 }
+
 function turnOnExaminationSettingsButton() {
     examinationSettingsButtonContainer.style.display = 'block';
 }
 let introductoryScreen, introductoryScreenContent, introductoryScreenPanel;
-function createIntroductoryScreen({ content, buttons, start}) {
+
+function createIntroductoryScreen({
+    content,
+    buttons,
+    start
+}) {
     introductoryScreen = this;
     turnOffExaminationSettingsButton();
     introductoryScreenNode = document.createElement('div');
@@ -57,6 +64,7 @@ function createIntroductoryScreen({ content, buttons, start}) {
     introductoryScreenNode.appendChild(introductoryScreenPanel);
     clearExamination();
     examination.insertBefore(introductoryScreenNode, examination.childNodes[0]);
+    this.buttons = buttons;
     this.start = start;
 }
 
@@ -64,7 +72,7 @@ function getIntroductoryScreen() {
     return introductoryScreen;
 }
 
-function clearIntroductoryScreen(){
+function clearIntroductoryScreen() {
     introductoryScreen = undefined;
 }
 
