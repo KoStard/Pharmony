@@ -173,7 +173,6 @@ function PopupInputPanelBigCentral({
     };
 
     this.focus = () => {
-        console.log(this.inputs);
         if (this.inputs.length > 0) {
             this.inputs[0].focus();
         } else if (this.buttons.length > 0) {

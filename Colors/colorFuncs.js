@@ -16,9 +16,14 @@ module.exports = {
 
     RGBtoHex: function (RGB) {
         let res = "#";
+        let index = 0;
         for (let c of RGB) {
-            c = c.toString(16);
+            if (index == 3) {
+                c = Math.round(c * 255).toString(16);
+            } else
+                c = c.toString(16);
             res += (c.length == 1 ? '0' : '') + c;
+            index += 1;
         }
         return res;
     },
@@ -30,7 +35,10 @@ module.exports = {
                 return module.exports.RGBtoHex(module.exports.makeRGBDarker(module.exports.hexToRGB(color), darkening));
             } else if (color.slice(0, 3) == 'rgb') {
                 let rgb = module.exports.RGBTextToRGB(color);
-                return module.exports.RGBtoHex(module.exports.makeRGBDarker(rgb, darkening));
+                if (rgb.length == 4 && rgb[3] < 1) {
+                    return module.exports.RGBToText(Array.prototype.concat(module.exports.makeRGBDarker(rgb.slice(0, 3), darkening), [Math.min(1, rgb[3] + darkening)]));
+                }
+                return module.exports.RGBtoHex(module.exports.makeRGBDarker(rgb.slice(0, 3), darkening));
             }
         }
     },
@@ -56,7 +64,7 @@ module.exports = {
     },
 
     RGBTextToRGB: function (color) {
-        color = color.slice(4, color.length - 1);
+        color = color.match('rgb.*\\((.*)\\)')[1];
         color = color.split(/,\s*/);
         let res = [];
         for (let p of color) {
@@ -66,7 +74,7 @@ module.exports = {
     },
 
     RGBToText: function (RGB) {
-        return `rgb(${RGB.join(', ')})`;
+        return `rgb${RGB.length==4?'a':''}(${RGB.join(', ')})`;
     },
 
     sum: function () {
@@ -99,7 +107,6 @@ module.exports = {
             if (color[0] == '#') {
                 let dw = module.exports.sum(module.exports.hexToRGB(color).map(x => 255 - x));
                 let db = module.exports.sum(module.exports.hexToRGB(color));
-                console.log(dw, db);
                 return dw > db ? '#ffffff' : '#000000';
             } else if (color.slice(0, 3) == 'rgb') {
                 let rgb = module.exports.RGBTextToRGB(color);

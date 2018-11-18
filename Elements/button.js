@@ -28,12 +28,14 @@ module.exports = {
         }
         if (darken) {
             let backgroundColor;
+            let backgroundHoverColor;
             newButton.onmouseenter = function (e) {
                 if (!backgroundColor) {
                     let real_style = window.getComputedStyle(newButton);
                     backgroundColor = real_style.backgroundColor;
+                    backgroundHoverColor = colorFuncs.hoverColorMaker(backgroundColor, darkening);
                 }
-                this.style.backgroundColor = colorFuncs.hoverColorMaker(backgroundColor, darkening);
+                this.style.backgroundColor = backgroundHoverColor;
             };
             newButton.onmouseleave = function () {
                 this.style.backgroundColor = backgroundColor;

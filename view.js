@@ -89,6 +89,9 @@ let MultiSelectionButton,
     });
 
 function settingsCreator() {
+    let style = {
+        background: 'transparent'
+    };
     MultiSelectionButton = createButton({
         value: MultiSelectionButtonEnum.default,
         onclick: function () {
@@ -100,6 +103,7 @@ function settingsCreator() {
         },
         owner: settingsDropdownContent,
         darkening: 0.1,
+        style: style,
     });
     createButton({
         value: 'Examinate',
@@ -108,6 +112,7 @@ function settingsCreator() {
         },
         owner: settingsDropdownContent,
         darkening: 0.1,
+        style: style,
     });
     createButton({
         value: 'Global',
@@ -124,6 +129,7 @@ function settingsCreator() {
         },
         owner: settingsDropdownContent,
         darkening: 0.1,
+        style: style,
     });
     createButton({
         value: 'Global with descriptions',
@@ -140,6 +146,7 @@ function settingsCreator() {
         },
         owner: settingsDropdownContent,
         darkening: 0.1,
+        style: style,
     });
     createButton({
         value: 'Menu',
@@ -148,6 +155,7 @@ function settingsCreator() {
         },
         owner: settingsDropdownContent,
         darkening: 0.1,
+        style: style,
     });
     createButton({
         value: 'Standart Export',
@@ -162,6 +170,7 @@ function settingsCreator() {
         },
         owner: settingsDropdownContent,
         darkening: 0.1,
+        style: style,
     });
     createButton({
         value: 'Full Export',
@@ -176,6 +185,7 @@ function settingsCreator() {
         },
         owner: settingsDropdownContent,
         darkening: 0.1,
+        style: style,
     });
     createButton({
         value: 'Selective Export',
@@ -190,6 +200,7 @@ function settingsCreator() {
         },
         owner: settingsDropdownContent,
         darkening: 0.1,
+        style: style,
     });
     createButton({
         value: 'Full Export to XLSX',
@@ -204,6 +215,7 @@ function settingsCreator() {
         },
         owner: settingsDropdownContent,
         darkening: 0.1,
+        style: style,
     });
     createButton({
         value: 'Selective Export To XLSX',
@@ -218,12 +230,14 @@ function settingsCreator() {
         },
         owner: settingsDropdownContent,
         darkening: 0.1,
+        style: style,
     });
     createButton({
         value: 'Import',
         onclick: () => {},
         owner: settingsDropdownContent,
         darkening: 0.1,
+        style: style,
     });
     createButton({
         value: 'Exit',
@@ -232,6 +246,7 @@ function settingsCreator() {
         },
         owner: settingsDropdownContent,
         darkening: 0.1,
+        style: style,
     });
 }
 
@@ -257,7 +272,8 @@ function loadMenuButtons() {
                 value: name,
                 buttonClass: 'menu-databases-button',
                 owner: menuButtonContainer,
-                onclick: menuButtonClicked
+                onclick: menuButtonClicked,
+                darkening: 0.2,
             }));
         }
     });

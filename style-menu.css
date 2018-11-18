@@ -44,10 +44,11 @@ body {
 
 #menu .menu-databases-button,
 #examination-modes .examination-mode-button {
-    background: #424242;
-    border: none;
+    background: transparent;
+    border: 1px solid black;
+    border-radius: 3px;
     box-shadow: 0px 3px 10px -4px black;
-    color: white;
+    color: black;
     font-size: 1.03em;
     display: block;
     margin: 10px;
@@ -63,7 +64,7 @@ body {
     position: relative;
 } */
 
-#menu .menu-databases-button:active,
+/* #menu .menu-databases-button:active, */
 #examination-modes .examination-mode-button:active {
     background: #1b1b1b;
 }
