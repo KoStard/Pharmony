@@ -948,6 +948,9 @@ function renameBlocks(name, newValue) {
     data.blocks = newBlocks;
     blocks = data.blocks;
     changeFindTo = newValue;
+    if (data.global.standardFlashcards.last == name) {
+        data.global.standardFlashcards.last = newValue;
+    }
 }
 
 const keys = {
