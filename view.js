@@ -822,8 +822,9 @@ let editBlock = popup.createResponsiveFunction({
         lastKey = key;
         lastEdit = blocks[key].description;
         blocks[key].description = newValue;
+        if (blocks[key].individual.standardFlashcards.status == standardFlashcards.statusEnum.finished.name)
+            refreshBlock(key);
         save();
-        refreshBlock(key);
     },
     popupAlertPanel: popup.PopupAlertPanelSmall,
     successInfo: {
@@ -851,10 +852,12 @@ function createOrEditBlocks(name, newValue) {
     if (name.endsWith('*')) { // To change all blocks whose names contain the keyword
         name = name.slice(0, name.length - 1);
         find(name, false, false).forEach((value, index, array) => {
-            editBlock({
-                key: value,
-                newValue: newValue
-            });
+            if (blocks[value].description != newValue) {
+                editBlock({
+                    key: value,
+                    newValue: newValue
+                });
+            }
         });
     } else {
         if (blocks[name]) editBlock({
