@@ -1335,6 +1335,11 @@ function init() {
             openEditor();
         }
     });
+    Mousetrap.bind(['command+shift+e', 'ctrl+shift+e'], () => {
+        if (container.className == 'main' && inputMode == 'standard') {
+            startExamination();
+        }
+    });
     Mousetrap.bind('space', () => {
         const flashcard = standardFlashcards.getCurrentFlashcard();
         if (flashcard && flashcard.flashcardNode.className == 'flashcard both')
