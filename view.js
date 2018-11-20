@@ -803,7 +803,7 @@ let specialKeyWordBlockNames = {
 // Block manipulations
 
 function refreshBlock(key) {
-    blocks[key].individual.standardFlashcards.status = standardFlashcards.statusEnum.raw.name;
+    blocks[key].individual.standardFlashcards.status = standardFlashcards.statusEnum.inProcess.name;
     if (data.global.standardFlashcards.last == key) {
         delete data.global.standardFlashcards.last;
     }
