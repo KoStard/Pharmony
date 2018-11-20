@@ -801,6 +801,14 @@ let specialKeyWordBlockNames = {
 };
 
 // Block manipulations
+
+function refreshBlock(key) {
+    blocks[key].individual.standardFlashcards.status = standardFlashcards.statusEnum.raw.name;
+    if (data.global.standardFlashcards.last == key) {
+        delete data.global.standardFlashcards.last;
+    }
+}
+
 let lastKey;
 let lastEdit;
 let editBlock = popup.createResponsiveFunction({
@@ -815,6 +823,7 @@ let editBlock = popup.createResponsiveFunction({
         lastEdit = blocks[key].description;
         blocks[key].description = newValue;
         save();
+        refreshBlock(key);
     },
     popupAlertPanel: popup.PopupAlertPanelSmall,
     successInfo: {
