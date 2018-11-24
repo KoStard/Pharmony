@@ -1,12 +1,4 @@
 /* jshint esversion: 6 */
-module.exports = {
-    start: start,
-    stop: stop,
-    createIntroductoryScreen: createIntroductoryScreen,
-    createAccessories: createAccessories,
-    getCurrentFlashcard: getCurrentFlashcard
-};
-
 const {
     createButton
 } = require('./../Elements/button');
@@ -545,3 +537,11 @@ function stop() {
     currentFlashcard = undefined;
     backButtons.style.display = 'none';
 }
+module.exports = {
+    start: start,
+    stop: stop,
+    createIntroductoryScreen: createIntroductoryScreen,
+    createAccessories: createAccessories,
+    getCurrentFlashcard: getCurrentFlashcard,
+    statusEnum: statusEnum,
+};

@@ -801,6 +801,14 @@ let specialKeyWordBlockNames = {
 };
 
 // Block manipulations
+
+function refreshBlock(key) {
+    blocks[key].individual.standardFlashcards.status = standardFlashcards.statusEnum.inProcess.name;
+    if (data.global.standardFlashcards.last == key) {
+        delete data.global.standardFlashcards.last;
+    }
+}
+
 let lastKey;
 let lastEdit;
 let editBlock = popup.createResponsiveFunction({
@@ -814,6 +822,8 @@ let editBlock = popup.createResponsiveFunction({
         lastKey = key;
         lastEdit = blocks[key].description;
         blocks[key].description = newValue;
+        if (blocks[key].individual.standardFlashcards.status == standardFlashcards.statusEnum.finished.name)
+            refreshBlock(key);
         save();
     },
     popupAlertPanel: popup.PopupAlertPanelSmall,
@@ -842,10 +852,12 @@ function createOrEditBlocks(name, newValue) {
     if (name.endsWith('*')) { // To change all blocks whose names contain the keyword
         name = name.slice(0, name.length - 1);
         find(name, false, false).forEach((value, index, array) => {
-            editBlock({
-                key: value,
-                newValue: newValue
-            });
+            if (blocks[value].description != newValue) {
+                editBlock({
+                    key: value,
+                    newValue: newValue
+                });
+            }
         });
     } else {
         if (blocks[name]) editBlock({
@@ -936,6 +948,9 @@ function renameBlocks(name, newValue) {
     data.blocks = newBlocks;
     blocks = data.blocks;
     changeFindTo = newValue;
+    if (data.global.standardFlashcards.last == name) {
+        data.global.standardFlashcards.last = newValue;
+    }
 }
 
 const keys = {
@@ -1336,6 +1351,11 @@ function init() {
         if (container.className == 'main' && inputMode == 'standard') {
             // Editor.show();
             openEditor();
+        }
+    });
+    Mousetrap.bind(['command+shift+e', 'ctrl+shift+e'], () => {
+        if (container.className == 'main' && inputMode == 'standard') {
+            startExamination();
         }
     });
     Mousetrap.bind('space', () => {
