@@ -42,6 +42,7 @@ let newCollectionButton, removeCollectionsButton;
 const examination = document.getElementById('examination');
 
 let tableScrollAnchor = 'bottom';
+let Finder = require('./finder');
 
 const standardDataTemplate = {
         blocks: {},
@@ -1494,3 +1495,6 @@ function init() {
 }
 
 window.onload = init; // Starting the program
+
+let data_getter = () => data;
+let finder = new Finder(data_getter);
