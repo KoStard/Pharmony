@@ -526,7 +526,7 @@ function Flashcard(front, back) {
     let index = 0;
     let innerHTML = '';
     for (let sep of back) {
-        innerHTML += sep[0] != '#' ? `<li>${sep}</li>` : `<div><b>${sep.slice(1)}</b></div>`;
+        innerHTML += sep[0] != '#' ? (back.length > 1 ? `<li>${sep}</li>` : `<div>${sep}</div>`) : `<div><b>${sep.slice(1)}</b></div>`;
     }
 
     content.innerHTML = innerHTML;
