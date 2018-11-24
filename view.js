@@ -1445,7 +1445,12 @@ function init() {
                             onGlobalModeClosing();
                             onGlobalModeClosing = undefined;
                         } else {
-                            toggleToMenu();
+                            // Escaping from the search results
+                            if (lastFind) {
+                                showDB();
+                            } else {
+                                toggleToMenu();
+                            }
                         }
                         break;
                     case 'menu':
