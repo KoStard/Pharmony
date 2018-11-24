@@ -1045,7 +1045,7 @@ function initEditor() { // Will initiali, blocksze the editor window
             createButton({
                 value: 'Done',
                 onclick: (panel) => {
-                    if (panel.inputs[0].value || standardizeText(panel.getInputValue(1))) {
+                    if (standardizeText(panel.inputs[0].value) || standardizeText(panel.getInputValue(1))) {
                         input.value = standardizeText(`${Editor.inputs[0].value} -- ${standardizeText(Editor.getInputValue(1))}`);
                         autoHighlight(input.value);
                         process(input.value);
@@ -1075,8 +1075,8 @@ function initEditor() { // Will initiali, blocksze the editor window
         ],
         owner: container,
         onclose: (panel) => {
-            if (panel.inputs[0].value || standardizeText(panel.getInputValue(1))) {
-                input.value = `${panel.inputs[0].value} -- ${standardizeText(panel.getInputValue(1))}`;
+            if (standardizeText(panel.inputs[0].value) || standardizeText(panel.getInputValue(1))) {
+                input.value = `${standardizeText(panel.inputs[0].value)}${standardizeText(panel.getInputValue(1))?' -- '+standardizeText(panel.getInputValue(1)):''}`;
                 autoHighlight(input.value);
             }
         },
