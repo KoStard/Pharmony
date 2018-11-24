@@ -42,7 +42,6 @@ let newCollectionButton, removeCollectionsButton;
 const examination = document.getElementById('examination');
 
 let tableScrollAnchor = 'bottom';
-let Finder = require('./finder');
 
 const standardDataTemplate = {
         blocks: {},
