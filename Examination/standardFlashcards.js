@@ -313,9 +313,11 @@ function* runFlashcard(last_name) {
     accessories.progressBarData.groupsNum = playlist.waiting.length;
     for (let groupIndex in playlist.waiting) {
         cycle = 0;
+        // Initial size
         accessories.progressBarData.currentGroupSize = playlist.waiting[groupIndex].length;
         accessories.progressBarData.progress = 0;
         accessories.progressBarData.currentGroupIndex = parseInt(groupIndex) + 1;
+        // Group running size
         accessories.progressBarData.runSize = playlist.waiting[groupIndex].length;
         while (!checkGroupStatus(groupIndex)) {
             cycle += 1;
@@ -339,6 +341,16 @@ function* runFlashcard(last_name) {
                     }
                 }
             }
+            // Filtering processed data of waiting group
+            let temp = [];
+            for (let name of playlist.waiting[groupIndex]) {
+                if (blocks[name].individual.standardFlashcards.status == statusEnum.finished.name) {
+                    playlist.finished.push(name);
+                } else {
+                    temp.push(name);
+                }
+            }
+            playlist.waiting[groupIndex] = temp;
         }
     }
 }
