@@ -705,6 +705,7 @@ function show(IDnames, blocks) {
                     input.value = `${name} -- ${blocks[tempName].description}`;
 
                 autoHighlight(input.value);
+                input.focus();
             });
         tableDic[name] = tempRow;
         if (tempRow.innerHTML) {
