@@ -1122,6 +1122,21 @@ function openEditor() { // Will show the editor
         let inputs = panel.inputs;
         inputs[0].value = name;
         Editor.setInputValue(1, val.split(';').map(x => standardizeText(x)).join('\n'));
+        if (key) {
+            setTimeout(
+                function () {
+                    // Only way we can focus the editable div
+                    inputs[1].focus();
+                    let range = document.createRange();
+                    let sel = window.getSelection();
+                    range.setStart(inputs[1].lastElementChild, 1);
+                    range.collapse(true);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                    inputs[1].scrollTo(0, inputs[1].clientHeight);
+                }
+            );
+        }
     };
     Editor.show(); // opening the edit, blocksor
 }
