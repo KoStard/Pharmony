@@ -193,6 +193,9 @@ function createIntroductoryScreen() {
                     createPlaylist(sequence);
                     table = createTable(playlist);
                     examinationUniversals.resetIntroductoryScreenContent(table);
+                    if (data.global.standardFlashcards.last) {
+                        continueButton.style.display = 'block';
+                    }
                 }
             }),
             createButton({
@@ -203,6 +206,7 @@ function createIntroductoryScreen() {
                     createPlaylist(sequence);
                     table = createTable(playlist);
                     examinationUniversals.resetIntroductoryScreenContent(table);
+                    continueButton.style.display = 'none';
                 }
             }),
             createButton({
