@@ -1121,23 +1121,31 @@ function initEditor() { // Will initiali, blocksze the editor window
         let pastedData = clipboardData.getData('Text');
         Editor.insertInputValue(1, pastedData);
     };
+    Editor.justOpened = true;
     Mousetrap(Editor.panel).bind(['command+enter', 'ctrl+enter'], () => {
         Editor.buttons[0].click();
     });
     Mousetrap(Editor.panel).bind(['command+e', 'ctrl+e'], () => {
-        Editor.buttons[1].click();
+        if (!Editor.justOpened) {
+            Editor.buttons[1].click();
+        }
     });
+    Mousetrap(Editor.panel).bind(['command+e', 'ctrl+e'], () => {
+        if (Editor.justOpened)
+            Editor.justOpened = false;
+    }, 'keyup');
 }
 
 function openEditor() { // Will show the editor
     let resp = inputSlicer(input.value);
-    Editor.openingFunction = (panel) => { // setting the editor content
+    Editor.openingFunction = function (panel) { // setting the editor content
+        this.justOpened = true;
         if (!resp) resp = ['', input.value, '', ''];
         else resp = resp.map(x => standardizeText(x));
         let [, name, key, val] = resp;
         let inputs = panel.inputs;
         inputs[0].value = name;
-        Editor.setInputValue(1, val.split(';').map(x => standardizeText(x)).join('\n'));
+        this.setInputValue(1, val.split(';').map(x => standardizeText(x)).join('\n'));
         if (key) {
             setTimeout(
                 function () {
