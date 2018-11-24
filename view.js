@@ -1401,7 +1401,7 @@ function init() {
             if (flashcard.flashcardNode.className == 'flashcard both') {
                 flashcard.accessories.click('raw');
             } else {
-                flashcard.rotate();
+                // flashcard.rotate();
             }
         }
     }, 'keyup');
@@ -1411,6 +1411,7 @@ function init() {
             if (flashcard.flashcardNode.className == 'flashcard both') {
                 flashcard.accessories.click('finished');
             } else {
+                // Rotating only with space or right arrow
                 flashcard.rotate();
             }
         }
@@ -1421,7 +1422,7 @@ function init() {
             if (flashcard.flashcardNode.className == 'flashcard both') {
                 flashcard.accessories.click('inProcess');
             } else {
-                flashcard.rotate();
+                // flashcard.rotate();
             }
         }
     }, 'keyup');
