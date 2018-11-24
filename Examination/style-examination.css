@@ -59,10 +59,13 @@
 
 .flashcard .front {
     font-size: 2em;
+    background: white;
+    transition: bottom 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .flashcard .back {
     font-size: 1.5em;
+    background: white;
 }
 
 .flashcard .back ol {

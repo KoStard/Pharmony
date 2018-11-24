@@ -533,8 +533,9 @@ function Flashcard(front, back) {
     // content.innerText = backText;
     backSide.className = 'back';
     backSide.appendChild(content);
-    flashcardNode.appendChild(backSide);
-    examination.insertBefore(flashcardNode, examination.childNodes[examination.childNodes.length - 1]);
+    flashcardNode.prepend(backSide);
+    // examination.insertBefore(flashcardNode, examination.childNodes[examination.childNodes.length - 1]);
+    examination.prepend(flashcardNode);
 
     this.rotate = function () {
         if (flashcardNode.className == 'flashcard front') {
