@@ -1,0 +1,28 @@
+#add-collection-container {
+  position: fixed;
+  overflow: hidden;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.5s ease;
+  z-index: 1;
+  padding: 20px;
+  width: 70%;
+  max-width: 500px;
+  border: 2px solid #66bb6a;
+  border-bottom: none;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+#add-collection-container.active {
+  transform: translate(-50%, -100%);
+}
+
+#add-collection-form > button {
+  margin-right: 5px;
+}
+
+#add-collection-form input {
+  font-size: 1.3em;
+}
