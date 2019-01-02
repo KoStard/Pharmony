@@ -1,25 +1,28 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+const electron = window.require('electron');
+const req = electron.remote.require;
+const fs = req('fs');
 
 class App extends Component {
+  state = {
+    data: ''
+  };
+  componentDidMount() {
+    let data = fs.readFileSync('src/data.txt', 'utf-8');
+    this.setState({
+      data: data
+    });
+  }
   render() {
     return (
       <div className="App">
-        <header className="App-header">
+        <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+          <h2>Welcome to React/Electron</h2>
+        </div>
+        <p>The data is: {this.state.data}</p>
       </div>
     );
   }
