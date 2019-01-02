@@ -36,6 +36,22 @@ const rootReducer = (state = initState, action) => {
       }
       break;
     case 'REMOVE_COLLECTION':
+      if (action.name) {
+        console.log('The new state will be', {
+          ...state,
+          collections: [
+            state.collections.filter(
+              collection => collection.name != action.name
+            )
+          ]
+        });
+        return {
+          ...state,
+          collections: state.collections.filter(
+            collection => collection.name != action.name
+          )
+        };
+      }
       break;
   }
   return state;

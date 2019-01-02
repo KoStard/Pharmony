@@ -5,7 +5,6 @@
 
 .collection-card {
   padding: 2px;
-  border-radius: 5px;
   display: flex;
 }
 
@@ -27,7 +26,7 @@
   box-sizing: border-box;
 }
 
-.collection-name button {
+button {
   margin-right: 5px;
 }
 
@@ -52,4 +51,8 @@ button {
 
 button:focus {
   outline: -webkit-focus-ring-color auto 5px;
+}
+
+.with-round-corners {
+  border-radius: 5px;
 }

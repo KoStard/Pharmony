@@ -6,7 +6,7 @@
   transform: translateX(-50%);
   transition: all 0.5s ease;
   z-index: 1;
-  padding: 20px;
+  padding: 10px 35px;
   width: 70%;
   max-width: 500px;
   border: 2px solid #66bb6a;
@@ -17,10 +17,6 @@
 
 #add-collection-container.active {
   transform: translate(-50%, -100%);
-}
-
-#add-collection-form > button {
-  margin-right: 5px;
 }
 
 #add-collection-form input {
