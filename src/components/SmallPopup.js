@@ -29,7 +29,6 @@ class SmallPopup extends Component {
     this.close();
   };
   activate = params => {
-    console.log(params);
     this.container_ref.current.classList.add('active');
     this.setState({ params: params });
   };
@@ -70,8 +69,8 @@ class SmallPopup extends Component {
         <button
           type={buttonData.type || 'submit'} // maybe || "button"
           onClick={e => {
-            // always starting with *
             if (typeof buttonData.handleClick == 'string') {
+              // always starting with *
               switch (buttonData.handleClick) {
                 case '*cancel':
                   this.close();
@@ -93,7 +92,11 @@ class SmallPopup extends Component {
       );
     });
     return (
-      <div className="small-popup" ref={this.container_ref}>
+      <div
+        className="small-popup"
+        ref={this.container_ref}
+        onClick={this.close}
+      >
         <div className="small-popup-content white with-round-corners">
           <form onSubmit={this.handleSubmit}>
             {outputsList}
