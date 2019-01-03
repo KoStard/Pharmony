@@ -10,6 +10,13 @@ class CollectionInputBar extends Component {
     value: '',
     condition: 'empty'
   };
+  openBlock = block => {
+    this.inputBar.current.value = `${block.name} -- ${block.description}`;
+  };
+  // Maybe with ctrl+dblclick
+  openBlockToRename = block => {
+    this.inputBar.current.value = `${block.name} --> `;
+  };
   handleChange = e => {
     this.setState({
       value: e.target.value
