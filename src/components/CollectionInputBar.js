@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './CollectionInputBar.css';
+import Editor from './Editor';
 
 class CollectionInputBar extends Component {
   constructor(props) {
@@ -99,22 +100,25 @@ class CollectionInputBar extends Component {
   };
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <input
-          type="text"
-          id="collection-input-bar"
-          onChange={this.handleChange}
-          className={(() => {
-            switch (this.state.condition) {
-              case 'invalid':
-                return 'invalid';
-              case 'already-created':
-                return 'already-created';
-            }
-          })()}
-          ref={this.inputBar}
-        />
-      </form>
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <input
+            type="text"
+            id="collection-input-bar"
+            onChange={this.handleChange}
+            className={(() => {
+              switch (this.state.condition) {
+                case 'invalid':
+                  return 'invalid';
+                case 'already-created':
+                  return 'already-created';
+              }
+            })()}
+            ref={this.inputBar}
+          />
+        </form>
+        <Editor />
+      </div>
     );
   }
 }
