@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { removeCollectionActionCreator } from '../actions/collectionActions';
+import { changePositionToCollectionActionCreator } from '../actions/positionActions';
 import AddCollection from './AddCollection';
 import SmallInput from './SmallPopup';
 
@@ -13,7 +14,7 @@ class Menu extends Component {
     this.RemoveCollectionPopup_ref = React.createRef();
   }
   openCollection = name => {
-    console.log(`Has to open collection ${name}`);
+    this.props.changePositionToCollection(name);
   };
   handleAddCollectionButtonClick = event => {
     this.AddCollection_ref.current.activate();
@@ -28,7 +29,7 @@ class Menu extends Component {
           >
             <div className="col s6 collection-name-container">
               <div className="collection-name">
-                <h3 className="truncate">{collection.name}</h3>
+                <h3>{collection.name}</h3>
                 <button
                   onClick={() => this.openCollection(collection.name)}
                   className="waves-effect waves-light btn"
@@ -120,7 +121,10 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    removeCollection: removeCollectionActionCreator(dispatch)
+    removeCollection: removeCollectionActionCreator(dispatch),
+    changePositionToCollection: changePositionToCollectionActionCreator(
+      dispatch
+    )
   };
 };
 

@@ -1,0 +1,33 @@
+#collection-container .id-column-cell {
+  text-align: center;
+  background-color: #bd563f;
+  color: white;
+  border-radius: 0;
+}
+
+#collection-container .id-header-cell {
+  text-align: center;
+  width: 3%;
+  padding-bottom: 3px;
+}
+
+#collection-container .name-header-cell {
+  text-align: center;
+  width: 27%;
+  padding-bottom: 3px;
+}
+
+#collection-container .description-header-cell {
+  text-align: center;
+  width: 70%;
+  padding-bottom: 3px;
+}
+
+#collection-container td,
+#collection-container th {
+  padding: 7px 5px;
+}
+
+#collection-container tr {
+  border-bottom: 1px solid #cccccc;
+}

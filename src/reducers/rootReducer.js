@@ -3,14 +3,26 @@ const initState = {
     {
       id: 1,
       name: 'Surgery',
-      description: 'Some description here for Surgery'
+      description: 'Some description here for Surgery',
+      blocks: [
+        { name: 'Some name', description: 'Some description' },
+        { name: 'Some name2', description: 'Some description' },
+        { name: 'Some name3', description: 'Some description' },
+        { name: 'Some name4', description: 'Some description' },
+        { name: 'Some name5', description: 'Some description' }
+      ]
     },
     {
       id: 2,
       name: 'Gynecology',
-      description: 'Some description here for Gynecology'
+      description: 'Some description here for Gynecology',
+      blocks: []
     }
-  ]
+  ],
+  currentPosition: {
+    position: 'MENU', // MENU, COLLECTION
+    additional: {}
+  }
 };
 
 const rootReducer = (state = initState, action) => {
@@ -53,6 +65,16 @@ const rootReducer = (state = initState, action) => {
         };
       }
       break;
+    case 'CHANGE_POSITION':
+      return {
+        ...state,
+        currentPosition: {
+          position: action.newPosition.position,
+          additional: action.newPosition.additional
+            ? { ...action.newPosition.additional }
+            : {}
+        }
+      };
   }
   return state;
 };
