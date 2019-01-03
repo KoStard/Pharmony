@@ -5,8 +5,8 @@ import { PassThrough } from 'stream';
 /**
  * Creating universal small-popup -> will not contain any specific methods in it
  * outputs -> [{text: "", size: "h1/h2/...", key=""}]
- * inputs -> their label names [{name: text, id: text}...]
- * buttons -> with their types [{name: text, id: text, type: text: handleClick: ?function}...]
+ * inputs -> their label names [{name: text, id: text, key:?text}...]
+ * buttons -> with their types [{name: text, id: text, type: text: handleClick: ?function, key:?text}...]
  * handleSubmit
  */
 class SmallPopup extends Component {
@@ -53,7 +53,7 @@ class SmallPopup extends Component {
       : null;
     let inputsList = (this.props.inputs || []).map(inputData => {
       return (
-        <div className="input-field" key={inputData.id}>
+        <div className="input-field" key={inputData.key || inputData.id}>
           <input
             type="text"
             id={inputData.id}
@@ -80,7 +80,7 @@ class SmallPopup extends Component {
               buttonData.handleClick(e);
             }
           }}
-          key={buttonData.id}
+          key={buttonData.key || buttonData.id}
           className={
             buttonData.className !== undefined
               ? buttonData.className

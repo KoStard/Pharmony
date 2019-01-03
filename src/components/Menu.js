@@ -83,21 +83,23 @@ class Menu extends Component {
             {
               text: 'Are you sure, you want to remove this collection?',
               size: 'h5',
-              key: 'warning'
+              key: 'message'
             }
           ]}
           buttons={[
             {
               name: 'Yes',
               id: 'small-popup-submit-button',
-              className: 'waves-effect waves-light btn red'
+              className: 'waves-effect waves-light btn red',
+              key: 'submit'
             },
             {
               name: 'No',
               id: 'small-popup-cancel-button',
               className: 'waves-effect waves-light btn grey',
               type: 'button',
-              handleClick: '*cancel'
+              handleClick: '*cancel',
+              key: 'cancel'
             }
           ]}
           handleSubmit={state => {
