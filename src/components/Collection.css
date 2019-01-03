@@ -9,18 +9,21 @@
   text-align: center;
   width: 3%;
   padding-bottom: 3px;
+  padding-top: 4px;
 }
 
 #collection-container .name-header-cell {
   text-align: center;
   width: 27%;
   padding-bottom: 3px;
+  padding-top: 4px;
 }
 
 #collection-container .description-header-cell {
   text-align: center;
   width: 70%;
   padding-bottom: 3px;
+  padding-top: 4px;
 }
 
 #collection-container td,

@@ -1,0 +1,8 @@
+#collection-input-bar {
+  margin-bottom: 0;
+  padding: 0 10px;
+}
+
+#collection-input-bar.already-created {
+  border-bottom-color: #00aff3;
+}

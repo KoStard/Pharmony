@@ -42,7 +42,10 @@ class Collection extends Component {
     );
     return (
       <div id="collection-container">
-        <CollectionInputBar handleSubmit={this.handleInputBarSubmit} />
+        <CollectionInputBar
+          handleSubmit={this.handleInputBarSubmit}
+          collection={this.props.collection}
+        />
         {table}
       </div>
     );
