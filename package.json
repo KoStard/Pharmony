@@ -12,7 +12,7 @@
   "author": "KoStard",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^2.0.8"
+    "electron": "^11.2.1"
   },
   "dependencies": {
     "docx": "^3.6.0",

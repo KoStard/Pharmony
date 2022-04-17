@@ -6,7 +6,11 @@ const path = require ('path');
 let win;
 
 function createWindow(){
-    win = new BrowserWindow({width: 800, height: 600});
+    win = new BrowserWindow({width: 800, height: 600, webPreferences: {
+        enableRemoteModule: true,
+        nodeIntegration: true,
+    }});
+    // win.webContents.openDevTools();
     ['started', 'stopEditCollectionsListMode'].forEach((x)=>{ipcMain.on(x, ()=>{
         mainMenuTemplate[1].submenu[1].visible = true;
         mainMenuTemplate[1].submenu[2].visible = false;
